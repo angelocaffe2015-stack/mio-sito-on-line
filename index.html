@@ -2414,7 +2414,7 @@ funzionamento di questo software sono di proprietà esclusiva di
                             }
                         });
 
-                       if (stanzaTrovata) {
+                      if (stanzaTrovata) {
                             // 1. Verifichiamo se prima era un debitore (quindi se aveva ritardo >= 10)
                             const eraDebitore = stanzaTrovata.classList.contains('debitore');
                             
@@ -2444,6 +2444,18 @@ funzionamento di questo software sono di proprietà esclusiva di
                             await setDoc(docRef, datiDaAggiornare, { merge: true });
                             stanzeAggiornate++;
                         }
+                    } // <-- QUESTA PARENTESI È FONDAMENTALE (Chiude il ciclo delle righe Excel)
+                    
+                    event.target.value = ''; 
+                    alert(`Importazione completata: ${stanzeAggiornate} stanze aggiornate con successo!`);
+                    window.registraCompletamento('grezzo');
+                } catch (error) { 
+                    console.error(error); 
+                    alert("Errore durante l'importazione."); 
+                }
+            }; 
+            reader.readAsArrayBuffer(file);
+        };
 
         // ELABORAZIONE 2: EMAIL CLIENTI
         window.elaboraEmailClienti = async function(event) {
