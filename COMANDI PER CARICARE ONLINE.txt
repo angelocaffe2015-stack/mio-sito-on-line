@@ -1,0 +1,5 @@
+COMANDI PER CARICARE ONLINE
+
+git add .
+git commit -m "INSERISCI COMMENTO"
+git push

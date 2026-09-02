@@ -2414,19 +2414,36 @@ funzionamento di questo software sono di proprietà esclusiva di
                             }
                         });
 
-                        if (stanzaTrovata) {
+                       if (stanzaTrovata) {
+                            // 1. Verifichiamo se prima era un debitore (quindi se aveva ritardo >= 10)
+                            const eraDebitore = stanzaTrovata.classList.contains('debitore');
+                            
+                            // 2. Leggiamo il ritardo ATTUALE dal file Excel che stiamo importando
+                            let ritardoAttualeExcel = 0;
+                            if (daysLate !== undefined && daysLate !== null && String(daysLate).trim() !== "") {
+                                ritardoAttualeExcel = Number(daysLate);
+                            }
+
+                            // 3. Prepariamo i dati standard da salvare
+                            let datiDaAggiornare = { 
+                                stato: statoCalcolato, 
+                                notaCliente: notaFinale, 
+                                cliente: customer, 
+                                dataPartenza: dataPartenzaTesto 
+                            };
+
+                            // 4. LA TUA REGOLA: Se passa da debitore (>= 10) a un ritardo <= 9 nell'Excel
+                            if (eraDebitore && ritardoAttualeExcel <= 9 && statoCalcolato !== 'debitore') {
+                                datiDaAggiornare.stato = 'debitore';       // Mantiene il lucchetto visivo
+                                datiDaAggiornare.richiestaSblocco = true;  // Lo fa entrare immediatamente in SBLOCCA
+                                datiDaAggiornare.taskSblocca = null;       // Resetta i bottoni ✅ e ❌
+                            }
+
+                            // 5. Salviamo su Firebase
                             const docRef = doc(db, "stanze", stanzaTrovata.id);
-                            await setDoc(docRef, { stato: statoCalcolato, notaCliente: notaFinale, cliente: customer, dataPartenza: dataPartenzaTesto }, { merge: true });
+                            await setDoc(docRef, datiDaAggiornare, { merge: true });
                             stanzeAggiornate++;
                         }
-                    }
-                    event.target.value = ''; 
-                    alert(`Importazione completata: ${stanzeAggiornate} stanze aggiornate con successo!`);
-                    window.registraCompletamento('grezzo');
-                } catch (error) { console.error(error); alert("Errore durante l'importazione."); }
-            }; 
-            reader.readAsArrayBuffer(file);
-        };
 
         // ELABORAZIONE 2: EMAIL CLIENTI
         window.elaboraEmailClienti = async function(event) {
