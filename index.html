@@ -116,6 +116,7 @@ funzionamento di questo software sono di proprietà esclusiva di
         .stanza.movein { fill: rgba(23, 162, 184, 0.5); }
         .stanza.held { fill: rgba(111, 66, 193, 0.5); }
         .stanza-evidenziata { fill: rgba(255, 193, 7, 0.7) !important; stroke: #ff9800 !important; stroke-width: 3px !important; }
+         .stanza.in-ritardo { fill: rgba(140, 50, 50, 0.7); } /* Rosso con velatura grigia */
 
         .testo-mq { font-size: 12px; fill: #000; font-weight: bold; text-anchor: middle; dominant-baseline: hanging; pointer-events: none; text-shadow: 1px 1px 2px rgba(255,255,255,0.8); }
         .icona-pulizia { font-size: 28px; font-family: sans-serif; fill: #000; text-anchor: middle; dominant-baseline: central; pointer-events: none; text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.9); }
@@ -157,6 +158,7 @@ funzionamento di questo software sono di proprietà esclusiva di
         .pallino.occupato { background-color: #F44336; }
         .pallino.debitore { background-color: #6c757d; }
         .pallino.move-in { background-color: #17a2b8; }
+        .pallino.in-ritardo { background-color: rgba(140, 50, 50, 0.7); }
 
         /* --- 8. REGOLE PER LA STAMPA --- */
         @media print {
@@ -479,7 +481,8 @@ funzionamento di questo software sono di proprietà esclusiva di
             <div class="item-legenda"><span class="pallino occupato"></span> Occupato</div>
             <div class="item-legenda"><span class="pallino debitore"></span> Debitore</div>
             <div class="item-legenda"><span class="pallino move-in"></span> Move In</div>
-        </div>
+            <div class="item-legenda"><span class="pallino in-ritardo"></span> 1-9 gg Ritardo</div>        
+        
     </div>
 
     <!-- Pannello Controllo (Cambio Stato) -->
@@ -1519,7 +1522,7 @@ funzionamento di questo software sono di proprietà esclusiva di
                         if (!stanzaElement) return;
 
                         const data = change.doc.data();
-                        stanzaElement.classList.remove('occupata', 'debitore', 'company', 'damaged', 'maintenance', 'movein', 'held');
+                        stanzaElement.classList.remove('occupata', 'debitore', 'company', 'damaged', 'maintenance', 'movein', 'held', 'in-ritardo');');
                         if (data.stato && data.stato !== "") stanzaElement.classList.add(data.stato);
 
                         stanzaElement.setAttribute('data-f', data.datoF !== undefined ? data.datoF : '');
@@ -2399,12 +2402,16 @@ funzionamento di questo software sono di proprietà esclusiva di
                         else if (duci === "damaged") statoCalcolato = "damaged";
                         else if (duci === "maintenance") statoCalcolato = "maintenance";
                         else if (dataPartenzaPura !== null && dataQ1_pura !== null && dataPartenzaPura.getTime() > dataQ1_pura.getTime()) statoCalcolato = "movein"; 
-                        else if (daysLate !== undefined && daysLate !== null && String(daysLate).trim() !== "") {
+                      else if (daysLate !== undefined && daysLate !== null && String(daysLate).trim() !== "") {
                             let ggRitardo = Number(daysLate);
-                            if (ggRitardo > 9) statoCalcolato = "debitore";
-                            else if (ggRitardo >= 0) statoCalcolato = "occupata";
+                            if (ggRitardo > 9) {
+                                statoCalcolato = "debitore";
+                            } else if (ggRitardo >= 1 && ggRitardo <= 9) {
+                                statoCalcolato = "in-ritardo"; // Nuova velatura rosso-grigia
+                            } else if (ggRitardo === 0) {
+                                statoCalcolato = "occupata";   // Rosso classico
+                            }
                         }
-
                         let stanzaTrovata = null;
                         document.querySelectorAll('.stanza').forEach(s => {
                             const idStanza = s.id.toLowerCase();
