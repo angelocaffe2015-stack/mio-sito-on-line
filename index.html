@@ -455,6 +455,7 @@ funzionamento di questo software sono di proprietà esclusiva di
         <button class="btn-azione" onclick="stampaTutteMappe()">🖨️ Stampa Tutta la Filiale</button>
         <button class="btn-azione" onclick="esportaExcel()" style="background-color: #20c997;">📊 Esporta in Excel</button>
         <button class="btn-azione" onclick="gestisciReportPulizie()" style="background-color: #e83e8c;">🧹 Esporta/Stampa pulizie</button>
+         <button class="btn-azione" onclick="stampaFile33()" style="background-color: #6f42c1;">🖨️ Stampa File 33</button>
     </div>
 
     <button class="btn-azione" onclick="toggleBoxDebitori()" style="background-color: #d9534f;">🚨 GESTIONE DEBITORI</button>
@@ -1517,12 +1518,13 @@ funzionamento di questo software sono di proprietà esclusiva di
                 // C. Ascolto Stanze in Tempo Reale (Per tutti)
                 onSnapshot(collection(db, "stanze"), (snapshot) => {
                     snapshot.docChanges().forEach((change) => {
-                        const idStanza = change.doc.id;
+const idStanza = change.doc.id;
                         const stanzaElement = document.getElementById(idStanza);
                         if (!stanzaElement) return;
 
                         const data = change.doc.data();
-                        stanzaElement.classList.remove('occupata', 'debitore', 'company', 'damaged', 'maintenance', 'movein', 'held', 'in-ritardo');');
+                        stanzaElement.classList.remove('occupata', 'debitore', 'company', 'damaged', 'maintenance', 'movein', 'held', 'in-ritardo');
+                        
                         if (data.stato && data.stato !== "") stanzaElement.classList.add(data.stato);
 
                         stanzaElement.setAttribute('data-f', data.datoF !== undefined ? data.datoF : '');
@@ -1538,8 +1540,7 @@ funzionamento di questo software sono di proprietà esclusiva di
                     });
                 });
             } else {
-                const schermataLogin = document.getElementById('schermata-login');
-                if (schermataLogin) schermataLogin.style.display = 'flex';
+                const schermataLogin = document.getElementById('schermata-login');                if (schermataLogin) schermataLogin.style.display = 'flex';
                 if (unsubscribeSession) unsubscribeSession();
             }
         });
@@ -2356,7 +2357,7 @@ funzionamento di questo software sono di proprietà esclusiva di
             return null;
         };
 
-        // ELABORAZIONE 1: DATI GREZZI
+       // ELABORAZIONE 1: DATI GREZZI
         window.elaboraDatiGrezzi = async function(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -2367,6 +2368,8 @@ funzionamento di questo software sono di proprietà esclusiva di
                     const workbook = XLSX.read(data, { type: 'array', cellDates: true });
                     const foglio = workbook.Sheets[workbook.SheetNames[0]];
                     const righe = XLSX.utils.sheet_to_json(foglio, { header: 1 });
+                    
+                    window.memoriaFile33 = righe; 
                     
                     let dataQ1_pura = null;
                     if (foglio['Q1']) dataQ1_pura = window.analizzaDataExcel(foglio['Q1'].v || foglio['Q1'].w);
@@ -2402,16 +2405,17 @@ funzionamento di questo software sono di proprietà esclusiva di
                         else if (duci === "damaged") statoCalcolato = "damaged";
                         else if (duci === "maintenance") statoCalcolato = "maintenance";
                         else if (dataPartenzaPura !== null && dataQ1_pura !== null && dataPartenzaPura.getTime() > dataQ1_pura.getTime()) statoCalcolato = "movein"; 
-                      else if (daysLate !== undefined && daysLate !== null && String(daysLate).trim() !== "") {
+                        else if (daysLate !== undefined && daysLate !== null && String(daysLate).trim() !== "") {
                             let ggRitardo = Number(daysLate);
                             if (ggRitardo > 9) {
                                 statoCalcolato = "debitore";
                             } else if (ggRitardo >= 1 && ggRitardo <= 9) {
-                                statoCalcolato = "in-ritardo"; // Nuova velatura rosso-grigia
+                                statoCalcolato = "in-ritardo"; 
                             } else if (ggRitardo === 0) {
-                                statoCalcolato = "occupata";   // Rosso classico
+                                statoCalcolato = "occupata";   
                             }
                         }
+
                         let stanzaTrovata = null;
                         document.querySelectorAll('.stanza').forEach(s => {
                             const idStanza = s.id.toLowerCase();
@@ -2421,17 +2425,13 @@ funzionamento di questo software sono di proprietà esclusiva di
                             }
                         });
 
-                      if (stanzaTrovata) {
-                            // 1. Verifichiamo se prima era un debitore (quindi se aveva ritardo >= 10)
+                        if (stanzaTrovata) {
                             const eraDebitore = stanzaTrovata.classList.contains('debitore');
-                            
-                            // 2. Leggiamo il ritardo ATTUALE dal file Excel che stiamo importando
                             let ritardoAttualeExcel = 0;
                             if (daysLate !== undefined && daysLate !== null && String(daysLate).trim() !== "") {
                                 ritardoAttualeExcel = Number(daysLate);
                             }
 
-                            // 3. Prepariamo i dati standard da salvare
                             let datiDaAggiornare = { 
                                 stato: statoCalcolato, 
                                 notaCliente: notaFinale, 
@@ -2439,27 +2439,22 @@ funzionamento di questo software sono di proprietà esclusiva di
                                 dataPartenza: dataPartenzaTesto 
                             };
 
-                            // 4. LA TUA REGOLA: Se passa da debitore (>= 10) a un ritardo <= 9 nell'Excel
-                            if (eraDebitore && ritardoAttualeExcel <= 9 && statoCalcolato !== 'debitore') {
-                                datiDaAggiornare.stato = 'debitore';       // Mantiene il lucchetto visivo
-                                datiDaAggiornare.richiestaSblocco = true;  // Lo fa entrare immediatamente in SBLOCCA
-                                datiDaAggiornare.taskSblocca = null;       // Resetta i bottoni ✅ e ❌
+                            if (eraDebitore && ritardoAttualeExcel === 0 && statoCalcolato !== 'debitore') {
+                                datiDaAggiornare.stato = 'debitore';       
+                                datiDaAggiornare.richiestaSblocco = true;  
+                                datiDaAggiornare.taskSblocca = null;       
                             }
 
-                            // 5. Salviamo su Firebase
                             const docRef = doc(db, "stanze", stanzaTrovata.id);
                             await setDoc(docRef, datiDaAggiornare, { merge: true });
                             stanzeAggiornate++;
                         }
-                    } // <-- QUESTA PARENTESI È FONDAMENTALE (Chiude il ciclo delle righe Excel)
+                    } 
                     
                     event.target.value = ''; 
                     alert(`Importazione completata: ${stanzeAggiornate} stanze aggiornate con successo!`);
                     window.registraCompletamento('grezzo');
-                } catch (error) { 
-                    console.error(error); 
-                    alert("Errore durante l'importazione."); 
-                }
+                } catch (error) { console.error(error); alert("Errore durante l'importazione."); }
             }; 
             reader.readAsArrayBuffer(file);
         };
@@ -2881,8 +2876,16 @@ window.toggleToDo = function() {
                         }
                     }
 
-                    // --- LOGICA BLOCCA ---
-                    if (nota.includes('Ritardo: 10 gg')) {
+                   // --- LOGICA BLOCCA ---
+                    // Estrae il numero di giorni dalla frase "Ritardo: X gg"
+                    const matchRitardo = nota.match(/Ritardo:\s*(\d+)\s*gg/i);
+                    let giorniRitardo = 0;
+                    if (matchRitardo) {
+                        giorniRitardo = parseInt(matchRitardo[1], 10);
+                    }
+                    
+                    // Se i giorni sono 10 o più, entra nella lista BLOCCA (finché non clicchi V)
+                    if (giorniRitardo >= 10) {
                         const taskObj = creaTask(numStanza, 'blocca', statoTaskBlocca);
                         
                         if (taskObj.statoAttuale === 'V' || taskObj.statoAttuale === 'X') window.taskGestitiOggi++;
@@ -3423,7 +3426,7 @@ window.toggleToDo = function() {
             XLSX.writeFile(workbook, `Report_Da_Pulire_Centro_${dataString}.xlsx`);
         };
 
-        window.stampaReportPulizie = function(dati) {
+       window.stampaReportPulizie = function(dati) {
             const data = dati || recuperaDatiPulizie();
             if (data.length === 0) return;
             const oggi = new Date();
@@ -3434,6 +3437,9 @@ window.toggleToDo = function() {
             printWindow.document.close(); printWindow.focus();
             setTimeout(() => { printWindow.print(); printWindow.close(); }, 250);
         };
+
+
+       
 
     // ==========================================
         // 9. GESTIONE DEBITORI E SOLLECITI (PC AUTOMATICO + SMARTPHONE RAPIDO)
@@ -4073,14 +4079,12 @@ window.toggleToDo = function() {
             alert("File pulito scaricato! Ora conterrà solo l'architettura delle stanze, senza i dati sensibili dei clienti.");
         };
 
+        
+
     </script>
 
 <p style="font-size: 14px; text-align: center;">© 2026 AdroCbox micentro. Tutti i diritti riservati.</p>
 
-</body>
 
-</html>
-
-    </script>
 </body>
 </html>
