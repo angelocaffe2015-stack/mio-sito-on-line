@@ -198,12 +198,21 @@ funzionamento di questo software sono di proprietà esclusiva di
                 <p id="errore-login" style="color: red; font-size: 13px; display: none; margin-top: 15px;">Credenziali errate. Riprova.</p>
             </div>
             
-            <!-- Box Registrazione -->
+         <!-- Box Registrazione -->
             <div id="box-registrazione" style="display: none;">
                 <h3 style="color: #007bff; margin-top: 0; font-size: 20px;">Crea un account</h3>
                 <input type="text" id="nome-registrazione" placeholder="Nome Completo" style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px;">
                 <input type="email" id="email-registrazione" placeholder="Email" style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px;">
                 <input type="password" id="password-registrazione" placeholder="Password" style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px;">
+                
+                <!-- NUOVO: Flag Privacy -->
+                <div style="display: flex; align-items: flex-start; text-align: left; margin-bottom: 15px; font-size: 12px; color: #555;">
+                    <input type="checkbox" id="privacy-registrazione" style="margin-top: 2px; margin-right: 8px; cursor: pointer;">
+                    <label for="privacy-registrazione" style="cursor: pointer; line-height: 1.4;">
+                        Ho letto e accetto l'<a href="#" onclick="mostraModalPrivacy(); return false;" style="color: #007bff; text-decoration: underline; font-weight: bold;">Informativa sulla Privacy</a>.
+                    </label>
+                </div>
+
                 <button onclick="eseguiRegistrazione()" class="btn-azione" style="width: 100%; font-weight: bold; margin-bottom: 15px;">Conferma Registrazione</button>
                 <p style="font-size: 13px; margin: 0;"><a href="#" onclick="mostraLogin(); return false;" style="color: #007bff; font-weight: bold;">Torna al Login</a></p>
             </div>
@@ -251,6 +260,16 @@ funzionamento di questo software sono di proprietà esclusiva di
         <div class="modal-content">
             <h3 id="titolo-modal-nota">Note Stanza</h3>
             <p style="font-size: 14px; margin-bottom: 5px; color: #333;"><strong>Cliente:</strong> <span id="testo-cliente">Nessun dato</span></p>
+  
+           <!-- NUOVO: Riquadro Dati Privati (Visibile solo se salvati su questo PC) -->
+            <div id="blocco-dati-privati" style="display: none; background: #e0f7fa; padding: 10px; border-radius: 6px; border-left: 4px solid #17a2b8; margin-bottom: 10px;">
+                <span style="font-size: 12px; color: #17a2b8; font-weight: bold; text-transform: uppercase;">🔒 Dati Locali Privati</span><br>
+                <div style="font-size: 14px; color: #333; margin-top: 5px;">
+                    📧 <span id="testo-email-privata">-</span><br>
+                    ☎️ <span id="testo-tel-privato">-</span>
+                </div>
+            </div>
+
             <p style="font-size: 14px; margin-bottom: 10px; color: #333;"><strong>Data Partenza:</strong> <span id="testo-data-partenza">Nessun dato</span></p>
 
             <label for="note-fisse" class="label-note">📌 Note Fisse (Permanenti)</label>
@@ -276,6 +295,7 @@ funzionamento di questo software sono di proprietà esclusiva di
         <!-- Bottoni visibili SOLO all'admin (nascosti di default) -->
         <button id="btn-admin" class="nascosto btn-azione" onclick="toggleAdminPanel()" style="background: #ffc107; color: black; font-weight: bold;">⚙️ Pannello Admin</button>
         <button id="btn-carica-mappe" class="nascosto btn-azione" onclick="togglePannelloMappe()" style="background: #007bff; color: white; font-weight: bold;">🗺️ Carica Mappe</button>
+<button id="btn-reset-dati" class="nascosto btn-azione" onclick="resetDatiStanze()" style="background: #8b0000; color: white; font-weight: bold;">⚠️ Reset Dati</button>
         
         <!-- Bottone Logout (visibile a tutti) -->
         <button onclick="eseguiLogout()" class="btn-azione" style="background: #dc3545;">🚪 Esci</button>
@@ -302,8 +322,61 @@ funzionamento di questo software sono di proprietà esclusiva di
         <button id="btn-todo" onclick="toggleToDo()" style="background-color: #fd7e14; color: white; border: none; padding: 12px 40px; font-size: 18px; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.2); transition: background-color 0.2s;">
             📝 TO DO
         </button>
+
+        <!-- NUOVO: Bottone Lock Check Odit -->
+        <button id="btn-lock-check" onclick="apriMenuAudit()" style="background-color: #6f42c1; color: white; border: none; padding: 8px 30px; font-size: 15px; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.2); transition: background-color 0.2s; margin-left: 10px; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; vertical-align: bottom;">
+            <span>LOCK CHEK</span>
+            <span>ODIT</span>
+        </button>
         
+    </div> <!-- Fine del contenitore dei bottoni -->
+
+    <!-- NUOVO MODALE: START/STOP Audit -->
+    <div id="modal-audit-main" class="modal-overlay">
+        <div class="modal-content" style="text-align: center;">
+            <h3 style="color: #6f42c1; margin-top: 0;">LOCK CHEK ODIT</h3>
+            <p style="font-size: 14px; color: #555; margin-bottom: 20px;">Scegli se avviare o terminare la registrazione dei lucchetti.</p>
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <button onclick="startAudit()" class="btn-azione" style="background: #28a745; font-weight: bold; font-size: 16px; padding: 15px 30px;">▶️ START</button>
+                <button onclick="stopAudit()" class="btn-azione" style="background: #dc3545; font-weight: bold; font-size: 16px; padding: 15px 30px;">⏹️ STOP</button>
+            </div>
+            <button onclick="document.getElementById('modal-audit-main').style.display='none'" class="btn-chiudi-generico" style="margin-top: 20px;">Annulla</button>
+        </div>
     </div>
+
+    <!-- NUOVO MODALE: Scelte Audit Stanza -->
+    <div id="modal-audit-stanza" class="modal-overlay">
+        <div class="modal-content">
+            <h3 style="color: #6f42c1; margin-top:0;" id="titolo-audit-stanza">Audit Box</h3>
+            
+            <div id="audit-step-1">
+                <p style="font-size: 14px; margin-bottom: 15px; font-weight: bold; color: #333;">Seleziona lo stato del lucchetto:</p>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <button class="btn-azione" style="background: #17a2b8;" onclick="selezionaSceltaAudit('VUOTO SENZA LUCCHETTO')">VUOTO SENZA LUCCHETTO</button>
+                    <button class="btn-azione" style="background: #fd7e14;" onclick="selezionaSceltaAudit('PIENO SENZA LUCCHETTO')">PIENO SENZA LUCCHETTO</button>
+                    <button class="btn-azione" style="background: #dc3545;" onclick="selezionaSceltaAudit('NO LUCCHETTO ROSSO')">NO LUCCHETTO ROSSO</button>
+                    <button class="btn-azione" style="background: #6c757d;" onclick="selezionaSceltaAudit('NO LUCCHETTO IVG')">NO LUCCHETTO IVG</button>
+                </div>
+            </div>
+
+            <div id="audit-step-2" style="display: none;">
+                <p style="font-size: 14px; margin-bottom: 10px; font-weight: bold; color: #333;">Vuoi inserire una nota per questo box?</p>
+                <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                    <button class="btn-azione" style="background: #28a745; flex: 1;" onclick="mostraCampoNotaAudit(true)">Sì</button>
+                    <button class="btn-azione" style="background: #6c757d; flex: 1;" onclick="salvaAuditStanza(false)">No</button>
+                </div>
+                <div id="audit-campo-nota" style="display: none;">
+                    <textarea id="nota-audit" placeholder="Scrivi qui la nota variabile..." style="width: 100%; height: 70px; margin-bottom: 10px; padding: 10px; border-radius: 5px; border: 1px solid #ccc; font-family: Arial;"></textarea>
+                    <button class="btn-azione" style="background: #007bff; width: 100%; font-weight: bold;" onclick="salvaAuditStanza(true)">Salva Nota e Procedi</button>
+                </div>
+            </div>
+            
+            <div style="text-align: right; margin-top: 15px;">
+                <button onclick="chiudiModaleAuditStanza()" class="btn-chiudi-generico">Chiudi</button>
+            </div>
+        </div>
+    </div>
+
     <!-- CONTENITORE TO DO (Nascosto di default) -->
     <div id="container-todo" style="display: none; margin: 0 auto 20px auto; max-width: 1000px; padding: 15px; background: #e9ecef; border: 2px dashed #fd7e14; border-radius: 8px;">
         <h3 style="color: #fd7e14; margin-top: 0; text-align: center; font-size: 20px;">Attività in Sospeso</h3>
@@ -1561,6 +1634,11 @@ const idStanza = change.doc.id;
                 alert("Compila tutti i campi!");
                 return;
             }
+            
+            if (!privacyCheckbox.checked) {
+                alert("Per poterti registrare, devi leggere e accettare l'Informativa sulla Privacy.");
+                return;
+            }
 
             firebase.auth().createUserWithEmailAndPassword(email, password)
                 .then((userCredential) => {
@@ -1713,17 +1791,83 @@ const idStanza = change.doc.id;
             });
         };
 
+      // ==========================================
+        // 3. PANNELLO AMMINISTRATORE E RESET
         // ==========================================
-        // 3. PANNELLO AMMINISTRATORE
-        // ==========================================
-      window.sbloccaInterfacciaAdmin = function() {
+        
+        window.sbloccaInterfacciaAdmin = function() {
             document.getElementById('schermata-login').style.display = 'none';
             const btnAdmin = document.getElementById('btn-admin');
             const btnCaricaMappe = document.getElementById('btn-carica-mappe');
+            const btnResetDati = document.getElementById('btn-reset-dati');
             
-            // Rimuove la classe 'nascosto' per far apparire i bottoni
+            // Rende visibili i bottoni all'amministratore
             if(btnAdmin) btnAdmin.classList.remove('nascosto');
             if(btnCaricaMappe) btnCaricaMappe.classList.remove('nascosto');
+            if(btnResetDati) btnResetDati.classList.remove('nascosto');
+        };
+
+        window.toggleAdminPanel = function() {
+            const modal = document.getElementById('modal-admin');
+            if(!modal) return;
+            modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
+            if(modal.style.display === 'flex') {
+                if(typeof window.caricaRichiesteOTP === 'function') window.caricaRichiesteOTP();
+                if(typeof window.caricaLogAccessi === 'function') window.caricaLogAccessi();
+            }
+        };
+
+        window.togglePannelloMappe = function() {
+            const panel = document.getElementById('pannello-admin');
+            if(panel) {
+                panel.style.display = (panel.style.display === 'none' || panel.style.display === '') ? 'block' : 'none';
+            }
+        };
+
+        window.resetDatiStanze = async function() {
+            // Sicurezza per evitare click accidentali
+            const conferma = prompt("⚠️ ATTENZIONE! Stai per svuotare TUTTI i box.\nVerranno eliminati clienti, stati, date, task e pulizie.\nRimarranno intatte solo le 'Note Fisse'.\n\nPer confermare l'operazione, digita esattamente: RESET");
+            
+            if (conferma !== "RESET") {
+                alert("Operazione annullata. Nessun dato è stato modificato.");
+                return;
+            }
+
+            try {
+                const stanzeRef = collection(db, "stanze");
+                const snapshot = await getDocs(stanzeRef);
+                let contatore = 0;
+                const promesse = [];
+
+                snapshot.forEach(docSnap => {
+                    const docRef = doc(db, "stanze", docSnap.id);
+                    // Campi da svuotare. Non inseriamo "notaFissa" così rimane intatta.
+                    const updateData = {
+                        stato: "", 
+                        cliente: "",
+                        dataPartenza: "",
+                        notaCliente: "",
+                        daPulire: false,
+                        richiestaSblocco: false,
+                        taskMoveout: null,
+                        taskBlocca: null,
+                        taskSblocca: null,
+                        datoF: ""
+                    };
+                    promesse.push(setDoc(docRef, updateData, { merge: true }));
+                    contatore++;
+                });
+
+                await Promise.all(promesse);
+                alert(`✅ Reset completato con successo!\n${contatore} stanze sono state ripulite.`);
+                
+                // Forza l'aggiornamento grafico della dashboard TO DO se è aperta
+                if(typeof window.aggiornaToDo === 'function') window.aggiornaToDo();
+
+            } catch (error) {
+                console.error("Errore critico durante il reset:", error);
+                alert("Si è verificato un errore durante il reset dei dati. Controlla la console.");
+            }
         };
 
         window.inviaOTPaUtente = function(emailUtente, nomeUtente) {
@@ -2459,127 +2603,78 @@ const idStanza = change.doc.id;
             reader.readAsArrayBuffer(file);
         };
 
-        // ELABORAZIONE 2: EMAIL CLIENTI
+        // ELABORAZIONE 2: EMAIL CLIENTI (SALVATAGGIO LOCALE)
         window.elaboraEmailClienti = async function(event) {
             const file = event.target.files[0];
             if (!file) return;
             const reader = new FileReader();
-            reader.onload = async function(e) {
+            reader.onload = function(e) {
                 try {
                     const data = new Uint8Array(e.target.result);
                     const workbook = XLSX.read(data, { type: 'array' });
                     const foglio = workbook.Sheets[workbook.SheetNames[0]];
                     const righe = XLSX.utils.sheet_to_json(foglio, { header: 1 });
                     
-                    const mappaEmail = new Map();
+                    let datiPrivati = JSON.parse(localStorage.getItem('dati_privati_clienti')) || {};
+                    let contatore = 0;
+
                     for (let i = 0; i < righe.length; i++) {
                         const riga = righe[i];
-                        if (riga[1] && riga[14]) mappaEmail.set(String(riga[1]).trim().toLowerCase(), String(riga[14]).trim());
+                        if (riga[1] && riga[14]) {
+                            const nomeCliente = String(riga[1]).trim().toLowerCase();
+                            if (!datiPrivati[nomeCliente]) datiPrivati[nomeCliente] = {};
+                            datiPrivati[nomeCliente].email = String(riga[14]).trim();
+                            contatore++;
+                        }
                     }
 
-                    const stanzeRef = collection(db, "stanze");
-                    const snapshot = await getDocs(stanzeRef);
-                    let stanzeAggiornate = 0;
-                    const promesse = [];
-
-                    snapshot.forEach(docSnap => {
-                        const datiStanza = docSnap.data();
-                        const clienteAttuale = datiStanza.cliente ? String(datiStanza.cliente).trim().toLowerCase() : "";
-                        let nuovaNota = datiStanza.notaCliente || "";
-                        let deveAggiornare = false;
-
-                        if (datiStanza.stato === "libera") {
-                            if (nuovaNota !== "") { nuovaNota = ""; deveAggiornare = true; }
-                        } else if (clienteAttuale && mappaEmail.has(clienteAttuale)) {
-                            const datiTrovati = mappaEmail.get(clienteAttuale);
-                            if (!nuovaNota.includes(datiTrovati)) {
-                                nuovaNota = (nuovaNota !== "") ? nuovaNota + " | 📧 " + datiTrovati : "📧 " + datiTrovati;
-                                deveAggiornare = true;
-                            }
-                        }
-
-                        if (deveAggiornare) {
-                            const docRef = doc(db, "stanze", docSnap.id);
-                            promesse.push(setDoc(docRef, { notaCliente: nuovaNota }, { merge: true }));
-                            stanzeAggiornate++;
-                        }
-                    });
-
-                    await Promise.all(promesse);
+                    localStorage.setItem('dati_privati_clienti', JSON.stringify(datiPrivati));
                     event.target.value = ''; 
-                    alert(`Sincronizzazione completata: ${stanzeAggiornate} stanze aggiornate con le nuove email!`);
+                    alert(`Privacy: ${contatore} email salvate LOCALMENTE (Non condivise)!`);
                     window.registraCompletamento('email');
                 } catch (error) { console.error(error); alert("Errore importazione email."); }
             }; 
             reader.readAsArrayBuffer(file);
         };
 
-        // ELABORAZIONE 3: CELLULARI CLIENTI
+        // ELABORAZIONE 3: CELLULARI CLIENTI (SALVATAGGIO LOCALE)
         window.elaboraCellulariClienti = async function(event) {
             const file = event.target.files[0];
             if (!file) return;
             const reader = new FileReader();
-            reader.onload = async function(e) {
+            reader.onload = function(e) {
                 try {
                     const data = new Uint8Array(e.target.result);
                     const workbook = XLSX.read(data, { type: 'array' });
                     const foglio = workbook.Sheets[workbook.SheetNames[0]];
                     const righe = XLSX.utils.sheet_to_json(foglio, { header: 1 });
                     
-                    const mappaCellulari = new Map();
+                    let datiPrivati = JSON.parse(localStorage.getItem('dati_privati_clienti')) || {};
+                    let contatore = 0;
+
                     for (let i = 0; i < righe.length; i++) {
                         const riga = righe[i];
                         if (riga[0] && riga[21]) {
+                            const nomeCliente = String(riga[0]).trim().toLowerCase();
                             let numeroTelefono = String(riga[21]).trim();
-                            if (!numeroTelefono.startsWith("+") && !numeroTelefono.startsWith("00")) numeroTelefono = "+39 " + numeroTelefono;
-                            mappaCellulari.set(String(riga[0]).trim().toLowerCase(), { originale: String(riga[21]).trim(), formattato: numeroTelefono });
+                            if (!numeroTelefono.startsWith("+") && !numeroTelefono.startsWith("00")) {
+                                numeroTelefono = "+39 " + numeroTelefono;
+                            }
+                            if (!datiPrivati[nomeCliente]) datiPrivati[nomeCliente] = {};
+                            datiPrivati[nomeCliente].telefono = numeroTelefono;
+                            contatore++;
                         }
                     }
 
-                    const stanzeRef = collection(db, "stanze");
-                    const snapshot = await getDocs(stanzeRef);
-                    let stanzeAggiornate = 0;
-                    const promesse = [];
-
-                    snapshot.forEach(docSnap => {
-                        const datiStanza = docSnap.data();
-                        const clienteAttuale = datiStanza.cliente ? String(datiStanza.cliente).trim().toLowerCase() : "";
-                        let nuovaNota = datiStanza.notaCliente || "";
-                        let deveAggiornare = false;
-
-                        if (datiStanza.stato === "libera") {
-                            if (nuovaNota !== "") { nuovaNota = ""; deveAggiornare = true; }
-                        } else if (clienteAttuale && mappaCellulari.has(clienteAttuale)) {
-                            const datiTrovati = mappaCellulari.get(clienteAttuale);
-                            const numOrig = datiTrovati.originale;
-                            const numFormattato = datiTrovati.formattato;
-                            
-                            if (!nuovaNota.includes(numFormattato)) {
-                                if (numOrig !== numFormattato && nuovaNota.includes(numOrig)) {
-                                    nuovaNota = nuovaNota.replace(numOrig, numFormattato);
-                                    deveAggiornare = true;
-                                } else {
-                                    nuovaNota = (nuovaNota !== "") ? nuovaNota + " | ☎️ " + numFormattato : "☎️ " + numFormattato;
-                                    deveAggiornare = true;
-                                }
-                            }
-                        }
-
-                        if (deveAggiornare) {
-                            const docRef = doc(db, "stanze", docSnap.id);
-                            promesse.push(setDoc(docRef, { notaCliente: nuovaNota }, { merge: true }));
-                            stanzeAggiornate++;
-                        }
-                    });
-
-                    await Promise.all(promesse);
+                    localStorage.setItem('dati_privati_clienti', JSON.stringify(datiPrivati));
                     event.target.value = ''; 
-                    alert(`Sincronizzazione completata: ${stanzeAggiornate} stanze aggiornate con i cellulari!`);
+                    alert(`Privacy: ${contatore} cellulari salvati LOCALMENTE (Non condivisi)!`);
                     window.registraCompletamento('cellulari');
                 } catch (error) { console.error(error); alert("Errore importazione cellulari."); }
             }; 
             reader.readAsArrayBuffer(file);
         };
+
 
 // ELABORAZIONE 4: MOVE OUT (Controllo Nomi "A prova di bomba")
         window.elaboraMoveOut = async function(event) {
@@ -2695,6 +2790,14 @@ const idStanza = change.doc.id;
         window.mostraRegistrazione = function() {
             document.getElementById('box-login').style.display = 'none';
             document.getElementById('box-registrazione').style.display = 'block';
+        };
+
+        window.mostraModalPrivacy = function() {
+            document.getElementById('modal-privacy').style.display = 'flex';
+        };
+
+        window.chiudiModalPrivacy = function() {
+            document.getElementById('modal-privacy').style.display = 'none';
         };
 
         window.mostraLogin = function() {
@@ -2887,6 +2990,7 @@ window.toggleToDo = function() {
                     // Se i giorni sono 10 o più, entra nella lista BLOCCA (finché non clicchi V)
                     if (giorniRitardo >= 10) {
                         const taskObj = creaTask(numStanza, 'blocca', statoTaskBlocca);
+                        taskObj.giorniRitardo = giorniRitardo;
                         
                         if (taskObj.statoAttuale === 'V' || taskObj.statoAttuale === 'X') window.taskGestitiOggi++;
                         else window.taskPendentiOggi++;
@@ -2906,7 +3010,7 @@ window.toggleToDo = function() {
                 });
             } catch (e) { console.error("Errore lettura TO DO dal DB:", e); }
 
-            // RENDER GRAFICO 
+         // RENDER GRAFICO 
             const ordina = (a, b) => a.ordinePiano - b.ordinePiano || a.stanza.localeCompare(b.stanza);
             const generaRiga = (item) => {
                 const isAzzurro = (item.isPassato && item.statoAttuale === 'X');
@@ -2924,10 +3028,16 @@ window.toggleToDo = function() {
                     tastoCalendario = `<button onclick="cambiaDataMoveOut('${item.stanza}')" style="background-color: #17a2b8; color: white; border: 1px solid #ccc; border-radius: 4px; padding: 6px 10px; cursor: pointer; font-weight: bold; transition: 0.2s; margin-right: 2px;" title="Posticipa Data">📅</button>`;
                 }
 
+                // --- NUOVA LOGICA: Crea il badge con i giorni di ritardo se presente ---
+                let badgeGiorni = "";
+                if (item.giorniRitardo) {
+                    badgeGiorni = `<span style="background: #dc3545; color: white; border-radius: 4px; padding: 2px 6px; font-size: 11px; font-weight: bold; margin-left: 5px;" title="Giorni di ritardo">${item.giorniRitardo} gg</span>`;
+                }
+
                 return `
                 <div class="todo-item-riga" data-id="${item.stanza}" data-tipo="${item.tipo}" style="display: flex; align-items: center; justify-content: space-between; padding: 10px; margin-bottom: 8px; border-radius: 6px; background-color: ${bgColor}; border-left: 4px solid ${borderColor};">
                     <div style="font-size: 15px;">
-                        <strong>#${item.stanza}</strong> <span style="font-size: 13px; color: #555;">(${item.piano})</span> ${testoRitardo}
+                        <strong>#${item.stanza}</strong> <span style="font-size: 13px; color: #555;">(${item.piano})</span> ${badgeGiorni} ${testoRitardo}
                     </div>
                     <div style="display: flex; gap: 8px;">
                         ${tastoCalendario}
@@ -2937,6 +3047,7 @@ window.toggleToDo = function() {
                 </div>`;
             };
 
+            // 👇👇👇 IL PEZZO CHE TI MANCAVA PER NON FAR BLOCCARE LA PAGINA: 👇👇👇
             const renderBox = (tipo, boxElement) => {
                 liste[tipo].sort(ordina);
                 let html = "";
@@ -3200,26 +3311,17 @@ window.toggleToDo = function() {
             } catch (error) { console.error("Errore durante il salvataggio del TO DO:", error); }
         };
 
-        // --- CONTROLLO COMPLETAMENTO E INVIO MAIL ---
+    // --- CONTROLLO COMPLETAMENTO E INVIO MAIL ---
         window.controllaCompletamentoToDo = function() {
             const dataOggiStr = new Date().toDateString();
 
-            // 1. Controlla se ci sono righe non ancora gestite
-            const righe = document.querySelectorAll('.todo-item-riga');
-            let ciSonoPendenti = false;
-            
-            righe.forEach(r => {
-                const stato = r.getAttribute('data-stato');
-                if (stato !== 'X' && stato !== 'V') {
-                    ciSonoPendenti = true;
-                }
-            });
-
-            // 2. Se tutto è pulito o flaggato X, ABBIAMO FATTO ALMENO UN CLICK OGGI, e non abbiamo ancora inviato: INVIA LA MAIL!
-            if (!ciSonoPendenti && window.azioneEseguitaOggi && localStorage.getItem('todo_email_inviata') !== dataOggiStr) {
+            // Sfruttiamo i contatori calcolati in aggiornaToDo (più sicuro del controllo HTML)
+            if (window.taskPendentiOggi === 0 && window.taskGestitiOggi > 0 && window.azioneEseguitaOggi && localStorage.getItem('todo_email_inviata') !== dataOggiStr) {
                 
-                let testoMoveOut = "";
-                let contatoreMoveOut = 0;
+                let reportMoveOut = "";
+                let reportBlocca = "";
+                let reportSblocca = "";
+                let countMove = 0, countBlocca = 0, countSblocca = 0;
 
                 // Leggiamo i log salvati in locale oggi per compilare la mail correttamente
                 for (let i = 0; i < localStorage.length; i++) {
@@ -3230,16 +3332,31 @@ window.toggleToDo = function() {
                         const tipoTask = parti[2];
                         const stato = localStorage.getItem(key);
 
+                        // Compilazione Liste in Colonna
                         if (tipoTask === 'moveout') {
-                            if (stato === 'V') testoMoveOut += `✅ Box #${numStanza}: Chiudi contratto\n`;
-                            else if (stato === 'X') testoMoveOut += `❌ Box #${numStanza}: Chiamare per info\n`;
-                            contatoreMoveOut++;
+                            if (stato === 'V') reportMoveOut += `✅ Box #${numStanza}: CHIUDI CONTRATTO\n`;
+                            else if (stato === 'X') reportMoveOut += `❌ Box #${numStanza}: CHIAMA IL CLIENTE PER NUOVA DATA\n`;
+                            countMove++;
+                        }
+                        else if (tipoTask === 'blocca') {
+                            if (stato === 'V') reportBlocca += `✅ Box #${numStanza}: BLOCCATO\n`;
+                            else if (stato === 'X') reportBlocca += `❌ Box #${numStanza}: DA VERIFICARE\n`;
+                            countBlocca++;
+                        }
+                        else if (tipoTask === 'sblocca') {
+                            if (stato === 'V') reportSblocca += `✅ Box #${numStanza}: SBLOCCATO\n`;
+                            else if (stato === 'X') reportSblocca += `❌ Box #${numStanza}: NON SBLOCCATO\n`;
+                            countSblocca++;
                         }
                     }
                 }
 
-                let bloccoRiepilogo = "";
-                if (contatoreMoveOut > 0) bloccoRiepilogo = `\n\n--- RIEPILOGO MOVE OUT ---\n${testoMoveOut}--------------------------\n`;
+                // Generazione del blocco di testo diviso in categorie
+                let bloccoRiepilogo = "\n\n=== RIEPILOGO ATTIVITÀ DI OGGI ===\n";
+                if (countMove > 0) bloccoRiepilogo += `\n📦 MOVE OUT:\n${reportMoveOut}`;
+                if (countBlocca > 0) bloccoRiepilogo += `\n🔒 BLOCCA:\n${reportBlocca}`;
+                if (countSblocca > 0) bloccoRiepilogo += `\n🔓 SBLOCCA:\n${reportSblocca}`;
+                bloccoRiepilogo += `\n==================================\n`;
 
                 const email = "milanocentro@easybox.it";
                 const subject = encodeURIComponent("✅ ATTIVITÀ TO DO COMPLETATE");
@@ -3325,7 +3442,7 @@ window.toggleToDo = function() {
             }
         };
 
-// ==========================================
+        // ==========================================
         // 8. ESPORTAZIONE EXCEL E REPORT PULIZIE
         // ==========================================
         window.esportaExcel = function() {
@@ -3349,12 +3466,14 @@ window.toggleToDo = function() {
                     
                     let emailCliente = ""; let telefonoCliente = "";
                     
-                    if (notaCliente) {
-                        const parti = notaCliente.split("|").map(p => p.trim());
-                        parti.forEach(parte => {
-                            if (parte.includes("@") || parte.includes("📧")) emailCliente = parte.replace(/📧/g, "").trim();
-                            else if (parte.includes("☎️") || parte.includes("☎")) telefonoCliente = parte.replace(/☎️|☎/g, "").trim();
-                        });
+                    // Va a pescare l'email e telefono dalla memoria locale di questo PC
+                    if (cliente) {
+                        const nomeClean = cliente.replace(/cliente:/i, '').trim().toLowerCase();
+                        const datiPrivati = JSON.parse(localStorage.getItem('dati_privati_clienti')) || {};
+                        if (datiPrivati[nomeClean]) {
+                            emailCliente = datiPrivati[nomeClean].email || "";
+                            telefonoCliente = datiPrivati[nomeClean].telefono || "";
+                        }
                     }
 
                     let statoStanza = "Libera";
@@ -3364,7 +3483,7 @@ window.toggleToDo = function() {
 
                     data.push({ 'Piano': nomePiano, 'Numero Stanza': numeroStanza, 'Stato': statoStanza, 'Cliente': cliente, 'Data Partenza': dataPartenza, 'Email': emailCliente, 'Cellulare': telefonoCliente });
                 });
-            });
+            }); // <--- SPESSO QUESTE PARENTESI VENGONO CANCELLATE PER ERRORE
 
             if (data.length === 0) { alert("Nessuna stanza trovata da esportare."); return; }
 
@@ -3441,7 +3560,7 @@ window.toggleToDo = function() {
 
        
 
-    // ==========================================
+   // ==========================================
         // 9. GESTIONE DEBITORI E SOLLECITI (PC AUTOMATICO + SMARTPHONE RAPIDO)
         // ==========================================
         window.generaFilePerMacro = async function() {
@@ -3455,20 +3574,27 @@ window.toggleToDo = function() {
                 
                 snapshot.forEach(docSnap => {
                     const dati = docSnap.data();
-                    if (dati.stato === "debitore" && dati.notaCliente) {
+                    
+                    if (dati.stato === "debitore") {
                         const numStanza = docSnap.id.replace('stanza-centro-', '');
                         let nomeCliente = dati.cliente ? String(dati.cliente).replace("Cliente:", "").trim() : "Cliente";
                         
+                        const nomeClean = nomeCliente.toLowerCase();
+                        const datiPrivati = JSON.parse(localStorage.getItem('dati_privati_clienti')) || {};
                         let telefono = "";
-                        const matchTel = dati.notaCliente.match(/(?:\+|00)?[0-9\s-]{8,}/);
-                        if (matchTel) telefono = matchTel[0].replace(/[\s-]/g, '');
+                        if (datiPrivati[nomeClean] && datiPrivati[nomeClean].telefono) {
+                            telefono = datiPrivati[nomeClean].telefono.replace(/[\s-]/g, '');
+                        }
                         
                         let ritardo = "";
-                        const matchRitWord = dati.notaCliente.match(/ritardo[^0-9]*([0-9]+)/i);
-                        if (matchRitWord) ritardo = matchRitWord[1];
-                        else {
-                            const matchGenericNum = dati.notaCliente.match(/\b([0-9]{1,3})\b/);
-                            if (matchGenericNum) ritardo = matchGenericNum[1];
+                        if (dati.notaCliente) {
+                            const matchRitWord = dati.notaCliente.match(/ritardo[^0-9]*([0-9]+)/i);
+                            if (matchRitWord) {
+                                ritardo = matchRitWord[1];
+                            } else {
+                                const matchGenericNum = dati.notaCliente.match(/\b([0-9]{1,3})\b/);
+                                if (matchGenericNum) ritardo = matchGenericNum[1];
+                            }
                         }
                         
                         if (telefono && ritardo) {
@@ -3483,16 +3609,15 @@ window.toggleToDo = function() {
                             
                             let messaggioCodificato = encodeURIComponent(messaggio);
                             
-                            // 1. Costruisce la riga testuale per il file della Macro Excel (PC)
                             contenutoFile += `${telefono}|${messaggioCodificato}\r\n`;
 
-                            // 2. Costruisce il bottone e la lista HTML per lo Smartphone
                             let telWa = telefono;
                             if (telWa.startsWith('00')) telWa = '+' + telWa.substring(2);
                             if (!telWa.startsWith('+')) telWa = '+39' + telWa; 
                             telWa = telWa.replace('+', ''); 
                             
                             const linkWa = `https://wa.me/${telWa}?text=${messaggioCodificato}`;
+                            const nomeSicuro = nomeClean.replace(/'/g, "\\'");
                             
                             htmlLista += `
                                 <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #eee; background: #f8f9fa; border-radius: 6px; margin-bottom: 8px;">
@@ -3500,7 +3625,7 @@ window.toggleToDo = function() {
                                         <strong style="color: #333;">Box #${numStanza} - ${nomeCliente}</strong><br>
                                         <span style="font-size: 12px; color: #dc3545; font-weight: bold;">Ritardo: ${giorni} gg</span> <span style="font-size: 12px; color: #666;">(${telefono})</span>
                                     </div>
-                                    <a href="${linkWa}" target="_blank" style="background-color: #25D366; color: white; padding: 8px 15px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: 0.2s;">Invia 💬</a>
+                                    <a href="${linkWa}" target="_blank" onclick="cancellaSingoloTelefono('${nomeSicuro}', this)" style="background-color: #25D366; color: white; padding: 8px 15px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: 0.2s;">Invia 💬</a>
                                 </div>
                             `;
                             contatore++;
@@ -3508,12 +3633,10 @@ window.toggleToDo = function() {
                     }
                 });
                 
-                if (contatore === 0) { alert("Nessun debitore valido trovato in questo momento."); return; }
+                if (contatore === 0) { alert("Nessun debitore valido trovato nella tua rubrica locale in questo momento."); return; }
 
-                // Salva il contenuto in una variabile globale per il download
                 window.fileWhatsappCorrente = contenutoFile;
 
-                // Mostra la finestra Mista (PC + Smartphone)
                 const overlay = document.createElement('div');
                 overlay.id = 'modal-whatsapp-overlay';
                 overlay.style.cssText = `position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); display: flex; align-items: center; justify-content: center; z-index: 10000;`;
@@ -3526,26 +3649,67 @@ window.toggleToDo = function() {
                         <h3 style="margin: 0; color: #25D366;">💬 Invio WhatsApp (${contatore} Trovati)</h3>
                         <button onclick="document.body.removeChild(document.getElementById('modal-whatsapp-overlay'))" style="background: none; border: none; font-size: 20px; cursor: pointer; color: #999;">✖</button>
                     </div>
-
-                    <!-- SEZIONE PC -->
                     <div style="background: #e9ecef; padding: 15px; border-radius: 8px; margin-bottom: 25px;">
                         <strong style="color: #333; display: block; margin-bottom: 10px;">💻 Sei al Computer? (Invio 100% Automatico)</strong>
                         <button onclick="scaricaFileWhatsapp()" style="background-color: #007bff; color: white; border: none; padding: 12px 20px; font-size: 15px; font-weight: bold; border-radius: 6px; cursor: pointer; width: 100%; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">📥 SCARICA FILE PER MACRO EXCEL</button>
                     </div>
-
-                    <!-- SEZIONE SMARTPHONE -->
                     <div style="text-align: center; margin-bottom: 15px;">
                         <strong style="color: #333; display: block; border-bottom: 1px solid #ccc; padding-bottom: 5px;">📱 Sei al Cellulare? (Invio Manuale Rapido)</strong>
                     </div>
-
                     <div style="display: flex; flex-direction: column;">
                         ${htmlLista}
+                    </div>
+                    
+                    <!-- BOTTONE FINALE DI PULIZIA -->
+                    <div style="margin-top: 20px; border-top: 1px solid #ddd; padding-top: 15px;">
+                        <button onclick="svuotaTelefoniLocali()" style="background-color: #dc3545; color: white; border: none; padding: 10px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; width: 100%; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">🗑️ Svuota tutti i numeri e Chiudi</button>
                     </div>
                 `;
                 overlay.appendChild(modal); 
                 document.body.appendChild(overlay);
 
             } catch (error) { console.error(error); alert("Errore lettura database."); }
+        };
+
+        window.scaricaFileWhatsapp = function() {
+            if (!window.fileWhatsappCorrente) return;
+            const blob = new Blob([window.fileWhatsappCorrente], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href = url; a.download = 'whatsapp_da_inviare.txt';
+            document.body.appendChild(a); a.click(); document.body.removeChild(a); window.URL.revokeObjectURL(url);
+            
+            if (confirm("✅ File scaricato con successo!\n\nVuoi eliminare TUTTI i numeri di cellulare dalla memoria di questo PC per motivi di privacy? (Le email verranno mantenute)")) {
+                window.svuotaTelefoniLocali();
+            }
+        };
+
+        window.cancellaSingoloTelefono = function(nomeCliente, btnElement) {
+            let datiPrivati = JSON.parse(localStorage.getItem('dati_privati_clienti')) || {};
+            if (datiPrivati[nomeCliente] && datiPrivati[nomeCliente].telefono) {
+                delete datiPrivati[nomeCliente].telefono;
+                localStorage.setItem('dati_privati_clienti', JSON.stringify(datiPrivati));
+            }
+            // Cambia l'aspetto del bottone per dare feedback visivo
+            btnElement.innerHTML = "✅ Cancellato";
+            btnElement.style.backgroundColor = "#6c757d";
+            btnElement.style.pointerEvents = "none";
+        };
+
+        window.svuotaTelefoniLocali = function() {
+            let datiPrivati = JSON.parse(localStorage.getItem('dati_privati_clienti')) || {};
+            let count = 0;
+            for (let cliente in datiPrivati) {
+                if (datiPrivati[cliente].telefono) {
+                    delete datiPrivati[cliente].telefono;
+                    count++;
+                }
+            }
+            localStorage.setItem('dati_privati_clienti', JSON.stringify(datiPrivati));
+            
+            const modal = document.getElementById('modal-whatsapp-overlay');
+            if (modal) document.body.removeChild(modal);
+            
+            if(count > 0) alert(`Privacy protetta: ${count} numeri di cellulare sono stati eliminati definitivamente dalla memoria locale!`);
         };
 
         window.scaricaFileWhatsapp = function() {
@@ -3562,18 +3726,30 @@ window.toggleToDo = function() {
                 const snapshot = await getDocs(stanzeRef);
                 
                 let contenutoFile = ""; let contatore = 0;
+                
                 snapshot.forEach(docSnap => {
                     const dati = docSnap.data();
-                    if (dati.stato === "debitore" && dati.notaCliente && dati.notaCliente.includes("@")) {
+                    
+                    if (dati.stato === "debitore") {
                         let nomeCliente = dati.cliente ? String(dati.cliente).replace("Cliente:", "").trim() : "Cliente";
+                        
+                        // 1. RECUPERA L'EMAIL DALLA MEMORIA LOCALE DEL PC
+                        const nomeClean = nomeCliente.toLowerCase();
+                        const datiPrivati = JSON.parse(localStorage.getItem('dati_privati_clienti')) || {};
                         let indirizzoEmail = "";
-                        const matchEmail = dati.notaCliente.match(/[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}/);
-                        if (matchEmail) indirizzoEmail = matchEmail[0];
                         
+                        if (datiPrivati[nomeClean] && datiPrivati[nomeClean].email) {
+                            indirizzoEmail = datiPrivati[nomeClean].email;
+                        }
+                        
+                        // 2. RECUPERA I GIORNI DI RITARDO DA FIREBASE
                         let ritardo = "";
-                        const matchRit = dati.notaCliente.match(/Ritardo:\s*([0-9]+)\s*gg/i) || dati.notaCliente.match(/ritardo[^0-9]*([0-9]+)/i);
-                        if (matchRit) ritardo = matchRit[1];
+                        if (dati.notaCliente) {
+                            const matchRit = dati.notaCliente.match(/Ritardo:\s*([0-9]+)\s*gg/i) || dati.notaCliente.match(/ritardo[^0-9]*([0-9]+)/i);
+                            if (matchRit) ritardo = matchRit[1];
+                        }
                         
+                        // 3. SE ABBIAMO EMAIL (LOCALE) E RITARDO (FIREBASE), PROCEDIAMO
                         if (indirizzoEmail && ritardo) {
                             let giorni = parseInt(ritardo); let messaggio = ""; let oggetto = "";
                             const ora = new Date().getHours(); let saluto = "Buongiorno";
@@ -3590,15 +3766,20 @@ window.toggleToDo = function() {
                         }
                     }
                 });
-                if (contatore === 0) { alert("Non ci sono debitori con un indirizzo email registrato."); return; }
+                
+                if (contatore === 0) { alert("Nessun debitore trovato con un indirizzo email salvato nella tua rubrica locale."); return; }
+                
                 const blob = new Blob([contenutoFile], { type: 'text/plain' });
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a'); a.href = url; a.download = 'email_da_inviare.txt';
                 document.body.appendChild(a); a.click(); document.body.removeChild(a); window.URL.revokeObjectURL(url);
                 alert(`File generato! Pronti ${contatore} solleciti via Email.`);
+                
             } catch (error) { console.error(error); alert("Errore lettura database."); }
         };
-// ==========================================
+
+
+        // ==========================================
         // 10. GESTIONE STANZE, NOTE E PANNELLO STATO
         // ==========================================
 
@@ -3674,22 +3855,34 @@ window.toggleToDo = function() {
             }
         };
 
-        // INIZIALIZZAZIONE DELLE STANZE (Click e Doppio Click)
+// ==========================================
+        // INIZIALIZZAZIONE DELLE STANZE (Click, Doppio Click & Audit)
+        // ==========================================
         function inizializzaStanze() {
             const stanze = document.querySelectorAll('.stanza');
             const pannello = document.getElementById('pannello-controllo');
             const titoloPannello = document.getElementById('nome-stanza-selezionata');
 
             stanze.forEach(stanza => {
-                // Click singolo: Apre il pannello di controllo stato
-                stanza.addEventListener('click', function() {
+                // Click singolo: Apre il pannello di controllo stato o l'Audit se attivo
+                stanza.addEventListener('click', function(e) {
+                    
+                    // SE L'AUDIT È ATTIVO, INTERCETTALA E APRI IL MENU AUDIT
+                    if (window.isAuditModeActive) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        window.apriModaleAuditStanza(this);
+                        return;
+                    }
+
+                    // ALTRIMENTI: Comportamento standard
                     stanzaCorrente = this; 
                     const nomeStanza = this.getAttribute('data-nome');
                     if (titoloPannello) titoloPannello.textContent = `Gestisci Stanza: #${nomeStanza}`;
                     if (pannello) pannello.classList.remove('nascosto'); 
                 });
 
-                // Doppio click: Apre la modale delle note
+                // Doppio click: Apre la modale delle note (CON DATI PRIVATI)
                 stanza.addEventListener('dblclick', function() {
                     stanzaCorrente = this;
                     const nomeStanza = this.getAttribute('data-nome');
@@ -3708,12 +3901,35 @@ window.toggleToDo = function() {
                     
                     const contenitoreDataPartenza = document.getElementById('testo-data-partenza');
                     if (contenitoreDataPartenza) contenitoreDataPartenza.textContent = dataPartenza;
+
+                    // --- LOGICA DATI PRIVATI LOCALI ---
+                    const bloccoPrivati = document.getElementById('blocco-dati-privati');
+                    const testoEmail = document.getElementById('testo-email-privata');
+                    const testoTel = document.getElementById('testo-tel-privato');
+                    
+                    if (cliente && cliente !== 'Nessun dato') {
+                        const nomeClean = cliente.replace(/cliente:/i, '').trim().toLowerCase();
+                        const datiPrivati = JSON.parse(localStorage.getItem('dati_privati_clienti')) || {};
+                        const info = datiPrivati[nomeClean];
+
+                        if (info && (info.email || info.telefono)) {
+                            testoEmail.textContent = info.email || 'Nessuna email salvata';
+                            testoTel.textContent = info.telefono || 'Nessun telefono salvato';
+                            bloccoPrivati.style.display = 'block';
+                        } else {
+                            bloccoPrivati.style.display = 'none';
+                        }
+                    } else {
+                        bloccoPrivati.style.display = 'none';
+                    }
                     
                     document.getElementById('modal-note').style.display = 'flex';
                 });
-            });
-        }
-// APPARIZIONE E SCOMPARSA DELLA SCOPA SULLA MAPPA
+            }); 
+        }           
+
+        
+        // APPARIZIONE E SCOMPARSA DELLA SCOPA SULLA MAPPA
         window.gestisciSimboloPulizia = function(stanza, daPulire) {
             const svg = stanza.closest('svg');
             const idSimbolo = `pulizia-${stanza.id}`;
@@ -3794,39 +4010,8 @@ window.toggleToDo = function() {
         if(typeof window.selezionaFiliale === 'function') {
             window.selezionaFiliale('centro', document.getElementById('btn-centro-main'));
         }
-// ==========================================
-        // SBLOCCO E APERTURA PANNELLI ADMIN
+        
         // ==========================================
-        window.sbloccaInterfacciaAdmin = function() {
-            document.getElementById('schermata-login').style.display = 'none';
-            const btnAdmin = document.getElementById('btn-admin');
-            const btnCaricaMappe = document.getElementById('btn-carica-mappe');
-            
-            // Rende visibili entrambi i bottoni all'amministratore
-            if(btnAdmin) btnAdmin.classList.remove('nascosto');
-            if(btnCaricaMappe) btnCaricaMappe.classList.remove('nascosto');
-        };
-
-        window.toggleAdminPanel = function() {
-            // Questo apre il Modale OTP e Log Accessi
-            const modal = document.getElementById('modal-admin');
-            if(!modal) return;
-            modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
-            if(modal.style.display === 'flex') {
-                if(typeof window.caricaRichiesteOTP === 'function') window.caricaRichiesteOTP();
-                if(typeof window.caricaLogAccessi === 'function') window.caricaLogAccessi();
-            }
-        };
-
-        window.togglePannelloMappe = function() {
-            // Questo apre il Pannello scuro per tracciare le Mappe
-            const panel = document.getElementById('pannello-admin');
-            if(panel) {
-                panel.style.display = (panel.style.display === 'none' || panel.style.display === '') ? 'block' : 'none';
-            }
-        };
-
-// ==========================================
         // MOTORE PANNELLO "CARICA MAPPE" (ADMIN)
         // ==========================================
         let archivioExcelAdmin = {};
@@ -4077,6 +4262,198 @@ window.toggleToDo = function() {
             window.URL.revokeObjectURL(url);
             
             alert("File pulito scaricato! Ora conterrà solo l'architettura delle stanze, senza i dati sensibili dei clienti.");
+        };
+
+// ==========================================
+        // 14. LOGICA LOCK CHEK ODIT
+        // ==========================================
+        window.isAuditModeActive = false;
+        window.auditData = {}; 
+        window.auditInitialStates = {}; 
+        window.stanzaAuditCorrente = null;
+        window.sceltaAuditCorrente = "";
+
+        window.apriMenuAudit = function() {
+            const currentUser = firebase.auth().currentUser;
+            const email = currentUser ? currentUser.email.toLowerCase().trim() : '';
+            
+            // CONTROLLO PERMESSI: Solo Admin o gdesogus
+            if (email !== 'spinelli291082@gmail.com' && email !== 'gdesogus@easybox.it') {
+                alert("Accesso negato. Solo l'amministratore o l'account autorizzato possono avviare l'Audit.");
+                return;
+            }
+            document.getElementById('modal-audit-main').style.display = 'flex';
+        };
+
+        window.startAudit = function() {
+            window.isAuditModeActive = true;
+            window.auditData = {};
+            window.auditInitialStates = {};
+            
+            // FOTOGRAFA GLI STATI INIZIALI
+            document.querySelectorAll('.stanza').forEach(stanza => {
+                const num = stanza.getAttribute('data-nome') || stanza.id.replace('stanza-centro-', '');
+                const classi = Array.from(stanza.classList);
+                const statiValidi = ['occupata', 'debitore', 'company', 'damaged', 'maintenance', 'movein', 'held'];
+                const statoTrovato = classi.find(c => statiValidi.includes(c));
+                window.auditInitialStates[num] = statoTrovato ? statoTrovato : "libera";
+            });
+
+            // Effetto grafico per far capire che sta registrando
+            const btn = document.getElementById('btn-lock-check');
+            btn.style.animation = "ring-pulse 2s infinite";
+            btn.style.backgroundColor = "#dc3545";
+            
+            document.getElementById('modal-audit-main').style.display = 'none';
+            alert("▶️ REGISTRAZIONE AVVIATA!\n\nClicca una volta sui box sulla mappa per registrare le anomalie dei lucchetti.");
+        };
+
+        window.apriModaleAuditStanza = function(stanzaEl) {
+            window.stanzaAuditCorrente = stanzaEl;
+            const nomeStanza = stanzaEl.getAttribute('data-nome');
+            document.getElementById('titolo-audit-stanza').textContent = `LOCK CHECK - Box #${nomeStanza}`;
+            
+            document.getElementById('audit-step-1').style.display = 'block';
+            document.getElementById('audit-step-2').style.display = 'none';
+            document.getElementById('audit-campo-nota').style.display = 'none';
+            document.getElementById('nota-audit').value = "";
+            
+            document.getElementById('modal-audit-stanza').style.display = 'flex';
+        };
+
+        window.chiudiModaleAuditStanza = function() {
+            document.getElementById('modal-audit-stanza').style.display = 'none';
+            window.stanzaAuditCorrente = null;
+        };
+
+        window.selezionaSceltaAudit = function(scelta) {
+            window.sceltaAuditCorrente = scelta;
+            document.getElementById('audit-step-1').style.display = 'none';
+            document.getElementById('audit-step-2').style.display = 'block';
+        };
+
+        window.mostraCampoNotaAudit = function(mostra) {
+            if (mostra) {
+                document.getElementById('audit-campo-nota').style.display = 'block';
+            }
+        };
+
+        // Salva nel database (se c'è nota) e in memoria per il report finale
+        window.salvaAuditStanza = async function(conNota) {
+            if (!window.stanzaAuditCorrente) return;
+            const numStanza = window.stanzaAuditCorrente.getAttribute('data-nome');
+            
+            let notaInserita = "";
+            if (conNota) {
+                notaInserita = document.getElementById('nota-audit').value.trim();
+            }
+
+            window.auditData[numStanza] = {
+                scelta: window.sceltaAuditCorrente,
+                nota: notaInserita
+            };
+
+            // Se è stata inserita una nota, la agganciamo subito al DB della stanza
+            if (notaInserita !== "") {
+                const docRef = doc(db, "stanze", window.stanzaAuditCorrente.id);
+                let notaAttuale = window.stanzaAuditCorrente.getAttribute('data-nota-cliente') || "";
+                let nuovaNota = notaAttuale ? `${notaAttuale} | [AUDIT] ${notaInserita}` : `[AUDIT] ${notaInserita}`;
+                await setDoc(docRef, { notaCliente: nuovaNota }, { merge: true });
+            }
+
+            chiudiModaleAuditStanza();
+            
+            // Apre il pannello normale così l'operatore può correggere subito lo stato se serve
+            stanzaCorrente = window.stanzaAuditCorrente; 
+            const titoloPannello = document.getElementById('nome-stanza-selezionata');
+            const pannello = document.getElementById('pannello-controllo');
+            if (titoloPannello) titoloPannello.textContent = `Gestisci Stanza: #${numStanza}`;
+            if (pannello) pannello.classList.remove('nascosto'); 
+        };
+
+        window.stopAudit = function() {
+            if (!window.isAuditModeActive) {
+                alert("L'Audit non è attualmente attivo.");
+                return;
+            }
+            window.isAuditModeActive = false;
+            
+            const btn = document.getElementById('btn-lock-check');
+            btn.style.animation = "none";
+            btn.style.backgroundColor = "#6f42c1";
+            document.getElementById('modal-audit-main').style.display = 'none';
+            
+            if (Object.keys(window.auditData).length === 0) {
+                alert("⏹️ AUDIT TERMINATO.\nNessun box è stato modificato o registrato in questa sessione.");
+                return;
+            }
+
+            generaReportAudit();
+        };
+
+        window.generaReportAudit = function() {
+            const dataToExport = [];
+            const dataOggiStr = new Date().toLocaleDateString('it-IT');
+            let emailText = `Ciao,\nEcco il report del LOCK CHEK ODIT completato in data ${dataOggiStr}:\n\n`;
+
+            const statiValidi = ['occupata', 'debitore', 'company', 'damaged', 'maintenance', 'movein', 'held'];
+
+            for (let numStanza in window.auditData) {
+                const auditInfo = window.auditData[numStanza];
+                
+                // Legge lo stato finale dal DOM
+                let stanzaEl = document.querySelector(`.stanza[data-nome="${numStanza}"]`) || document.getElementById(`stanza-centro-${numStanza}`);
+                let statoFinale = "libera";
+                if (stanzaEl) {
+                    const classi = Array.from(stanzaEl.classList);
+                    const statoTrovato = classi.find(c => statiValidi.includes(c));
+                    if (statoTrovato) statoFinale = statoTrovato;
+                }
+
+                const statoIniziale = window.auditInitialStates[numStanza] || "libera";
+                
+                let checkStatus = "STATUS GIUSTO";
+                if (statoFinale !== statoIniziale) {
+                    checkStatus = `STATUS SBAGLIATO DA ${statoIniziale.toUpperCase()} A ${statoFinale.toUpperCase()}`;
+                }
+
+                // Push nell'array Excel
+                dataToExport.push({
+                    'N° Stanza': numStanza,
+                    'Scelta Odit': auditInfo.scelta,
+                    'Nota': auditInfo.nota || "-",
+                    'Controllo Stato': checkStatus
+                });
+
+                // Push nel testo della mail
+                emailText += `📦 Box #${numStanza}: ${auditInfo.scelta}\n`;
+                if (auditInfo.nota) emailText += `   Nota: ${auditInfo.nota}\n`;
+                emailText += `   Esito: ${checkStatus}\n\n`;
+            }
+
+            // CREAZIONE EXCEL
+            const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+            const workbook = XLSX.utils.book_new();
+            worksheet['!cols'] = [{ wch: 15 }, { wch: 30 }, { wch: 40 }, { wch: 45 }];
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Report Audit");
+            
+            const oggi = new Date();
+            const timeString = `${oggi.getHours()}${oggi.getMinutes()}`;
+            const fileString = `Lock_Check_Odit_${dataOggiStr.replace(/\//g, '-')}_${timeString}.xlsx`;
+            XLSX.writeFile(workbook, fileString);
+
+            // APERTURA MAIL
+            const email = "gdesogus@easybox.it";
+            const subject = encodeURIComponent(`Report LOCK CHEK ODIT - ${dataOggiStr}`);
+            const body = encodeURIComponent(emailText);
+            
+            setTimeout(() => {
+                alert("✅ Report Excel generato! Clicca OK per aprire il programma di posta e inviare il riepilogo.");
+                window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+            }, 800);
+            
+            // Ripulisce i dati in memoria
+            window.auditData = {}; 
         };
 
         

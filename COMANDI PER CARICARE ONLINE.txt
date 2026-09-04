@@ -1,5 +1,12 @@
-COMANDI PER CARICARE ONLINE
+========================================
+   GUIDA RAPIDA AGGIORNAMENTO SITO WEB
+========================================
 
-git add .
-git commit -m "INSERISCI COMMENTO"
-git push
+Ogni volta che modifichi il codice del tuo gestionale, apri il terminale in questa cartella e incolla questi comandi uno alla volta:
+
+1. cd /d "C:\Users\angel\OneDrive\Desktop\13\Nuova cartella\mio sito on line"
+2. git add .
+3. git commit -m "Descrizione della modifica fatta"
+4. git push
+
+Fatto! Netlify aggiornerà il sito online in pochi secondi.
