@@ -5168,12 +5168,109 @@ funzionamento di questo software sono di proprietà esclusiva di
             }
         };
 
-        // ==========================================
-        // 🖨️ STAMPA FILE 33 (LOCK CHECK REPORT)
-        // ==========================================
-        window.stampaFile33 = function() {
-            alert("Funzione File 33 temporaneamente disattivata.");
-        };
+      // ==========================================
+// 🖨️ STAMPA FILE 33 (LOCK CHECK REPORT) COMPLETO - V2 (Spunta Positiva di Default)
+// ==========================================
+window.stampaFile33 = async function() {
+    // 1. Recupera i dati grezzi originali dal file Excel caricato (memoriaFile33)
+    if (!window.memoriaFile33 || window.memoriaFile33.length === 0) {
+        alert("Nessun dato grezzo caricato. Carica prima il file Excel dei Dati Grezzi.");
+        return;
+    }
+
+    try {
+        // Mostra messaggio di caricamento
+        const btnFile33 = document.querySelector('button[onclick="stampaFile33()"]');
+        const testoOriginaleBtn = btnFile33.innerHTML;
+        btnFile33.innerHTML = "⏳ Generazione in corso...";
+        btnFile33.disabled = true;
+
+        // 2. Recupera i dati dal database Firebase per le "Note Cliente Attuale"
+        const stanzeRef = collection(db, "stanze");
+        const snapshot = await getDocs(stanzeRef);
+        const noteDb = {};
+        
+        snapshot.forEach(docSnap => {
+            const numStanza = docSnap.id.replace('stanza-centro-', '');
+            noteDb[numStanza] = docSnap.data().notaCliente || "";
+        });
+
+        // 3. Costruisci i dati per il nuovo file Excel
+        const righeOriginali = window.memoriaFile33;
+        const intestazioniOriginali = righeOriginali[1] || []; // Assumendo che la riga 1 (indice 1) contenga le intestazioni
+        
+        // Trova le colonne da A a Q (indici da 0 a 16)
+        const intestazioniDaEsportare = intestazioniOriginali.slice(0, 17);
+        
+        // Aggiungi le nuove colonne richieste
+        intestazioniDaEsportare.push("Lock check odit (V o X)");
+        intestazioniDaEsportare.push("Note Cliente Attuale");
+
+        const dataDaEsportare = [];
+        dataDaEsportare.push(intestazioniDaEsportare); // Aggiungi la riga di intestazione
+
+        // Inizia a iterare sui dati veri e propri (dalla riga 2)
+        for (let i = 2; i < righeOriginali.length; i++) {
+            const riga = righeOriginali[i];
+            
+            // Ignora le righe vuote o senza Unit
+            const unit = riga[0];
+            if (!unit || String(unit).trim() === "") continue;
+
+            const numStanza = String(unit).trim().toLowerCase();
+            
+            // Estrai i dati delle colonne da A a Q
+            const nuovaRiga = [];
+            for (let j = 0; j < 17; j++) {
+                nuovaRiga.push(riga[j] !== undefined ? riga[j] : "");
+            }
+
+            // Aggiungi la colonna per il simbolo di spunta (IMPOSTATA A "V" DI DEFAULT)
+            nuovaRiga.push("V"); 
+
+            // Aggiungi la colonna per le Note Cliente pescate da Firebase
+            const notaDalDb = noteDb[numStanza] || "";
+            nuovaRiga.push(notaDalDb);
+
+            dataDaEsportare.push(nuovaRiga);
+        }
+
+        // 4. Genera e scarica il file Excel
+        const worksheet = XLSX.utils.aoa_to_sheet(dataDaEsportare);
+        const workbook = XLSX.utils.book_new();
+        
+        // Applica larghezze di default alle colonne per migliore leggibilità
+        const wscols = [];
+        for (let i = 0; i < intestazioniDaEsportare.length; i++) {
+             wscols.push({ wch: 15 }); // Larghezza di default
+        }
+        wscols[intestazioniDaEsportare.length - 2] = { wch: 22 }; // Colonna "Lock check odit (V o X)"
+        wscols[intestazioniDaEsportare.length - 1] = { wch: 40 }; // Colonna "Note Cliente Attuale"
+        worksheet['!cols'] = wscols;
+
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Lock Check Completo");
+
+        const oggi = new Date();
+        const dataString = `${oggi.getDate().toString().padStart(2, '0')}-${(oggi.getMonth() + 1).toString().padStart(2, '0')}-${oggi.getFullYear()}`;
+        XLSX.writeFile(workbook, `Lock_Check_Completo_${dataString}.xlsx`);
+
+        // Ripristina il bottone
+        btnFile33.innerHTML = testoOriginaleBtn;
+        btnFile33.disabled = false;
+        alert("Report Lock Check Completo generato e scaricato con successo!");
+
+    } catch (error) {
+        console.error("Errore durante la generazione del report:", error);
+        alert("Si è verificato un errore durante la generazione del report. Controlla la console.");
+        
+        // Ripristina il bottone in caso di errore
+        const btnFile33 = document.querySelector('button[onclick="stampaFile33()"]');
+        if (btnFile33) {
+            btnFile33.innerHTML = "🖨️ Stampa File 33";
+            btnFile33.disabled = false;
+        }
+    }
+};
 
         // ==========================================
         // 8. ESPORTAZIONE EXCEL E REPORT PULIZIE
@@ -5291,296 +5388,445 @@ funzionamento di questo software sono di proprietà esclusiva di
 
 
 
-        // ==========================================
-        // 9. GESTIONE DEBITORI E SOLLECITI (PC AUTOMATICO + SMARTPHONE RAPIDO)
-        // ==========================================
-        window.generaFilePerMacro = async function () {
-            try {
-                const stanzeRef = collection(db, "stanze");
-                const snapshot = await getDocs(stanzeRef);
+      // ==========================================
+// 💬 GENERAZIONE FILE WHATSAPP E PANNELLO MODALE (CON PAID AHEAD 3 E 0 GG)
+// ==========================================
+window.generaFilePerMacro = async function () {
+    try {
+        const stanzeRef = collection(db, "stanze");
+        const snapshot = await getDocs(stanzeRef);
 
-                let htmlLista = "";
-                let contenutoFile = "";
-                let contatore = 0;
+        // 1. Recupero rubrica e dati finanziari dalla memoria locale
+        const datiPrivati = JSON.parse(localStorage.getItem('dati_privati_clienti')) || {};
+        const datiPaidAhead = JSON.parse(localStorage.getItem('dati_paid_ahead')) || {};
 
-                snapshot.forEach(docSnap => {
-                    const dati = docSnap.data();
+        let htmlLista = "";
+        let contenutoFile = "";
+        let contatore = 0;
 
-                    if (dati.stato === "debitore") {
-                        const numStanza = docSnap.id.replace('stanza-centro-', '');
-                        let nomeCliente = dati.cliente ? String(dati.cliente).replace("Cliente:", "").trim() : "Cliente";
+        // Impostazione del saluto in base all'ora
+        const ora = new Date().getHours(); 
+        let saluto = "Buongiorno";
+        if (ora >= 12 && ora < 18) saluto = "Buon pomeriggio"; 
+        else if (ora >= 18 || ora < 5) saluto = "Buonasera";
 
-                        const nomeClean = nomeCliente.toLowerCase();
-                        const datiPrivati = JSON.parse(localStorage.getItem('dati_privati_clienti')) || {};
-                        let telefono = "";
-                        if (datiPrivati[nomeClean] && datiPrivati[nomeClean].telefono) {
-                            telefono = datiPrivati[nomeClean].telefono.replace(/[\s-]/g, '');
-                        }
+        // ========================================================
+        // FASE 1: AVVISI DI SCADENZA (3 e 0 Giorni) DAL PAID AHEAD
+        // ========================================================
+        for (let numStanza in datiPaidAhead) {
+            const infoFin = datiPaidAhead[numStanza];
+            const gg = infoFin.giorniPaidAhead;
 
-                        let ritardo = "";
-                        if (dati.notaCliente) {
-                            const matchRitWord = dati.notaCliente.match(/ritardo[^0-9]*([0-9]+)/i);
-                            if (matchRitWord) {
-                                ritardo = matchRitWord[1];
-                            } else {
-                                const matchGenericNum = dati.notaCliente.match(/\b([0-9]{1,3})\b/);
-                                if (matchGenericNum) ritardo = matchGenericNum[1];
-                            }
-                        }
+            if (gg === 3 || gg === 0) {
+                let nomeCliente = infoFin.cliente;
+                const nomeClean = nomeCliente.toLowerCase();
+                let telefono = "";
+                
+                if (datiPrivati[nomeClean] && datiPrivati[nomeClean].telefono) {
+                    telefono = datiPrivati[nomeClean].telefono.replace(/[\s-]/g, '');
+                }
 
-                        if (telefono && ritardo) {
-                            let giorni = parseInt(ritardo); let messaggio = "";
-                            const ora = new Date().getHours(); let saluto = "Buongiorno";
-                            if (ora >= 12 && ora < 18) saluto = "Buon pomeriggio"; else if (ora >= 18 || ora < 5) saluto = "Buonasera";
-
-                            if (giorni <= 9) messaggio = `${saluto} ${nomeCliente}, ti contattiamo da Easybox per un breve promemoria: risulta un ritardo di ${giorni} giorni sul pagamento del tuo spazio. Ti ricordiamo che ti abbiamo già inviato il link con cui puoi saldare direttamente dal tuo cellulare tramite carta di credito. Se hai già provveduto, ti chiediamo di ignorare questa comunicazione. Restiamo a disposizione!`;
-                            else if (giorni <= 25) messaggio = `${saluto} ${nomeCliente}, ti contattiamo da Easybox. Notiamo che il ritardo sul pagamento del tuo spazio ha raggiunto ${giorni} giorni. Puoi utilizzare il link che ti hai già ricevuto per effettuare il saldo direttamente dal cellulare con carta di credito. Ti chiediamo gentilmente di regolarizzare la posizione al piú presto.`;
-                            else if (giorni <= 50) messaggio = `🚨 ${saluto} ${nomeCliente}, da Easybox rileviamo un ritardo di ben ${giorni} giorni sul pagamento. Ti invitiamo ad utilizzare il link già inviato per saldare subito con carta di credito dal cellulare, o a contattarci con urgenza per regolarizzare la situazione.`;
-                            else return;
-
-                            let messaggioCodificato = encodeURIComponent(messaggio);
-
-                            contenutoFile += `${telefono}|${messaggioCodificato}\r\n`;
-
-                            let telWa = telefono;
-                            if (telWa.startsWith('00')) telWa = '+' + telWa.substring(2);
-                            if (!telWa.startsWith('+')) telWa = '+39' + telWa;
-                            telWa = telWa.replace('+', '');
-
-                            const linkWa = `https://wa.me/${telWa}?text=${messaggioCodificato}`;
-                            const nomeSicuro = nomeClean.replace(/'/g, "\\'");
-
-                            htmlLista += `
-                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #eee; background: #f8f9fa; border-radius: 6px; margin-bottom: 8px;">
-                                    <div style="text-align: left;">
-                                        <strong style="color: #333;">Box #${numStanza} - ${nomeCliente}</strong><br>
-                                        <span style="font-size: 12px; color: #dc3545; font-weight: bold;">Ritardo: ${giorni} gg</span> <span style="font-size: 12px; color: #666;">(${telefono})</span>
-                                    </div>
-                                    <a href="${linkWa}" target="_blank" onclick="cancellaSingoloTelefono('${nomeSicuro}', this)" style="background-color: #25D366; color: white; padding: 8px 15px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: 0.2s;">Invia 💬</a>
-                                </div>
-                            `;
-                            contatore++;
-                        }
-                    }
-                });
-
-                if (contatore === 0) { alert("Nessun debitore valido trovato nella tua rubrica locale in questo momento."); return; }
-
-                window.fileWhatsappCorrente = contenutoFile;
-
-                const overlay = document.createElement('div');
-                overlay.id = 'modal-whatsapp-overlay';
-                overlay.style.cssText = `position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); display: flex; align-items: center; justify-content: center; z-index: 10000;`;
-
-                const modal = document.createElement('div');
-                modal.style.cssText = `background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); width: 90%; max-width: 500px; max-height: 85vh; overflow-y: auto; text-align: center;`;
-
-                modal.innerHTML = `
-                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #25D366; padding-bottom: 10px; margin-bottom: 15px;">
-                        <h3 style="margin: 0; color: #25D366;">💬 Invio WhatsApp (${contatore} Trovati)</h3>
-                        <button onclick="document.body.removeChild(document.getElementById('modal-whatsapp-overlay'))" style="background: none; border: none; font-size: 20px; cursor: pointer; color: #999;">✖</button>
-                    </div>
-                    <div style="background: #e9ecef; padding: 15px; border-radius: 8px; margin-bottom: 25px;">
-                        <strong style="color: #333; display: block; margin-bottom: 10px;">💻 Sei al Computer? (Invio 100% Automatico)</strong>
-                        <button onclick="scaricaFileWhatsapp()" style="background-color: #007bff; color: white; border: none; padding: 12px 20px; font-size: 15px; font-weight: bold; border-radius: 6px; cursor: pointer; width: 100%; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">📥 SCARICA FILE PER MACRO EXCEL</button>
-                    </div>
-                    <div style="text-align: center; margin-bottom: 15px;">
-                        <strong style="color: #333; display: block; border-bottom: 1px solid #ccc; padding-bottom: 5px;">📱 Sei al Cellulare? (Invio Manuale Rapido)</strong>
-                    </div>
-                    <div style="display: flex; flex-direction: column;">
-                        ${htmlLista}
-                    </div>
+                if (telefono) {
+                    const nomeFormattato = nomeCliente.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+                    let scadenzaStr = (gg === 3) ? "tra 3 giorni" : "nella giornata di oggi";
                     
-                    <!-- BOTTONE FINALE DI PULIZIA -->
-                    <div style="margin-top: 20px; border-top: 1px solid #ddd; padding-top: 15px;">
-                        <button onclick="svuotaTelefoniLocali()" style="background-color: #dc3545; color: white; border: none; padding: 10px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; width: 100%; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">🗑️ Svuota tutti i numeri e Chiudi</button>
+                    // Testo WhatsApp in italiano ispirato alla mail
+                    let messaggio = `${saluto} ${nomeFormattato},\nti informiamo da Easybox che il canone del tuo box scadrà ${scadenzaStr}.\n\nSe hai già impostato il pagamento automatico (RID), ti preghiamo di ignorare questo messaggio. Se invece desideri comunicarci il tuo IBAN per agganciare il metodo diretto, contattaci allo 0281127477.\n\nUn cordiale saluto,\nIl Team Easybox`;
+
+                    let messaggioCodificato = encodeURIComponent(messaggio);
+                    contenutoFile += `${telefono}|${messaggioCodificato}\r\n`;
+
+                    let telWa = telefono;
+                    if (telWa.startsWith('00')) telWa = '+' + telWa.substring(2);
+                    if (!telWa.startsWith('+')) telWa = '+39' + telWa;
+                    telWa = telWa.replace('+', '');
+
+                    const linkWa = `https://wa.me/${telWa}?text=${messaggioCodificato}`;
+                    const nomeSicuro = nomeClean.replace(/'/g, "\\'");
+                    const etichettaGiorni = (gg === 3) ? "Scade tra 3 gg" : "Scade OGGI";
+
+                    // Aggiunge la riga in AZZURRO per distinguerla dai ritardi
+                    htmlLista += `
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #eee; background: #e0f7fa; border-radius: 6px; margin-bottom: 8px; border-left: 4px solid #17a2b8;">
+                            <div style="text-align: left;">
+                                <strong style="color: #333;">Box #${numStanza} - ${nomeFormattato}</strong><br>
+                                <span style="font-size: 12px; color: #17a2b8; font-weight: bold;">Avviso: ${etichettaGiorni}</span> <span style="font-size: 12px; color: #666;">(${telefono})</span>
+                            </div>
+                            <a href="${linkWa}" target="_blank" onclick="cancellaSingoloTelefono('${nomeSicuro}', this)" style="background-color: #25D366; color: white; padding: 8px 15px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: 0.2s;">Invia 💬</a>
+                        </div>
+                    `;
+                    contatore++;
+                }
+            }
+        }
+
+        // ========================================================
+        // FASE 2: SOLLECITI DEBITORI DAL DATABASE FIREBASE
+        // ========================================================
+        snapshot.forEach(docSnap => {
+            const dati = docSnap.data();
+
+            if (dati.stato === "debitore") {
+                const numStanza = docSnap.id.replace('stanza-centro-', '');
+                let nomeCliente = dati.cliente ? String(dati.cliente).replace("Cliente:", "").trim() : "Cliente";
+
+                const nomeClean = nomeCliente.toLowerCase();
+                let telefono = "";
+                if (datiPrivati[nomeClean] && datiPrivati[nomeClean].telefono) {
+                    telefono = datiPrivati[nomeClean].telefono.replace(/[\s-]/g, '');
+                }
+
+                let ritardo = "";
+                if (dati.notaCliente) {
+                    const matchRitWord = dati.notaCliente.match(/ritardo[^0-9]*([0-9]+)/i);
+                    if (matchRitWord) {
+                        ritardo = matchRitWord[1];
+                    } else {
+                        const matchGenericNum = dati.notaCliente.match(/\b([0-9]{1,3})\b/);
+                        if (matchGenericNum) ritardo = matchGenericNum[1];
+                    }
+                }
+
+                if (telefono && ritardo) {
+                    let giorni = parseInt(ritardo); let messaggio = "";
+                    const nomeFormattato = nomeCliente.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+
+                    if (giorni <= 9) messaggio = `${saluto} ${nomeFormattato}, ti contattiamo da Easybox per un breve promemoria: risulta un ritardo di ${giorni} giorni sul pagamento del tuo spazio. Ti ricordiamo che ti abbiamo già inviato il link con cui puoi saldare direttamente dal tuo cellulare tramite carta di credito. Se hai già provveduto, ti chiediamo di ignorare questa comunicazione. Restiamo a disposizione!`;
+                    else if (giorni <= 25) messaggio = `${saluto} ${nomeFormattato}, ti contattiamo da Easybox. Notiamo che il ritardo sul pagamento del tuo spazio ha raggiunto ${giorni} giorni. Puoi utilizzare il link che hai già ricevuto per effettuare il saldo direttamente dal cellulare con carta di credito. Ti chiediamo gentilmente di regolarizzare la posizione al più presto.`;
+                    else if (giorni <= 50) messaggio = `🚨 ${saluto} ${nomeFormattato}, da Easybox rileviamo un ritardo di ben ${giorni} giorni sul pagamento. Ti invitiamo ad utilizzare il link già inviato per saldare subito con carta di credito dal cellulare, o a contattarci con urgenza per regolarizzare la situazione.`;
+                    else return;
+
+                    let messaggioCodificato = encodeURIComponent(messaggio);
+                    contenutoFile += `${telefono}|${messaggioCodificato}\r\n`;
+
+                    let telWa = telefono;
+                    if (telWa.startsWith('00')) telWa = '+' + telWa.substring(2);
+                    if (!telWa.startsWith('+')) telWa = '+39' + telWa;
+                    telWa = telWa.replace('+', '');
+
+                    const linkWa = `https://wa.me/${telWa}?text=${messaggioCodificato}`;
+                    const nomeSicuro = nomeClean.replace(/'/g, "\\'");
+
+                    // Aggiunge la riga in ROSSO per distinguerla dagli avvisi
+                    htmlLista += `
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #eee; background: #f8f9fa; border-radius: 6px; margin-bottom: 8px; border-left: 4px solid #dc3545;">
+                            <div style="text-align: left;">
+                                <strong style="color: #333;">Box #${numStanza} - ${nomeFormattato}</strong><br>
+                                <span style="font-size: 12px; color: #dc3545; font-weight: bold;">Ritardo: ${giorni} gg</span> <span style="font-size: 12px; color: #666;">(${telefono})</span>
+                            </div>
+                            <a href="${linkWa}" target="_blank" onclick="cancellaSingoloTelefono('${nomeSicuro}', this)" style="background-color: #25D366; color: white; padding: 8px 15px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: 0.2s;">Invia 💬</a>
+                        </div>
+                    `;
+                    contatore++;
+                }
+            }
+        });
+
+        if (contatore === 0) { alert("Nessun cliente valido trovato nella tua rubrica locale in questo momento (né in scadenza né debitore)."); return; }
+
+        window.fileWhatsappCorrente = contenutoFile;
+
+        const overlay = document.createElement('div');
+        overlay.id = 'modal-whatsapp-overlay';
+        overlay.style.cssText = `position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); display: flex; align-items: center; justify-content: center; z-index: 10000;`;
+
+        const modal = document.createElement('div');
+        modal.style.cssText = `background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); width: 90%; max-width: 500px; max-height: 85vh; overflow-y: auto; text-align: center;`;
+
+        modal.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #25D366; padding-bottom: 10px; margin-bottom: 15px;">
+                <h3 style="margin: 0; color: #25D366;">💬 Invio WhatsApp (${contatore} Trovati)</h3>
+                <button onclick="document.body.removeChild(document.getElementById('modal-whatsapp-overlay'))" style="background: none; border: none; font-size: 20px; cursor: pointer; color: #999;">✖</button>
+            </div>
+            <div style="background: #e9ecef; padding: 15px; border-radius: 8px; margin-bottom: 25px;">
+                <strong style="color: #333; display: block; margin-bottom: 10px;">💻 Sei al Computer? (Invio 100% Automatico)</strong>
+                <button onclick="scaricaFileWhatsapp()" style="background-color: #007bff; color: white; border: none; padding: 12px 20px; font-size: 15px; font-weight: bold; border-radius: 6px; cursor: pointer; width: 100%; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">📥 SCARICA FILE PER MACRO EXCEL</button>
+            </div>
+            <div style="text-align: center; margin-bottom: 15px;">
+                <strong style="color: #333; display: block; border-bottom: 1px solid #ccc; padding-bottom: 5px;">📱 Sei al Cellulare? (Invio Manuale Rapido)</strong>
+            </div>
+            <div style="display: flex; flex-direction: column;">
+                ${htmlLista}
+            </div>
+            
+            <!-- BOTTONE FINALE DI PULIZIA -->
+            <div style="margin-top: 20px; border-top: 1px solid #ddd; padding-top: 15px;">
+                <button onclick="svuotaTelefoniLocali()" style="background-color: #dc3545; color: white; border: none; padding: 10px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; width: 100%; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">🗑️ Svuota tutti i numeri e Chiudi</button>
+            </div>
+        `;
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
+
+    } catch (error) { console.error(error); alert("Errore lettura database."); }
+};
+
+window.scaricaFileWhatsapp = function () {
+    if (!window.fileWhatsappCorrente) return;
+    const blob = new Blob([window.fileWhatsappCorrente], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = 'whatsapp_da_inviare.txt';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a); window.URL.revokeObjectURL(url);
+
+    if (confirm("✅ File scaricato con successo!\n\nVuoi eliminare TUTTI i numeri di cellulare dalla memoria di questo PC per motivi di privacy? (Le email verranno mantenute)")) {
+        window.svuotaTelefoniLocali();
+    }
+};
+
+window.cancellaSingoloTelefono = function (nomeCliente, btnElement) {
+    let datiPrivati = JSON.parse(localStorage.getItem('dati_privati_clienti')) || {};
+    if (datiPrivati[nomeCliente] && datiPrivati[nomeCliente].telefono) {
+        delete datiPrivati[nomeCliente].telefono;
+        localStorage.setItem('dati_privati_clienti', JSON.stringify(datiPrivati));
+    }
+    // Cambia l'aspetto del bottone per dare feedback visivo
+    btnElement.innerHTML = "✅ Cancellato";
+    btnElement.style.backgroundColor = "#6c757d";
+    btnElement.style.pointerEvents = "none";
+};
+
+window.svuotaTelefoniLocali = function () {
+    let datiPrivati = JSON.parse(localStorage.getItem('dati_privati_clienti')) || {};
+    let count = 0;
+    for (let cliente in datiPrivati) {
+        if (datiPrivati[cliente].telefono) {
+            delete datiPrivati[cliente].telefono;
+            count++;
+        }
+    }
+    localStorage.setItem('dati_privati_clienti', JSON.stringify(datiPrivati));
+
+    const modal = document.getElementById('modal-whatsapp-overlay');
+    if (modal) document.body.removeChild(modal);
+
+    if (count > 0) alert(`Privacy protetta: ${count} numeri di cellulare sono stati eliminati definitivamente dalla memoria locale!`);
+};
+
+      // ==========================================
+      // 📧 GENERAZIONE FILE EMAIL E PANNELLO MODALE (CON FIRMA SMART)
+      // ==========================================
+window.generaFileEmail = async function () {
+    try {
+        const datiPaidAhead = JSON.parse(localStorage.getItem('dati_paid_ahead')) || {};
+        const datiPrivati = JSON.parse(localStorage.getItem('dati_privati_clienti')) || {};
+        const giorniTarget = [3, 0, -1, -2, -6, -10, -17, -24, -28, -31, -34, -37, -40, -42, -44];
+        
+        let emailList = [];
+        
+        // Testo della firma in formato semplice (per l'invio web via Gmail)
+        const firmaTestoPlano = "\n\n--\nEasybox Milano Centro\nVia E. Porro, 2 (ang. Viale Lancetti 6) - Milano\nTel: +39 02 81127477\nmilanocentro@easybox.it\neasybox.it\n\nInformativa sulla privacy e sulla riservatezza\nLe informazioni trasmesse sono destinate esclusivamente al destinatario indicato e possono contenere materiale riservato e/o confidenziale. È vietato qualsiasi esame, ritrasmissione, diffusione o altro utilizzo di tali informazioni da parte di persone o entità diverse dal destinatario previsto. Se avete ricevuto questo messaggio per errore, vi preghiamo di contattare il mittente e di eliminare il materiale da qualsiasi computer.";
+        
+        for (let numStanza in datiPaidAhead) {
+            const infoFin = datiPaidAhead[numStanza];
+            const gg = infoFin.giorniPaidAhead;
+
+            if (giorniTarget.includes(gg)) {
+                let nomeCliente = infoFin.cliente;
+                const nomeClean = nomeCliente.toLowerCase();
+                let indirizzoEmail = datiPrivati[nomeClean]?.email || "";
+
+                if (indirizzoEmail) {
+                    const nomeFormattato = nomeCliente.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+                    let oggetto = "";
+                    let messaggioIT = "";
+                    let messaggioEN = "";
+                    
+                    let testoImporto = "";
+                    let testoImportoEN = "";
+                    if (infoFin.importoDue > 0 && gg < 0) {
+                        testoImporto = `\n\nImporto da saldare: € ${infoFin.importoDue.toFixed(2)}`;
+                        testoImportoEN = `\n\nAmount due: € ${infoFin.importoDue.toFixed(2)}`;
+                    }
+
+                    const fraseChiamataIT = "Abbiamo provato a contattarti telefonicamente ma senza successo.\n\n";
+                    const fraseChiamataEN = "We tried to contact you by phone but without success.\n\n";
+
+                    if (gg === 3 || gg === 0) {
+                        let scadenzaStrIT = (gg === 3) ? "tra 3 giorni" : "nella giornata di oggi";
+                        let scadenzaStrEN = (gg === 3) ? "in 3 days" : "today";
+                        oggetto = `Easybox - Avviso scadenza canone box / Notice of box rental expiration`;
+                        messaggioIT = `Buongiorno ${nomeFormattato},\n\nTi informiamo che il canone del tuo box scadrà ${scadenzaStrIT}.\n\nSe hai già scelto il RID come metodo di pagamento automatico, ti preghiamo di non considerare questa mail.\nSe invece desideri comunicarci il tuo IBAN per agganciare il metodo diretto, contattaci allo 0281127477.\n\nCordiali saluti,\nIl Team Easybox`;
+                        messaggioEN = `Dear ${nomeFormattato},\n\nWe inform you that the rental fee for your unit will expire ${scadenzaStrEN}.\n\nIf you have already chosen direct debit (RID) as your automatic payment method, please ignore this email.\nIf you wish to provide us with your IBAN to set up direct debit, please contact us at 0281127477.\n\nBest regards,\nThe Easybox Team`;
+                    }
+                    else if (gg === -1) {
+                        oggetto = `Easybox - Canone scaduto e preavviso blocco accessi / Overdue payment and access block notice`;
+                        messaggioIT = `Buongiorno ${nomeFormattato},\n\n${fraseChiamataIT}Ti informiamo che il canone del tuo box è scaduto. Ti avvisiamo che da domani i codici di accesso alla struttura verranno bloccati.${testoImporto}\n\nTi ricordiamo che hai già ricevuto il link per effettuare il saldo della mensilità in modo rapido e sicuro.\n\nCordiali saluti,\nIl Team Easybox`;
+                        messaggioEN = `Dear ${nomeFormattato},\n\n${fraseChiamataEN}We inform you that your unit's rental fee is overdue. Please be advised that starting tomorrow, your access codes to the facility will be blocked.${testoImportoEN}\n\nWe remind you that you have already received the link to securely and quickly pay your monthly fee.\n\nBest regards,\nThe Easybox Team`;
+                    }
+                    else if (gg === -2 || gg === -6 || gg === -17) {
+                        oggetto = `Easybox - Sollecito di pagamento / Payment reminder`;
+                        messaggioIT = `Buongiorno ${nomeFormattato},\n\n${fraseChiamataIT}Ti contattiamo per ricordarti che il canone del tuo box risulta scaduto.${testoImporto}\n\nTi invitiamo a regolarizzare la tua posizione utilizzando il link per il saldo che hai già ricevuto.\n\nCordiali saluti,\nIl Team Easybox`;
+                        messaggioEN = `Dear ${nomeFormattato},\n\n${fraseChiamataEN}We are contacting you to remind you that your unit's rental fee is overdue.${testoImportoEN}\n\nWe invite you to regularize your position using the payment link you have already received.\n\nBest regards,\nThe Easybox Team`;
+                    }
+                    else if (gg === -10 || gg === -24 || gg === -28 || gg === -31 || gg === -34 || gg === -37 || gg === -40 || gg === -42) {
+                        oggetto = `Easybox - Sollecito pagamento e blocco accesso / Payment reminder and access block`;
+                        messaggioIT = `Buongiorno ${nomeFormattato},\n\n${fraseChiamataIT}Ti ricordiamo che il canone del tuo box risulta scaduto e che l'accesso alla struttura è attualmente bloccato.${testoImporto}\n\nTi invitiamo ad utilizzare il link che hai già ricevuto per effettuare il saldo.\n\nCordiali saluti,\nIl Team Easybox`;
+                        messaggioEN = `Dear ${nomeFormattato},\n\n${fraseChiamataEN}We remind you that your unit's rental fee is overdue and access to the facility is currently blocked.${testoImportoEN}\n\nWe invite you to use the link you have already received to make the payment.\n\nBest regards,\nThe Easybox Team`;
+                    }
+                    else if (gg === -44) {
+                        oggetto = `Easybox - PREAVVISO CHIUSURA CONTRATTO / CONTRACT TERMINATION NOTICE`;
+                        messaggioIT = `Buongiorno ${nomeFormattato},\n\n${fraseChiamataIT}Ti ricordiamo che hai già ricevuto il link per il pagamento. Ti informiamo che al 50° giorno di ritardo il contratto verrà chiuso e la pratica verrà passata all'ufficio recupero crediti.${testoImporto}\n\nSe desideri formalizzare e regolarizzare la situazione, puoi effettuare il saldo o contattarci urgentemente allo 0281127477.\n\nCordiali saluti,\nLa Direzione Easybox`;
+                        messaggioEN = `Dear ${nomeFormattato},\n\n${fraseChiamataEN}We remind you that you have already received the payment link. Please be informed that on the 50th day of delay, the contract will be closed and the file will be transferred to a debt collection agency.${testoImportoEN}\n\nIf you wish to regularize your situation, you can make the payment or contact us urgently at 0281127477.\n\nBest regards,\nEasybox Management`;
+                    }
+
+                    let messaggioCompleto = `${messaggioIT}\n\n---\n\n${messaggioEN}`;
+                    
+                    emailList.push({
+                        stanza: numStanza,
+                        cliente: nomeFormattato,
+                        emailReale: indirizzoEmail,
+                        giorni: gg,
+                        oggetto: oggetto,
+                        // Per la Macro Excel: Non aggiungiamo la firma, ci pensa già Outlook a metterla col logo
+                        corpoTxt: messaggioCompleto.replace(/\n/g, "<br>"),
+                        // Per Gmail dal Web: Aggiungiamo il testo della firma in calce
+                        corpoMailto: messaggioCompleto + firmaTestoPlano
+                    });
+                }
+            }
+        }
+
+        if (emailList.length === 0) {
+            alert("Nessuna mail generata. Nessun cliente oggi si trova nei giorni esatti di scadenza oppure mancano le email locali.");
+            return;
+        }
+
+        window.emailListCorrente = emailList;
+
+        let htmlLista = "";
+        emailList.forEach(item => {
+            const nomeSicuro = item.cliente.replace(/'/g, "\\'");
+            const coloreGiorni = item.giorni < 0 ? '#dc3545' : '#28a745';
+            
+            // ========================================================
+            // OPZIONE 1: GMAIL SUL WEB (Attualmente Attiva)
+            // ========================================================
+            //const linkInvio = `https://mail.google.com/mail/?view=cm&fs=1&to=${item.emailReale}&su=${encodeURIComponent(item.oggetto)}&body=${encodeURIComponent(item.corpoMailto)}`;
+            //const testoBottone = "Invia su Gmail 📧";
+
+            // ========================================================
+            // OPZIONE 2: OUTLOOK / APP PREDEFINITA DEL PC (Attualmente Disattivata)
+            // ========================================================
+             const linkInvio = `mailto:${item.emailReale}?subject=${encodeURIComponent(item.oggetto)}&body=${encodeURIComponent(item.corpoMailto)}`;
+             const testoBottone = "Invia con Outlook 📧";
+
+            htmlLista += `
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #eee; background: #f8f9fa; border-radius: 6px; margin-bottom: 8px;">
+                    <div style="text-align: left;">
+                        <strong style="color: #333;">Box #${item.stanza} - ${item.cliente}</strong><br>
+                        <span style="font-size: 12px; color: ${coloreGiorni}; font-weight: bold;">Giorni: ${item.giorni}</span> <span style="font-size: 12px; color: #666;">(${item.emailReale})</span>
                     </div>
-                `;
-                overlay.appendChild(modal);
-                document.body.appendChild(overlay);
+                    <a href="${linkInvio}" target="_blank" onclick="cancellaSingolaEmail('${nomeSicuro}', this)" style="background-color: #0078D4; color: white; padding: 8px 15px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: 0.2s;">${testoBottone}</a>
+                </div>
+            `;
+        });
 
-            } catch (error) { console.error(error); alert("Errore lettura database."); }
-        };
+        const overlay = document.createElement('div');
+        overlay.id = 'modal-email-overlay';
+        overlay.style.cssText = `position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); display: flex; align-items: center; justify-content: center; z-index: 10000;`;
 
-        window.scaricaFileWhatsapp = function () {
-            if (!window.fileWhatsappCorrente) return;
-            const blob = new Blob([window.fileWhatsappCorrente], { type: 'text/plain' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a'); a.href = url; a.download = 'whatsapp_da_inviare.txt';
-            document.body.appendChild(a); a.click(); document.body.removeChild(a); window.URL.revokeObjectURL(url);
+        const modal = document.createElement('div');
+        modal.style.cssText = `background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); width: 90%; max-width: 500px; max-height: 85vh; overflow-y: auto; text-align: center;`;
 
-            if (confirm("✅ File scaricato con successo!\n\nVuoi eliminare TUTTI i numeri di cellulare dalla memoria di questo PC per motivi di privacy? (Le email verranno mantenute)")) {
-                window.svuotaTelefoniLocali();
-            }
-        };
+        modal.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #0078D4; padding-bottom: 10px; margin-bottom: 15px;">
+                <h3 style="margin: 0; color: #0078D4;">📧 Invio Email (${emailList.length} Trovate)</h3>
+                <button onclick="document.body.removeChild(document.getElementById('modal-email-overlay'))" style="background: none; border: none; font-size: 20px; cursor: pointer; color: #999;">✖</button>
+            </div>
+            
+            <div style="background: #e9ecef; padding: 15px; border-radius: 8px; margin-bottom: 25px;">
+                <strong style="color: #333; display: block; margin-bottom: 10px;">💻 Azioni per Macro Excel (PC)</strong>
+                <button onclick="scaricaFileEmail(false)" style="background-color: #28a745; color: white; border: none; padding: 10px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; width: 100%; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">📥 SCARICA PER CLIENTI REALI</button>
+                <button onclick="scaricaFileEmail(true)" style="background-color: #ffc107; color: black; border: none; padding: 10px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; width: 100%; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">🧪 SCARICA MODALITÀ TEST (File TXT)</button>
+            </div>
 
-        window.cancellaSingoloTelefono = function (nomeCliente, btnElement) {
-            let datiPrivati = JSON.parse(localStorage.getItem('dati_privati_clienti')) || {};
-            if (datiPrivati[nomeCliente] && datiPrivati[nomeCliente].telefono) {
-                delete datiPrivati[nomeCliente].telefono;
-                localStorage.setItem('dati_privati_clienti', JSON.stringify(datiPrivati));
-            }
-            // Cambia l'aspetto del bottone per dare feedback visivo
-            btnElement.innerHTML = "✅ Cancellato";
-            btnElement.style.backgroundColor = "#6c757d";
-            btnElement.style.pointerEvents = "none";
-        };
+            <div style="text-align: center; margin-bottom: 15px;">
+                <strong style="color: #333; display: block; border-bottom: 1px solid #ccc; padding-bottom: 5px;">📱 Invio Singolo Manuale</strong>
+            </div>
+            
+            <div style="display: flex; flex-direction: column;">
+                ${htmlLista}
+            </div>
+            
+            <div style="margin-top: 20px; border-top: 1px solid #ddd; padding-top: 15px;">
+                <button onclick="svuotaEmailLocali()" style="background-color: #dc3545; color: white; border: none; padding: 10px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; width: 100%; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">🗑️ Svuota tutte le Email Locali e Chiudi</button>
+            </div>
+        `;
+        
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
 
-        window.svuotaTelefoniLocali = function () {
-            let datiPrivati = JSON.parse(localStorage.getItem('dati_privati_clienti')) || {};
-            let count = 0;
-            for (let cliente in datiPrivati) {
-                if (datiPrivati[cliente].telefono) {
-                    delete datiPrivati[cliente].telefono;
-                    count++;
-                }
-            }
-            localStorage.setItem('dati_privati_clienti', JSON.stringify(datiPrivati));
+    } catch (error) {
+        console.error(error);
+        alert("Errore durante la generazione delle email. Controlla di aver caricato il file Paid Ahead.");
+    }
+};
 
-            const modal = document.getElementById('modal-whatsapp-overlay');
-            if (modal) document.body.removeChild(modal);
+window.scaricaFileEmail = function(isTest) {
+    if (!window.emailListCorrente) return;
+    
+    let contenutoFile = "";
+    let emailDestinazioneDefault = "spinelli291082@gmail.com";
+    
+    if (isTest) {
+        let testEmail = prompt("MODALITÀ TEST: Inserisci l'indirizzo email a cui inviare tutte le comunicazioni di prova in questo file:", emailDestinazioneDefault);
+        if (!testEmail || testEmail.trim() === "") {
+            alert("Operazione annullata.");
+            return;
+        }
+        emailDestinazioneDefault = testEmail.trim();
+    }
+    
+    window.emailListCorrente.forEach(item => {
+        const dest = isTest ? emailDestinazioneDefault : item.emailReale;
+        contenutoFile += `${dest}|${item.oggetto}|${item.corpoTxt}\r\n`;
+    });
+    
+    const blob = new Blob([contenutoFile], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; 
+    a.download = isTest ? 'email_calendario_bilingue_TEST.txt' : 'email_calendario_bilingue.txt';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a); window.URL.revokeObjectURL(url);
+    
+    if (!isTest) {
+         if (confirm("✅ File scaricato con successo!\n\nVuoi eliminare TUTTI gli indirizzi email dalla memoria di questo PC per motivi di privacy?")) {
+             window.svuotaEmailLocali();
+         }
+    } else {
+         alert(`✅ File di TEST generato!\nTutte le mail nel file scaricato punteranno a: ${emailDestinazioneDefault}`);
+    }
+};
 
-            if (count > 0) alert(`Privacy protetta: ${count} numeri di cellulare sono stati eliminati definitivamente dalla memoria locale!`);
-        };
+window.cancellaSingolaEmail = function (nomeCliente, btnElement) {
+    const nomeClean = nomeCliente.toLowerCase();
+    let datiPrivati = JSON.parse(localStorage.getItem('dati_privati_clienti')) || {};
+    if (datiPrivati[nomeClean] && datiPrivati[nomeClean].email) {
+        delete datiPrivati[nomeClean].email;
+        localStorage.setItem('dati_privati_clienti', JSON.stringify(datiPrivati));
+    }
+    btnElement.innerHTML = "✅ Mail Aperta";
+    btnElement.style.backgroundColor = "#6c757d";
+    btnElement.style.pointerEvents = "none";
+};
 
-        window.scaricaFileWhatsapp = function () {
-            if (!window.fileWhatsappCorrente) return;
-            const blob = new Blob([window.fileWhatsappCorrente], { type: 'text/plain' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a'); a.href = url; a.download = 'whatsapp_da_inviare.txt';
-            document.body.appendChild(a); a.click(); document.body.removeChild(a); window.URL.revokeObjectURL(url);
-        };
+window.svuotaEmailLocali = function () {
+    let datiPrivati = JSON.parse(localStorage.getItem('dati_privati_clienti')) || {};
+    let count = 0;
+    for (let cliente in datiPrivati) {
+        if (datiPrivati[cliente].email) {
+            delete datiPrivati[cliente].email;
+            count++;
+        }
+    }
+    localStorage.setItem('dati_privati_clienti', JSON.stringify(datiPrivati));
 
-        window.generaFileEmail = async function () {
-            try {
-                // Recuperiamo i dati finanziari e le email direttamente dalla memoria locale
-                const datiPaidAhead = JSON.parse(localStorage.getItem('dati_paid_ahead')) || {};
-                const datiPrivati = JSON.parse(localStorage.getItem('dati_privati_clienti')) || {};
+    const modal = document.getElementById('modal-email-overlay');
+    if (modal) document.body.removeChild(modal);
 
-                let contenutoFile = "";
-                let contatore = 0;
-
-                // Giorni esatti in cui il sistema deve "sparare" una mail
-                const giorniTarget = [3, 0, -1, -2, -6, -10, -17, -24, -28, -31, -34, -37, -40, -42, -44];
-
-                for (let numStanza in datiPaidAhead) {
-                    const infoFin = datiPaidAhead[numStanza];
-                    const gg = infoFin.giorniPaidAhead;
-
-                    if (giorniTarget.includes(gg)) {
-                        let nomeCliente = infoFin.cliente;
-                        const nomeClean = nomeCliente.toLowerCase();
-
-                        let indirizzoEmail = "";
-                        if (datiPrivati[nomeClean] && datiPrivati[nomeClean].email) {
-                            indirizzoEmail = datiPrivati[nomeClean].email;
-                        }
-
-                        if (indirizzoEmail) {
-                            // Mettiamo le maiuscole al nome per eleganza
-                            const nomeFormattato = nomeCliente.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-
-                            let oggetto = "";
-                            let messaggioIT = "";
-                            let messaggioEN = "";
-
-                            // 1. GESTIONE IMPORTO: Viene mostrato SOLO per i debitori (da -1 in poi)
-                            let testoImporto = "";
-                            let testoImportoEN = "";
-                            if (infoFin.importoDue > 0 && gg < 0) {
-                                testoImporto = `\n\nImporto da saldare: € ${infoFin.importoDue.toFixed(2)}`;
-                                testoImportoEN = `\n\nAmount due: € ${infoFin.importoDue.toFixed(2)}`;
-                            }
-
-                            // 2. GESTIONE CHIAMATA A VUOTO: Aggiunta fissa per i debitori (da -1 in poi)
-                            const fraseChiamataIT = "Abbiamo provato a contattarti telefonicamente ma senza successo.\n\n";
-                            const fraseChiamataEN = "We tried to contact you by phone but without success.\n\n";
-
-                            // --- REGOLE DI INVIO (Con nuovo numero 0281127477) ---
-                            if (gg === 3 || gg === 0) {
-                                let scadenzaStrIT = (gg === 3) ? "tra 3 giorni" : "nella giornata di oggi";
-                                let scadenzaStrEN = (gg === 3) ? "in 3 days" : "today";
-
-                                oggetto = `Easybox - Avviso scadenza canone box / Notice of box rental expiration`;
-
-                                messaggioIT = `Buongiorno ${nomeFormattato},\n\nTi informiamo che il canone del tuo box scadrà ${scadenzaStrIT}.\n\nSe hai già scelto il RID come metodo di pagamento automatico, ti preghiamo di non considerare questa mail.\nSe invece desideri comunicarci il tuo IBAN per agganciare il metodo diretto, contattaci allo 0281127477.\n\nCordiali saluti,\nIl Team Easybox`;
-
-                                messaggioEN = `Dear ${nomeFormattato},\n\nWe inform you that the rental fee for your unit will expire ${scadenzaStrEN}.\n\nIf you have already chosen direct debit (RID) as your automatic payment method, please ignore this email.\nIf you wish to provide us with your IBAN to set up direct debit, please contact us at 0281127477.\n\nBest regards,\nThe Easybox Team`;
-                            }
-                            else if (gg === -1) {
-                                oggetto = `Easybox - Canone scaduto e preavviso blocco accessi / Overdue payment and access block notice`;
-
-                                messaggioIT = `Buongiorno ${nomeFormattato},\n\n${fraseChiamataIT}Ti informiamo che il canone del tuo box è scaduto. Ti avvisiamo che da domani i codici di accesso alla struttura verranno bloccati.${testoImporto}\n\nTi ricordiamo che hai già ricevuto il link per effettuare il saldo della mensilità in modo rapido e sicuro.\n\nCordiali saluti,\nIl Team Easybox`;
-
-                                messaggioEN = `Dear ${nomeFormattato},\n\n${fraseChiamataEN}We inform you that your unit's rental fee is overdue. Please be advised that starting tomorrow, your access codes to the facility will be blocked.${testoImportoEN}\n\nWe remind you that you have already received the link to securely and quickly pay your monthly fee.\n\nBest regards,\nThe Easybox Team`;
-                            }
-                            else if (gg === -2 || gg === -6 || gg === -17) {
-                                oggetto = `Easybox - Sollecito di pagamento / Payment reminder`;
-
-                                messaggioIT = `Buongiorno ${nomeFormattato},\n\n${fraseChiamataIT}Ti contattiamo per ricordarti che il canone del tuo box risulta scaduto.${testoImporto}\n\nTi invitiamo a regolarizzare la tua posizione utilizzando il link per il saldo che hai già ricevuto.\n\nCordiali saluti,\nIl Team Easybox`;
-
-                                messaggioEN = `Dear ${nomeFormattato},\n\n${fraseChiamataEN}We are contacting you to remind you that your unit's rental fee is overdue.${testoImportoEN}\n\nWe invite you to regularize your position using the payment link you have already received.\n\nBest regards,\nThe Easybox Team`;
-                            }
-                            else if (gg === -10 || gg === -24 || gg === -28 || gg === -31 || gg === -34 || gg === -37 || gg === -40 || gg === -42) {
-                                oggetto = `Easybox - Sollecito pagamento e blocco accesso / Payment reminder and access block`;
-
-                                messaggioIT = `Buongiorno ${nomeFormattato},\n\n${fraseChiamataIT}Ti ricordiamo che il canone del tuo box risulta scaduto e che l'accesso alla struttura è attualmente bloccato.${testoImporto}\n\nTi invitiamo ad utilizzare il link che hai già ricevuto per effettuare il saldo.\n\nCordiali saluti,\nIl Team Easybox`;
-
-                                messaggioEN = `Dear ${nomeFormattato},\n\n${fraseChiamataEN}We remind you that your unit's rental fee is overdue and access to the facility is currently blocked.${testoImportoEN}\n\nWe invite you to use the link you have already received to make the payment.\n\nBest regards,\nThe Easybox Team`;
-                            }
-                            else if (gg === -44) {
-                                oggetto = `Easybox - PREAVVISO CHIUSURA CONTRATTO / CONTRACT TERMINATION NOTICE`;
-
-                                messaggioIT = `Buongiorno ${nomeFormattato},\n\n${fraseChiamataIT}Ti ricordiamo che hai già ricevuto il link per il pagamento. Ti informiamo che al 50° giorno di ritardo il contratto verrà chiuso e la pratica verrà passata all'ufficio recupero crediti.${testoImporto}\n\nSe desideri formalizzare e regolarizzare la situazione, puoi effettuare il saldo o contattarci urgentemente allo 0281127477.\n\nCordiali saluti,\nLa Direzione Easybox`;
-
-                                messaggioEN = `Dear ${nomeFormattato},\n\n${fraseChiamataEN}We remind you that you have already received the payment link. Please be informed that on the 50th day of delay, the contract will be closed and the file will be transferred to a debt collection agency.${testoImportoEN}\n\nIf you wish to regularize your situation, you can make the payment or contact us urgently at 0281127477.\n\nBest regards,\nEasybox Management`;
-                            }
-
-                            // Uniamo Italiano e Inglese con un separatore visivo elegante
-                            let messaggioCompleto = `${messaggioIT}\n\n---\n\n${messaggioEN}`;
-
-                            // Formattiamo per Excel Macro e salviamo
-                            messaggioCompleto = messaggioCompleto.replace(/\n/g, "<br>");
-                            contenutoFile += `${indirizzoEmail}|${oggetto}|${messaggioCompleto}\r\n`;
-                            contatore++;
-                        }
-                    }
-                }
-
-                if (contatore === 0) {
-                    alert("Nessuna mail generata. Nessun cliente oggi si trova nei giorni esatti di scadenza (3, 0, -1, -2, ecc.) oppure mancano le email locali.");
-                    return;
-                }
-
-                const blob = new Blob([contenutoFile], { type: 'text/plain' });
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a'); a.href = url; a.download = 'email_calendario_bilingue.txt';
-                document.body.appendChild(a); a.click(); document.body.removeChild(a); window.URL.revokeObjectURL(url);
-
-                // --- Spegnimento dell'Allarme ---
-                localStorage.setItem('ultimo_invio_email_debitori', new Date().toDateString());
-                if (typeof window.controllaAllarmeEmailDebitori === 'function') window.controllaAllarmeEmailDebitori();
-
-                // --- Cancellazione automatica delle email per privacy ---
-                let countCancellate = 0;
-                let datiDaRipulire = JSON.parse(localStorage.getItem('dati_privati_clienti')) || {};
-                for (let cliente in datiDaRipulire) {
-                    if (datiDaRipulire[cliente].email) {
-                        delete datiDaRipulire[cliente].email;
-                        countCancellate++;
-                    }
-                }
-
-                localStorage.setItem('dati_privati_clienti', JSON.stringify(datiDaRipulire));
-
-                alert(`✅ File generato con successo!\nSono stati preparati ${contatore} solleciti.\n\n🛡️ PRIVACY: Al termine dell'operazione, ${countCancellate} indirizzi email sono stati eliminati definitivamente dalla memoria locale.`);
-
-            } catch (error) {
-                console.error(error);
-                alert("Errore durante la generazione delle email. Controlla di aver caricato il file Paid Ahead.");
-            }
-        };
-
+    if (count > 0) alert(`Privacy protetta: ${count} indirizzi email sono stati eliminati definitivamente dalla memoria locale!`);
+    
+    localStorage.setItem('ultimo_invio_email_debitori', new Date().toDateString());
+    if (typeof window.controllaAllarmeEmailDebitori === 'function') window.controllaAllarmeEmailDebitori();
+};
         // ==========================================
         // 10. GESTIONE STANZE, NOTE E PANNELLO STATO
         // ==========================================
