@@ -1,0 +1,15 @@
+{
+  "name": "Gestione Box Milano Centro",
+  "short_name": "Box MiCentro",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f4f4f9",
+  "theme_color": "#001f3f",
+  "icons": [
+    {
+      "src": "512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
