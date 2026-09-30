@@ -1,0 +1,390 @@
+/* --- 1. IMPOSTAZIONI BASE E HEADER --- */
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 20px;
+}
+
+.header-aziendale {
+    background-color: #001f3f;
+    border-top: 21px solid #FFCC00;
+    border-bottom: 21px solid #FFCC00;
+    color: white;
+    padding: 15px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin: -20px -20px 20px -20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 1000;
+}
+
+.logo-placeholder {
+    border: none;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+}
+
+.logo-placeholder img {
+    max-height: 100px;
+    width: auto;
+    display: block;
+}
+
+.nascosto {
+    display: none !important;
+}
+
+/* --- 2. BOTTONI GLOBALI --- */
+
+/* --- ANIMAZIONE ALLARME LUNEDI' --- */
+@keyframes ring-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.8); transform: rotate(0deg) scale(1); }
+    10% { transform: rotate(5deg) scale(1.05); }
+    20% { transform: rotate(-5deg) scale(1.05); }
+    30% { transform: rotate(5deg) scale(1.05); }
+    40% { transform: rotate(-5deg) scale(1.05); }
+    50% { box-shadow: 0 0 0 15px rgba(220, 53, 69, 0); transform: rotate(0deg) scale(1); }
+    100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); transform: rotate(0deg) scale(1); }
+}
+
+.allarme-moveout {
+    animation: ring-pulse 2s infinite !important;
+    background-color: #dc3545 !important;
+    color: white !important;
+    font-weight: 900 !important;
+    border: 2px solid #fff !important;
+}
+
+.btn-chiudi-generico {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 13px;
+    transition: background-color 0.2s ease;
+}
+
+.btn-chiudi-generico:hover {
+    background-color: #bd2130;
+}
+
+.btn-azione {
+    background: #28a745;
+    color: white;
+    padding: 10px 15px;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn-azione:hover {
+    background: #218838;
+}
+
+.btn-menu {
+    padding: 10px 15px;
+    font-size: 14px;
+    cursor: pointer;
+    margin: 3px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    transition: background 0.2s;
+}
+
+.btn-menu:hover {
+    background: #0056b3;
+}
+
+.btn-menu.selezionato {
+    background: #003d82;
+    font-weight: bold;
+    border: 2px solid #ffc107;
+}
+
+/* --- 3. PANNELLI E STRUTTURA MENU --- */
+.sezione-menu {
+    margin: 0 auto 15px auto;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 2px 5px rgba(0, 0, 0, 0.1);
+    display: block;
+    max-width: 900px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.box-ricerca {
+    margin: 15px 0;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.box-ricerca input {
+    padding: 8px 12px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.box-ricerca button {
+    padding: 8px 16px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#pannello-controllo {
+    margin-top: 20px;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+}
+
+.divisore-pannello {
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 10px 0;
+}
+
+/* --- 4. MAPPE E SVG (Stanze e Percorsi) --- */
+.container-mappa {
+    position: relative;
+    display: inline-block;
+    max-width: 1000px;
+    display: none;
+    margin-top: 50px !important;
+}
+
+.container-mappa.attiva {
+    display: block;
+    margin: 0 auto;
+}
+
+.container-mappa img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.mappa-interattiva {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.stanza {
+    fill: rgba(0, 255, 0, 0.4);
+    stroke: #333;
+    stroke-width: 2;
+    cursor: pointer;
+    transition: fill 0.3s ease;
+}
+
+.stanza:hover { stroke: #fff; stroke-width: 3; }
+.stanza.occupata { fill: rgba(255, 0, 0, 0.5); }
+.stanza.debitore { fill: rgba(128, 128, 128, 0.5); }
+.stanza.company { fill: rgba(0, 123, 255, 0.5); }
+.stanza.damaged { fill: rgba(255, 193, 7, 0.6); }
+.stanza.maintenance { fill: rgba(253, 126, 20, 0.5); }
+.stanza.movein { fill: rgba(23, 162, 184, 0.5); }
+.stanza.held { fill: rgba(111, 66, 193, 0.5); }
+
+.stanza-evidenziata {
+    fill: rgba(255, 193, 7, 0.7) !important;
+    stroke: #ff9800 !important;
+    stroke-width: 3px !important;
+}
+
+.stanza.in-ritardo { fill: rgba(140, 50, 50, 0.7); }
+
+.testo-mq {
+    font-size: 12px;
+    fill: #000;
+    font-weight: bold;
+    text-anchor: middle;
+    dominant-baseline: hanging;
+    pointer-events: none;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+.icona-pulizia {
+    font-size: 28px;
+    font-family: sans-serif;
+    fill: #000;
+    text-anchor: middle;
+    dominant-baseline: central;
+    pointer-events: none;
+    text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.9);
+}
+
+.linea-percorso {
+    stroke: #ff3333;
+    stroke-width: 4;
+    stroke-dasharray: 8, 4;
+    stroke-linecap: round;
+    animation: cammino 1s linear infinite;
+}
+
+@keyframes cammino { to { stroke-dashoffset: -12; } }
+
+/* --- 5. COLORI BOTTONI DI STATO STANZA --- */
+.btn-stato {
+    padding: 10px 15px;
+    margin: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    color: white;
+}
+
+#btn-libera { background-color: #28a745; }
+#btn-occupata { background-color: #dc3545; }
+#btn-debitore { background-color: #6c757d; }
+#btn-company { background-color: #007bff; }
+#btn-damaged { background-color: #ffc107; color: #000; }
+#btn-maintenance { background-color: #fd7e14; }
+#btn-movein { background-color: #17a2b8; }
+#btn-held { background-color: #6f42c1; }
+#btn-da-pulire { background-color: #e83e8c; font-weight: bold; width: 100%; box-sizing: border-box; }
+#btn-pulita { background-color: #6c757d; width: 100%; box-sizing: border-box; }
+
+/* --- 6. FINESTRE MODALI (Popup) --- */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 400px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    text-align: left;
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    color: #007bff;
+    border-bottom: 2px solid #f4f4f9;
+    padding-bottom: 10px;
+}
+
+.modal-content textarea {
+    width: 100%;
+    height: 90px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    padding: 10px;
+    font-family: inherit;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: vertical;
+}
+
+.label-note {
+    font-weight: bold;
+    font-size: 13px;
+    color: #007bff;
+    display: block;
+    margin-bottom: 5px;
+    margin-top: 10px;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+#modal-privacy { z-index: 10005; }
+
+.modal-privacy-content {
+    background: white;
+    padding: 25px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    text-align: left;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #444;
+}
+
+.modal-privacy-content h3 {
+    margin-top: 0;
+    color: #007bff;
+    font-size: 18px;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+}
+
+.modal-privacy-content h4 { color: #333; margin-bottom: 5px; }
+
+/* --- 7. LEGENDA --- */
+.legenda-stati {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #ddd;
+}
+
+.item-legenda { display: flex; align-items: center; font-size: 14px; color: #333; }
+.pallino {
+    width: 14px; height: 14px; border-radius: 50%;
+    margin-right: 6px; display: inline-block;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.pallino.libero { background-color: #4CAF50; }
+.pallino.occupato { background-color: #F44336; }
+.pallino.debitore { background-color: #6c757d; }
+.pallino.move-in { background-color: #17a2b8; }
+.pallino.in-ritardo { background-color: rgba(140, 50, 50, 0.7); }
+
+/* --- 8. REGOLE PER LA STAMPA --- */
+@media print {
+    body { background-color: white; padding: 0; margin: 0; }
+    .header-aziendale, .sezione-menu, #pannello-controllo, #pannello-ricerca-unificato, #tasto-logout, #sezione-registrazione { display: none !important; }
+    .btn-azione, #box-importa, #box-esporta, #box-debitori, button { display: none !important; }
+    .container-mappa.attiva-stampa { display: block !important; page-break-after: always; width: 100%; }
+}

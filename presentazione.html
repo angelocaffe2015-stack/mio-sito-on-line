@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AdroCbox - Pitch Deck</title>
+    <style>
+        /* --- STILI BASE E VARIABILI --- */
+        :root {
+            --primary-navy: #001f3f;
+            --accent-yellow: #FFCC00;
+            --bg-light: #f4f4f9;
+            --text-dark: #333;
+            --text-light: #fff;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* --- CONTENITORE PRESENTAZIONE --- */
+        .deck-container {
+            width: 100%;
+            max-width: 1100px;
+            aspect-ratio: 16 / 9;
+            background-color: var(--bg-light);
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        /* --- SINGOLA SLIDE --- */
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            background-color: #fff;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* --- HEADER DELLA SLIDE (Stile Gestionale) --- */
+        .slide-header {
+            background-color: var(--primary-navy);
+            border-top: 15px solid var(--accent-yellow);
+            border-bottom: 10px solid var(--accent-yellow);
+            color: var(--text-light);
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-logo img {
+            max-height: 60px;
+            width: auto;
+            display: block;
+            background: #fff;
+            padding: 5px;
+            border-radius: 4px;
+        }
+
+        .header-title {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 600;
+            text-align: right;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        /* --- CORPO DELLA SLIDE --- */
+        .slide-body {
+            padding: 40px 60px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .slide-body h2 {
+            color: var(--primary-navy);
+            font-size: 36px;
+            margin-top: 0;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--accent-yellow);
+            padding-bottom: 10px;
+            display: inline-block;
+        }
+
+        .slide-body ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .slide-body li {
+            font-size: 22px;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            line-height: 1.5;
+            position: relative;
+            padding-left: 35px;
+        }
+
+        .slide-body li::before {
+            content: "■";
+            color: var(--accent-yellow);
+            position: absolute;
+            left: 0;
+            top: 2px;
+            font-size: 20px;
+        }
+
+        .slide-body strong {
+            color: var(--primary-navy);
+        }
+
+        /* --- NOTE PER IL RELATORE --- */
+        .speaker-notes {
+            background-color: #e9ecef;
+            border-left: 6px solid var(--primary-navy);
+            padding: 15px 20px;
+            margin: 20px 60px 40px 60px;
+            font-size: 16px;
+            color: #555;
+            border-radius: 0 8px 8px 0;
+            display: none; /* Nascoste di default durante la presentazione */
+            font-style: italic;
+        }
+
+        .speaker-notes.visible {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        /* --- CONTROLLI --- */
+        .controls-container {
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            color: white;
+        }
+
+        .btn-control {
+            background-color: var(--primary-navy);
+            color: var(--accent-yellow);
+            border: 2px solid var(--accent-yellow);
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-control:hover {
+            background-color: var(--accent-yellow);
+            color: var(--primary-navy);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: #fff;
+            border: 1px solid #fff;
+            padding: 8px 15px;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background-color: #fff;
+            color: #333;
+        }
+
+        .slide-counter {
+            font-size: 16px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="deck-container" id="presentation">
+        
+        <!-- ======================================================= -->
+        <!-- SLIDE ITALIANO -->
+        <!-- ======================================================= -->
+
+        <!-- Slide 1 IT -->
+        <div class="slide lang-it active" data-slide="1">
+            <div class="slide-header">
+                <div class="header-logo"><img src="logo.jpg" alt="AdroCreator"></div>
+                <h1 class="header-title">AdroCbox</h1>
+            </div>
+            <div class="slide-body">
+                <h2>Il Controllo Totale del tuo Self-Storage in un Clic</h2>
+                <ul>
+                    <li>La gestione di centinaia di box non deve essere un labirinto di fogli Excel e mappe di carta.</li>
+                    <li><strong>Una singola Web App</strong> per visualizzare lo stato della struttura in tempo reale, automatizzare i solleciti e gestire le task quotidiane.</li>
+                    <li>Progettata da chi conosce il settore, per chi opera nel settore.</li>
+                </ul>
+            </div>
+            <div class="speaker-notes">
+                <strong>🎙️ Note:</strong> "Buongiorno a tutti. Quante ore perdete ogni settimana incrociando i dati dei pagamenti con le planimetrie cartacee della vostra struttura? AdroCbox nasce esattamente per eliminare questo spreco di tempo. Vi mostrerò come abbiamo trasformato la planimetria statica di un impianto in un gestionale intelligente e interattivo."
+            </div>
+        </div>
+
+        <!-- Slide 2 IT -->
+        <div class="slide lang-it" data-slide="2">
+            <div class="slide-header">
+                <div class="header-logo"><img src="logo.jpg" alt="AdroCreator"></div>
+                <h1 class="header-title">Il Problema</h1>
+            </div>
+            <div class="slide-body">
+                <h2>Le Sfide Quotidiane nella Gestione degli Spazi</h2>
+                <ul>
+                    <li><strong>Dispersione delle informazioni:</strong> Dati finanziari, anagrafiche e stato fisico dei box viaggiano su canali separati e non comunicanti.</li>
+                    <li><strong>Ritardi nei pagamenti:</strong> Mancanza di un sistema rapido e automatizzato per sollecitare i clienti morosi.</li>
+                    <li><strong>Inefficienza operativa:</strong> Gli "audit" quotidiani (Lock Check) richiedono trascrizioni manuali e generano margini di errore.</li>
+                </ul>
+            </div>
+            <div class="speaker-notes">
+                <strong>🎙️ Note:</strong> "Oggi, se un cliente è in ritardo con il pagamento, dovete estrarre il dato dal software contabile, cercare il suo numero, scrivergli un messaggio e poi segnare manualmente sulla mappa di bloccare il suo lucchetto. Questo processo manuale moltiplicato per decine di clienti causa inefficienze e perdite di fatturato."
+            </div>
+        </div>
+
+        <!-- Slide 3 IT -->
+        <div class="slide lang-it" data-slide="3">
+            <div class="slide-header">
+                <div class="header-logo"><img src="logo.jpg" alt="AdroCreator"></div>
+                <h1 class="header-title">La Soluzione</h1>
+            </div>
+            <div class="slide-body">
+                <h2>AdroCbox: La Planimetria che Prende Vita</h2>
+                <ul>
+                    <li><strong>Mappe SVG Interattive:</strong> Interfaccia visuale che mappa ogni piano con indicatori di stato cromatici istantanei (Libero, Occupato, Debitore).</li>
+                    <li><strong>Centralizzazione visiva:</strong> Un clic su un box rivela immediatamente il cliente, le dimensioni, lo stato contabile e le note operative.</li>
+                    <li><strong>Ricerca Intelligente & Pathfinding:</strong> Motore di ricerca integrato per trovare box liberi per metratura o tracciare il percorso più rapido verso un'unità.</li>
+                </ul>
+            </div>
+            <div class="speaker-notes">
+                <strong>🎙️ Note:</strong> "La nostra soluzione unisce la potenza di un database alla semplicità di una mappa visuale. Tutto ciò che accade nel vostro centro self-storage è tradotto in colori e icone intuitive sulla planimetria, aggiornata in tempo reale per tutto il team."
+            </div>
+        </div>
+
+        <!-- Slide 4 IT -->
+        <div class="slide lang-it" data-slide="4">
+            <div class="slide-header">
+                <div class="header-logo"><img src="logo.jpg" alt="AdroCreator"></div>
+                <h1 class="header-title">Key Features</h1>
+            </div>
+            <div class="slide-body">
+                <h2>Funzionalità per l'Operatività Sul Campo</h2>
+                <ul>
+                    <li><strong>Automazione Recupero Crediti:</strong> Generazione automatica di solleciti via WhatsApp ed Email, personalizzati in base ai giorni di ritardo.</li>
+                    <li><strong>Dashboard "To-Do" Dinamica:</strong> Il sistema analizza i dati e crea le liste delle attività giornaliere (Move Out, Blocchi, Sblocchi).</li>
+                    <li><strong>Lock Check Audit Digitale:</strong> Modalità tablet per ispezioni che confronta i lucchetti fisici col database generando report Excel.</li>
+                    <li><strong>Importazione Rapida:</strong> Sincronizzazione massiva da Excel per anagrafiche e pagamenti anticipati (Paid Ahead).</li>
+                </ul>
+            </div>
+            <div class="speaker-notes">
+                <strong>🎙️ Note:</strong> "Questa è la dashboard operativa. L'app sa già quali clienti contattare oggi e genera un messaggio WhatsApp precompilato con un clic. Inoltre, il modulo 'Lock Check' trasforma il giro di ispezione del mattino in una procedura digitale guidata, azzerando le sviste."
+            </div>
+        </div>
+
+        <!-- Slide 5 IT -->
+        <div class="slide lang-it" data-slide="5">
+            <div class="slide-header">
+                <div class="header-logo"><img src="logo.jpg" alt="AdroCreator"></div>
+                <h1 class="header-title">Vantaggi Tecnici</h1>
+            </div>
+            <div class="slide-body">
+                <h2>Architettura Moderna, Sicura e Scalabile</h2>
+                <ul>
+                    <li><strong>Infrastruttura Serverless Real-time:</strong> Sfrutta Firebase per la sincronizzazione istantanea dei dati tra tutti i dispositivi, senza latenza.</li>
+                    <li><strong>Compliance GDPR by Design:</strong> I dati personali risiedono esclusivamente nel Local Storage del dispositivo utente, mai su cloud pubblici.</li>
+                    <li><strong>Protezione Multi-Sessione:</strong> Sicurezza integrata che impedisce accessi simultanei indesiderati.</li>
+                    <li><strong>Tool di Disegno Vettoriale:</strong> Pannello Admin per mappare nuovi box e generare codice SVG pulito direttamente dall'interfaccia.</li>
+                </ul>
+            </div>
+            <div class="speaker-notes">
+                <strong>🎙️ Note:</strong> "Sotto il cofano, AdroCbox è leggero ma robusto. Utilizziamo Firebase per dati in tempo reale. Abbiamo risolto il problema della privacy elaborando i dati anagrafici direttamente nella memoria locale del PC, senza caricarli in database esterni vulnerabili."
+            </div>
+        </div>
+
+        <!-- Slide 6 IT -->
+        <div class="slide lang-it" data-slide="6">
+            <div class="slide-header">
+                <div class="header-logo"><img src="logo.jpg" alt="AdroCreator"></div>
+                <h1 class="header-title">ROI & Business Model</h1>
+            </div>
+            <div class="slide-body">
+                <h2>Ritorno sull'Investimento Tangibile</h2>
+                <ul>
+                    <li><strong>Riduzione degli Insoluti:</strong> I solleciti automatizzati via WhatsApp diminuiscono i tempi di incasso del 40%.</li>
+                    <li><strong>Risparmio di Tempo:</strong> Il tool "To-Do" e l'Audit digitale tagliano fino a 15 ore mensili di lavoro amministrativo per filiale.</li>
+                    <li><strong>Zero Costi di Setup Hardware:</strong> Web App accessibile da qualsiasi browser o tablet, integrabile in ambienti Android nativi.</li>
+                </ul>
+            </div>
+            <div class="speaker-notes">
+                <strong>🎙️ Note:</strong> "Il ROI si misura in ore risparmiate e crediti recuperati. Automatizzando il contatto con i ritardatari e velocizzando i controlli, il sistema si ripaga da solo nei primi due mesi."
+            </div>
+        </div>
+
+        <!-- Slide 7 IT -->
+        <div class="slide lang-it" data-slide="7">
+            <div class="slide-header">
+                <div class="header-logo"><img src="logo.jpg" alt="AdroCreator"></div>
+                <h1 class="header-title">Roadmap</h1>
+            </div>
+            <div class="slide-body">
+                <h2>La Visione per il Futuro</h2>
+                <ul>
+                    <li><strong>Espansione Multi-Filiale:</strong> Infrastruttura per supportare la navigazione tra più centri da un unico account master.</li>
+                    <li><strong>Sinergia Hardware:</strong> Consolidamento del bridge API Android per stampa wireless avanzata e gestione file nativa.</li>
+                    <li><strong>Integrazione Gateway:</strong> Connessione diretta API per pagamenti e fatturazione automatica.</li>
+                </ul>
+            </div>
+            <div class="speaker-notes">
+                <strong>🎙️ Note:</strong> "Il prodotto è già altamente operativo per filiali grandi. I prossimi passi prevedono l'espansione del supporto multi-sede e l'approfondimento dell'integrazione con le periferiche hardware."
+            </div>
+        </div>
+
+        <!-- Slide 8 IT -->
+        <div class="slide lang-it" data-slide="8">
+            <div class="slide-header">
+                <div class="header-logo"><img src="logo.jpg" alt="AdroCreator"></div>
+                <h1 class="header-title">Call to Action</h1>
+            </div>
+            <div class="slide-body">
+                <h2>Ottimizza il tuo Impianto Oggi</h2>
+                <ul>
+                    <li><strong>Smetti di rincorrere i dati</strong>, lascia che sia il software a guidare l'operatività.</li>
+                    <li>Prenota una <strong>Demo Live</strong> con la planimetria del *tuo* impianto reale.</li>
+                    <li><strong>Contattaci:</strong><br>Mattia Spinelli | Developer & Project Manager<br>spinelli291082@gmail.com</li>
+                </ul>
+            </div>
+            <div class="speaker-notes">
+                <strong>🎙️ Note:</strong> "Siete pronti a trasformare la gestione del vostro spazio? Lasciateci mappare il vostro piano terra e vi mostreremo in una demo live come cambierà la vostra giornata lavorativa. Grazie per l'attenzione."
+            </div>
+        </div>
+
+        <!-- ======================================================= -->
+        <!-- ENGLISH SLIDES -->
+        <!-- ======================================================= -->
+
+        <!-- Slide 1 EN -->
+        <div class="slide lang-en" data-slide="1">
+            <div class="slide-header">
+                <div class="header-logo"><img src="logo.jpg" alt="AdroCreator"></div>
+                <h1 class="header-title">AdroCbox</h1>
+            </div>
+            <div class="slide-body">
+                <h2>Total Control of Your Self-Storage at a Click</h2>
+                <ul>
+                    <li>Managing hundreds of units shouldn't be a maze of Excel sheets and paper maps.</li>
+                    <li><strong>A single Web App</strong> to visualize your facility's real-time status, automate payment reminders, and manage daily operations.</li>
+                    <li>Designed by industry professionals, for facility managers.</li>
+                </ul>
+            </div>
+            <div class="speaker-notes">
+                <strong>🎙️ Notes:</strong> "Good morning everyone. How many hours do you lose each week cross-referencing payment data with paper floor plans? AdroCbox was created exactly to eliminate this waste of time. I will show you how we transformed static facility layouts into intelligent management tools."
+            </div>
+        </div>
+
+        <!-- Slide 2 EN -->
+        <div class="slide lang-en" data-slide="2">
+            <div class="slide-header">
+                <div class="header-logo"><img src="logo.jpg" alt="AdroCreator"></div>
+                <h1 class="header-title">The Problem</h1>
+            </div>
+            <div class="slide-body">
+                <h2>Daily Challenges in Space Management</h2>
+                <ul>
+                    <li><strong>Scattered Information:</strong> Financial data, customer details, and the physical status of the boxes live in disconnected silos.</li>
+                    <li><strong>Late Payments:</strong> Lack of a fast, automated system to send reminders to overdue customers.</li>
+                    <li><strong>Operational Inefficiency:</strong> Daily facility walkthroughs ("Lock Checks") require manual transcriptions, leading to human error.</li>
+                </ul>
+            </div>
+            <div class="speaker-notes">
+                <strong>🎙️ Notes:</strong> "Today, if a customer is late, you have to extract data from accounting, find their phone number, write a message, and then manually mark a map to block their lock. This causes severe inefficiencies and revenue leakage."
+            </div>
+        </div>
+
+        <!-- Slide 3 EN -->
+        <div class="slide lang-en" data-slide="3">
+            <div class="slide-header">
+                <div class="header-logo"><img src="logo.jpg" alt="AdroCreator"></div>
+                <h1 class="header-title">The Solution</h1>
+            </div>
+            <div class="slide-body">
+                <h2>AdroCbox: Floor Plans that Come to Life</h2>
+                <ul>
+                    <li><strong>Interactive SVG Maps:</strong> A visual interface mapping every floor with instant color-coded status indicators (Available, Occupied, Debtor).</li>
+                    <li><strong>Visual Centralization:</strong> A single click on a unit instantly reveals the customer, size, financial status, and notes.</li>
+                    <li><strong>Smart Search & Pathfinding:</strong> Built-in search engine to find available units or draw the fastest path to a specific box.</li>
+                </ul>
+            </div>
+            <div class="speaker-notes">
+                <strong>🎙️ Notes:</strong> "Our solution combines the power of a database with the simplicity of a visual map. Everything happening in your center is translated into intuitive colors and icons, updating in real-time."
+            </div>
+        </div>
+
+        <!-- Slide 4 EN -->
+        <div class="slide lang-en" data-slide="4">
+            <div class="slide-header">
+                <div class="header-logo"><img src="logo.jpg" alt="AdroCreator"></div>
+                <h1 class="header-title">Key Features</h1>
+            </div>
+            <div class="slide-body">
+                <h2>Features Built for Field Operations</h2>
+                <ul>
+                    <li><strong>Automated Debt Collection:</strong> Automatic generation of WhatsApp and Email reminders, tailored to the exact number of overdue days.</li>
+                    <li><strong>Dynamic To-Do Dashboard:</strong> The system analyzes data and generates daily task lists (Move Outs, Lock Blocking, Unlocking).</li>
+                    <li><strong>Digital Lock Check Audit:</strong> Tablet mode for walkthroughs that compares physical locks with the database to generate instant reports.</li>
+                    <li><strong>Rapid Data Import:</strong> Mass synchronization of raw data from Excel, including 'Paid Ahead' financials.</li>
+                </ul>
+            </div>
+            <div class="speaker-notes">
+                <strong>🎙️ Notes:</strong> "The app already knows which customers to contact today. With one click, it generates a pre-filled WhatsApp message. The 'Lock Check' module turns your morning inspection into a guided digital procedure."
+            </div>
+        </div>
+
+        <!-- Slide 5 EN -->
+        <div class="slide lang-en" data-slide="5">
+            <div class="slide-header">
+                <div class="header-logo"><img src="logo.jpg" alt="AdroCreator"></div>
+                <h1 class="header-title">Technical Advantages</h1>
+            </div>
+            <div class="slide-body">
+                <h2>Modern, Secure, and Scalable Architecture</h2>
+                <ul>
+                    <li><strong>Real-time Serverless Infrastructure:</strong> Leverages Firebase for instant data synchronization across all devices with zero latency.</li>
+                    <li><strong>GDPR Compliant by Design:</strong> Sensitive personal data reside exclusively in the user device's Local Storage, never on public clouds.</li>
+                    <li><strong>Multi-Session Protection:</strong> Built-in security preventing unauthorized simultaneous logins.</li>
+                    <li><strong>Vector Drawing Tool:</strong> Integrated Admin Panel to map new boxes and generate clean SVG code directly from the UI.</li>
+                </ul>
+            </div>
+            <div class="speaker-notes">
+                <strong>🎙️ Notes:</strong> "Under the hood, AdroCbox is lightweight yet robust. We solved GDPR privacy concerns by processing personal contact data directly in the local memory of the manager's PC, not on external databases."
+            </div>
+        </div>
+
+        <!-- Slide 6 EN -->
+        <div class="slide lang-en" data-slide="6">
+            <div class="slide-header">
+                <div class="header-logo"><img src="logo.jpg" alt="AdroCreator"></div>
+                <h1 class="header-title">ROI & Business Model</h1>
+            </div>
+            <div class="slide-body">
+                <h2>Tangible Return on Investment</h2>
+                <ul>
+                    <li><strong>Reduced Bad Debt:</strong> Automated WhatsApp reminders decrease the time-to-payment by effectively engaging debtors.</li>
+                    <li><strong>Time Savings:</strong> Automated To-Do lists and digital Audits cut up to 15 hours of administrative work per month, per branch.</li>
+                    <li><strong>Zero Hardware Setup Costs:</strong> A Web App accessible from any browser or tablet, with bridges for native Android environments.</li>
+                </ul>
+            </div>
+            <div class="speaker-notes">
+                <strong>🎙️ Notes:</strong> "The ROI is measured in saved hours and recovered debts. By automating contact with late-paying customers, the system pays for itself within the first two months of use."
+            </div>
+        </div>
+
+        <!-- Slide 7 EN -->
+        <div class="slide lang-en" data-slide="7">
+            <div class="slide-header">
+                <div class="header-logo"><img src="logo.jpg" alt="AdroCreator"></div>
+                <h1 class="header-title">Roadmap</h1>
+            </div>
+            <div class="slide-body">
+                <h2>Vision for the Future</h2>
+                <ul>
+                    <li><strong>Multi-Branch Expansion:</strong> Infrastructure to fully support multi-branch navigation from a single master account.</li>
+                    <li><strong>Hardware Synergy:</strong> Consolidation of the Android API bridge for advanced wireless printing and system file management.</li>
+                    <li><strong>Gateway Integration:</strong> Native API integration for payment gateways and automated invoicing.</li>
+                </ul>
+            </div>
+            <div class="speaker-notes">
+                <strong>🎙️ Notes:</strong> "The product is already highly operational. Our next steps involve expanding multi-site support and deepening the integration with hardware peripherals via native apps."
+            </div>
+        </div>
+
+        <!-- Slide 8 EN -->
+        <div class="slide lang-en" data-slide="8">
+            <div class="slide-header">
+                <div class="header-logo"><img src="logo.jpg" alt="AdroCreator"></div>
+                <h1 class="header-title">Call to Action</h1>
+            </div>
+            <div class="slide-body">
+                <h2>Optimize Your Facility Today</h2>
+                <ul>
+                    <li><strong>Stop chasing data</strong>; let the software drive your operations.</li>
+                    <li>Book a <strong>Live Demo</strong> featuring the floor plan of *your* actual facility.</li>
+                    <li><strong>Contact Us:</strong><br>Mattia Spinelli | Developer & Project Manager<br>spinelli291082@gmail.com</li>
+                </ul>
+            </div>
+            <div class="speaker-notes">
+                <strong>🎙️ Notes:</strong> "Are you ready to transform your space management? Let us map your ground floor, and we'll show you in a live demo exactly how your workday will change. Thank you for your time."
+            </div>
+        </div>
+
+    </div>
+
+    <!-- CONTROLLI DELLA PRESENTAZIONE -->
+    <div class="controls-container">
+        <div>
+            <button class="btn-secondary" onclick="toggleLanguage()">🇬🇧 Switch to English</button>
+            <button class="btn-secondary" onclick="toggleNotes()" style="margin-left: 10px;">📝 Show/Hide Notes</button>
+        </div>
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <button class="btn-control" onclick="prevSlide()">❮ Prev</button>
+            <span class="slide-counter" id="slide-counter">1 / 8</span>
+            <button class="btn-control" onclick="nextSlide()">Next ❯</button>
+        </div>
+    </div>
+
+    <script>
+        let currentLang = 'it';
+        let currentSlide = 1;
+        const totalSlides = 8;
+
+        function updateView() {
+            // Hide all slides
+            document.querySelectorAll('.slide').forEach(el => {
+                el.classList.remove('active');
+            });
+
+            // Show active slide for current language
+            const activeSlide = document.querySelector(`.slide.lang-${currentLang}[data-slide="${currentSlide}"]`);
+            if (activeSlide) {
+                activeSlide.classList.add('active');
+            }
+
+            // Update counter
+            document.getElementById('slide-counter').innerText = `${currentSlide} / ${totalSlides}`;
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                currentSlide++;
+                updateView();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 1) {
+                currentSlide--;
+                updateView();
+            }
+        }
+
+        function toggleLanguage() {
+            const langBtn = document.querySelector('button[onclick="toggleLanguage()"]');
+            if (currentLang === 'it') {
+                currentLang = 'en';
+                langBtn.innerText = "🇮🇹 Passa all'Italiano";
+            } else {
+                currentLang = 'it';
+                langBtn.innerText = "🇬🇧 Switch to English";
+            }
+            updateView();
+        }
+
+        function toggleNotes() {
+            document.querySelectorAll('.speaker-notes').forEach(note => {
+                note.classList.toggle('visible');
+            });
+        }
+
+        // Arrow keys navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                prevSlide();
+            }
+        });
+
+        // Initialize
+        updateView();
+    </script>
+
+</body>
+</html>
