@@ -43,10 +43,16 @@ const firebaseConfig = {
     messagingSenderId: "619510975669",
     appId: "1:619510975669:web:99404ef60e375961fa82fc"
 };
+
 const app = initializeApp(firebaseConfig); 
 const db = getFirestore(app);
 const auth = getAuth(app);
 let unsubscribeSession = null;
+
+// ATTIVA IL DATABASE OFFLINE SUL DISPOSITIVO (PWA E WEB)
+enableIndexedDbPersistence(db).catch((err) => {
+    console.warn("Persistenza offline:", err.code);
+});
 
 // ==========================================
 // 1. ASCOLTO FIRESTORE (Mappa e Stanze)
@@ -1062,10 +1068,11 @@ window.elaboraDatiGrezzi = async function(event) {
                     }
 
                     const docRef = doc(db, "stanze", stanzaTrovata.id);
-                    await setDoc(docRef, datiDaAggiornare, { merge: true });
+                    setDoc(docRef, datiDaAggiornare, { merge: true })
+                        .catch(err => console.error("Errore sync stanza:", err));
                     stanzeAggiornate++;
                 }
-            } 
+            }
             
             event.target.value = ''; 
             alert(`Importazione completata: ${stanzeAggiornate} stanze aggiornate con successo!`);
@@ -1271,7 +1278,9 @@ window.elaboraMoveOut = async function (event) {
                 }
             });
 
-            await Promise.all(promesse);
+            if (navigator.onLine) {
+                await Promise.all(promesse);
+            }
             event.target.value = '';
 
             let messaggio = `Elaborazione Move Out completata!\n✔️ ${stanzeAggiornate} stanze aggiornate.`;
@@ -1344,15 +1353,23 @@ window.chiudiMappe = function () {
 window.stampaMappaCorrente = function () {
     const mappaAttiva = document.querySelector('.container-mappa.attiva');
     if (!mappaAttiva) { alert("Seleziona prima un piano da stampare."); return; }
+    mappaAttiva.classList.add('attiva-stampa');
     window.print();
+    setTimeout(() => { mappaAttiva.classList.remove('attiva-stampa'); }, 500);
 };
 
 window.stampaTutteMappe = function () {
     document.querySelectorAll('.container-mappa').forEach(map => {
         map.style.display = 'block';
+        map.classList.add('attiva-stampa');
     });
     window.print();
-    setTimeout(() => { window.chiudiMappe(); }, 500);
+    setTimeout(() => {
+        document.querySelectorAll('.container-mappa').forEach(map => {
+            map.classList.remove('attiva-stampa');
+        });
+        window.chiudiMappe();
+    }, 500);
 };
 
 // ==========================================
@@ -1553,7 +1570,7 @@ window.cambiaDataMoveOut = async function (numStanza) {
             nuovaNota = nuovaNota ? `${nuovaNota} | 📦 Move Out: ${nuovaData}` : `📦 Move Out: ${nuovaData}`;
         }
 
-        await setDoc(docRef, { notaCliente: nuovaNota, taskMoveout: null }, { merge: true });
+       setDoc(docRef, { notaCliente: nuovaNota, taskMoveout: null }, { merge: true });
         alert(`✅ Data aggiornata con successo! Il box riapparirà nella lista TO DO il ${nuovaData}.`);
         window.aggiornaToDo();
 
@@ -1567,13 +1584,13 @@ window.inserisciTaskManuale = async function (tipo) {
     try {
         const docRef = doc(db, "stanze", `stanza-centro-${numStanza}`);
         if (tipo === 'sblocca') {
-            await setDoc(docRef, { richiestaSblocco: true, stato: 'debitore', taskSblocca: null }, { merge: true });
+            setDoc(docRef, { richiestaSblocco: true, stato: 'debitore', taskSblocca: null }, { merge: true });
         } else if (tipo === 'blocca') {
-            await setDoc(docRef, { notaCliente: "Ritardo: 10 gg", taskBlocca: null }, { merge: true });
+            setDoc(docRef, { notaCliente: "Ritardo: 10 gg", taskBlocca: null }, { merge: true });
         } else if (tipo === 'moveout') {
             const oggi = new Date();
             const strData = `${oggi.getDate().toString().padStart(2, '0')}/${(oggi.getMonth() + 1).toString().padStart(2, '0')}/${oggi.getFullYear()}`;
-            await setDoc(docRef, { notaCliente: `📦 Move Out: ${strData}`, taskMoveout: null }, { merge: true });
+            setDoc(docRef, { notaCliente: `📦 Move Out: ${strData}`, taskMoveout: null }, { merge: true });
         }
         window.aggiornaToDo();
     } catch (e) { console.error("Errore inserimento manuale:", e); alert("Errore nell'inserimento manuale."); }
@@ -1612,7 +1629,7 @@ window.salvaStatoToDo = async function (numStanza, tipoTask, clickStato) {
             else if (tipoTask === 'moveout') updateData.stato = 'libera';
         }
 
-        await setDoc(docRef, updateData, { merge: true });
+       setDoc(docRef, updateData, { merge: true });
         window.aggiornaToDo();
     } catch (error) { console.error("Errore durante il salvataggio del TO DO:", error); }
 };
@@ -2425,68 +2442,58 @@ window.chiudiPannelloControllo = function () {
     stanzaCorrente = null;
 };
 
-window.salvaNotaFirebase = async function () {
+window.salvaNotaFirebase = function () {
     if (!stanzaCorrente) return;
     const tFissa = document.getElementById('note-fisse').value;
     const tCliente = document.getElementById('note-cliente').value;
     const docRef = doc(db, "stanze", stanzaCorrente.id);
 
-    try {
-        await setDoc(docRef, { notaFissa: tFissa, notaCliente: tCliente }, { merge: true });
-        stanzaCorrente.setAttribute('data-nota-fissa', tFissa);
-        stanzaCorrente.setAttribute('data-nota-cliente', tCliente);
-        window.chiudiModalNota();
-    } catch (error) {
-        console.error("Errore salvataggio nota:", error);
-        alert("Errore durante il salvataggio della nota.");
-    }
+    setDoc(docRef, { notaFissa: tFissa, notaCliente: tCliente }, { merge: true })
+        .catch(error => console.error("Errore salvataggio nota:", error));
+
+    stanzaCorrente.setAttribute('data-nota-fissa', tFissa);
+    stanzaCorrente.setAttribute('data-nota-cliente', tCliente);
+    window.chiudiModalNota();
 };
 
-window.cambiaStato = async function (nuovoStatoClass) {
+window.cambiaStato = function (nuovoStatoClass) {
     if (stanzaCorrente) {
         const docRef = doc(db, "stanze", stanzaCorrente.id);
-        try {
-            await setDoc(docRef, { stato: nuovoStatoClass }, { merge: true });
-            const pannello = document.getElementById('pannello-controllo');
-            if (pannello) pannello.classList.add('nascosto');
-            stanzaCorrente = null;
-        } catch (error) {
-            console.error("Errore di scrittura DB:", error);
-            alert("Errore nell'aggiornamento dello stato.");
-        }
-    }
-};
-
-window.impostaPulizia = async function (daPulire) {
-    if (!stanzaCorrente) return;
-    const docRef = doc(db, "stanze", stanzaCorrente.id);
-    try {
-        await setDoc(docRef, { daPulire: daPulire }, { merge: true });
-
-        if (daPulire) {
-            const numStanza = stanzaCorrente.getAttribute('data-nome') || stanzaCorrente.id;
-            const contenitorePiano = stanzaCorrente.closest('.container-mappa');
-            const mappaPiani = {
-                'map-centro-pt': 'Piano Terra', 'map-centro-p-1': 'Piano -1',
-                'map-centro-p1': 'Piano 1', 'map-centro-p-2': 'Piano -2',
-                'map-centro-p-3': 'Piano -3', 'map-centro-p-4': 'Piano -4'
-            };
-            const nomePiano = contenitorePiano ? (mappaPiani[contenitorePiano.id] || contenitorePiano.id) : "Piano Sconosciuto";
-
-            const email = "milanocentro@easybox.it";
-            const subject = encodeURIComponent("BOX DA PULIRE");
-            const body = encodeURIComponent(`Si richiede la pulizia per la stanza n° ${numStanza}\nPosizione: ${nomePiano}`);
-            window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
-        }
+        setDoc(docRef, { stato: nuovoStatoClass }, { merge: true })
+            .catch(error => console.error("Errore di scrittura DB:", error));
 
         const pannello = document.getElementById('pannello-controllo');
         if (pannello) pannello.classList.add('nascosto');
         stanzaCorrente = null;
-    } catch (error) {
-        console.error("Errore imposta pulizia:", error);
     }
 };
 
+window.impostaPulizia = function (daPulire) {
+    if (!stanzaCorrente) return;
+    const docRef = doc(db, "stanze", stanzaCorrente.id);
+    setDoc(docRef, { daPulire: daPulire }, { merge: true })
+        .catch(error => console.error("Errore imposta pulizia:", error));
+
+    if (daPulire) {
+        const numStanza = stanzaCorrente.getAttribute('data-nome') || stanzaCorrente.id;
+        const contenitorePiano = stanzaCorrente.closest('.container-mappa');
+        const mappaPiani = {
+            'map-centro-pt': 'Piano Terra', 'map-centro-p-1': 'Piano -1',
+            'map-centro-p1': 'Piano 1', 'map-centro-p-2': 'Piano -2',
+            'map-centro-p-3': 'Piano -3', 'map-centro-p-4': 'Piano -4'
+        };
+        const nomePiano = contenitorePiano ? (mappaPiani[contenitorePiano.id] || contenitorePiano.id) : "Piano Sconosciuto";
+
+        const email = "milanocentro@easybox.it";
+        const subject = encodeURIComponent("BOX DA PULIRE");
+        const body = encodeURIComponent(`Si richiede la pulizia per la stanza n° ${numStanza}\nPosizione: ${nomePiano}`);
+        window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+    }
+
+    const pannello = document.getElementById('pannello-controllo');
+    if (pannello) pannello.classList.add('nascosto');
+    stanzaCorrente = null;
+};
 // ==========================================
 // INIZIALIZZAZIONE DELLE STANZE 
 // ==========================================
@@ -3003,11 +3010,8 @@ window.salvaAuditStanza = async function () {
     }
 
     if (aggiornaDB) {
-        try {
-            await setDoc(docRef, datiDaAggiornare, { merge: true });
-        } catch (e) {
-            console.error("Errore salvataggio Audit in Firebase:", e);
-        }
+        setDoc(docRef, datiDaAggiornare, { merge: true })
+            .catch(e => console.error("Errore salvataggio Audit in Firebase:", e));
     }
 
     chiudiModaleAuditStanza();

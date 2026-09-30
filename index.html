@@ -17,6 +17,9 @@ funzionamento di questo software sono di proprietà esclusiva di
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestione box - MILANO CENTRO</title>
     <link rel="icon" type="image/png" href="512.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#001f3f">
+    <link rel="apple-touch-icon" href="192.jpg">
 
     <!-- ========================================== -->
     <!-- COLLEGAMENTO AL FILE CSS ESTERNO           -->
@@ -122,7 +125,7 @@ funzionamento di questo software sono di proprietà esclusiva di
                 <input type="password" id="password-registrazione" placeholder="Password"
                     style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px;">
 
-                <!-- NUOVO: Flag Privacy -->
+                <!-- Flag Privacy -->
                 <div
                     style="display: flex; align-items: flex-start; text-align: left; margin-bottom: 15px; font-size: 12px; color: #555;">
                     <input type="checkbox" id="privacy-registrazione"
@@ -193,7 +196,7 @@ funzionamento di questo software sono di proprietà esclusiva di
             <p style="font-size: 14px; margin-bottom: 5px; color: #333;"><strong>Cliente:</strong> <span
                     id="testo-cliente">Nessun dato</span></p>
 
-            <!-- NUOVO: Riquadro Dati Privati (Visibile solo se salvati su questo PC) -->
+            <!-- Riquadro Dati Privati (Visibile solo se salvati su questo PC) -->
             <div id="blocco-dati-privati"
                 style="display: none; background: #e0f7fa; padding: 10px; border-radius: 6px; border-left: 4px solid #17a2b8; margin-bottom: 10px;">
                 <span style="font-size: 12px; color: #17a2b8; font-weight: bold; text-transform: uppercase;">🔒 Dati
@@ -250,11 +253,11 @@ funzionamento di questo software sono di proprietà esclusiva di
     </div>
 
     <!-- ========================================== -->
-    <!-- NUOVA SEZIONE: DATA E TO DO                -->
+    <!-- SEZIONE: DATA E TO DO                      -->
     <!-- ========================================== -->
     <div style="text-align: center; margin-bottom: 20px;">
 
-        <!-- Box Data Odierna (Elegante) -->
+        <!-- Box Data Odierna -->
         <div id="data-odierna"
             style="font-size: 15px; color: #001f3f; font-weight: bold; margin-bottom: 15px; background: #e9ecef; display: inline-block; padding: 8px 25px; border-radius: 25px; border: 2px solid #007bff; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
             🗓️ Caricamento data...
@@ -267,16 +270,16 @@ funzionamento di questo software sono di proprietà esclusiva di
             📝 TO DO
         </button>
 
-        <!-- NUOVO: Bottone Lock Check audit -->
-       <button id="btn-lock-check" onclick="apriMenuAudit()"
+        <!-- Bottone Lock Check audit -->
+        <button id="btn-lock-check" onclick="apriMenuAudit()"
             style="background-color: #6f42c1; color: white; border: none; padding: 8px 30px; font-size: 15px; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.2); transition: background-color 0.2s; margin-left: 10px; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; vertical-align: bottom;">
             <span>LOGICA LOCK</span>
             <span>CHECK AUDIT</span>
         </button>
 
-    </div> <!-- Fine del contenitore dei bottoni -->
+    </div>
 
-    <!-- NUOVO MODALE: START/STOP Audit -->
+    <!-- MODALE: START/STOP Audit -->
     <div id="modal-audit-main" class="modal-overlay">
         <div class="modal-content" style="text-align: center;">
             <h3 style="color: #6f42c1; margin-top: 0;">LOGICA LOCK CHECK AUDIT</h3>
@@ -287,7 +290,7 @@ funzionamento di questo software sono di proprietà esclusiva di
                     style="background: #28a745; font-weight: bold; font-size: 16px; padding: 15px 30px;">▶️
                     START</button>
                 <button onclick="stopAudit()" class="btn-azione"
-                    style="background: #dc3545; font-weight: bold; font-size: 16px; padding: 15px 30px;">⏹️
+                    style="background: #dc3545; font-weight: bold; font-size: 16px; padding: 15px 30px;">⏹️️
                     STOP</button>
             </div>
             <button onclick="document.getElementById('modal-audit-main').style.display='none'"
@@ -295,7 +298,7 @@ funzionamento di questo software sono di proprietà esclusiva di
         </div>
     </div>
 
-    <!-- NUOVO MODALE: Scelte Audit Stanza -->
+    <!-- MODALE: Scelte Audit Stanza -->
     <div id="modal-audit-stanza" class="modal-overlay">
         <div class="modal-content">
             <h3 style="color: #6f42c1; margin-top:0;" id="titolo-audit-stanza">Audit Box</h3>
@@ -374,6 +377,7 @@ funzionamento di questo software sono di proprietà esclusiva di
             </div>
         </div>
     </div>
+
     <!-- CONTENITORE TO DO (Nascosto di default) -->
     <div id="container-todo"
         style="display: none; margin: 0 auto 20px auto; max-width: 1000px; padding: 15px; background: #e9ecef; border: 2px dashed #fd7e14; border-radius: 8px;">
@@ -389,7 +393,6 @@ funzionamento di questo software sono di proprietà esclusiva di
                     style="margin: 0 0 10px 0; color: #17a2b8; text-align: center; border-bottom: 2px solid #f4f4f9; padding-bottom: 5px;">
                     📦 MOVE OUT</h4>
                 <div id="todo-moveout-content" style="font-size: 14px; color: #666; min-height: 50px;">
-                    <!-- Qui il Javascript inserirà i dati in futuro -->
                     <p style="text-align: center; font-style: italic;">Nessuna attività</p>
                 </div>
             </div>
@@ -401,7 +404,6 @@ funzionamento di questo software sono di proprietà esclusiva di
                     style="margin: 0 0 10px 0; color: #dc3545; text-align: center; border-bottom: 2px solid #f4f4f9; padding-bottom: 5px;">
                     🔒 BLOCCA</h4>
                 <div id="todo-blocca-content" style="font-size: 14px; color: #666; min-height: 50px;">
-                    <!-- Qui il Javascript inserirà i dati in futuro -->
                     <p style="text-align: center; font-style: italic;">Nessuna attività</p>
                 </div>
             </div>
@@ -413,7 +415,6 @@ funzionamento di questo software sono di proprietà esclusiva di
                     style="margin: 0 0 10px 0; color: #28a745; text-align: center; border-bottom: 2px solid #f4f4f9; padding-bottom: 5px;">
                     🔓 SBLOCCA</h4>
                 <div id="todo-sblocca-content" style="font-size: 14px; color: #666; min-height: 50px;">
-                    <!-- Qui il Javascript inserirà i dati in futuro -->
                     <p style="text-align: center; font-style: italic;">Nessuna attività</p>
                 </div>
             </div>
@@ -421,10 +422,10 @@ funzionamento di questo software sono di proprietà esclusiva di
         </div>
     </div>
     <!-- FINE SEZIONE TO DO -->
+
     <!-- ========================================== -->
     <!-- PANNELLO ADMIN (Nascosto agli utenti base) -->
     <!-- ========================================== -->
-
     <div id="pannello-admin"
         style="display: none; background: #343a40; color: white; padding: 20px; border-radius: 10px; max-width: 910px; margin: 0 auto 30px auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
         <h3 style="margin-top: 0; color: #ffc107; border-bottom: 1px solid #555; padding-bottom: 10px;">🛠️ Area
@@ -492,17 +493,15 @@ funzionamento di questo software sono di proprietà esclusiva di
             codice delle mappe modificato. Potrai poi incollarlo in Visual Studio Code per renderlo definitivo.</p>
     </div>
 
-    <!-- 1. PANNELLO DI RICERCA (Design Moderno "Card") -->
+    <!-- 1. PANNELLO DI RICERCA -->
     <div id="pannello-ricerca-unificato"
         style="background: white; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); overflow: hidden; max-width: 950px; margin: 0 auto 30px auto; border: 1px solid #eaeaea;">
 
-        <!-- Intestazione Sfumata -->
         <div style="background: linear-gradient(135deg, #007bff, #0056b3); padding: 15px; text-align: center;">
             <h3 style="margin: 0; color: white; font-size: 18px; font-weight: 600; letter-spacing: 0.5px;">🔍 Pannello
                 di Ricerca Intelligente</h3>
         </div>
 
-        <!-- Contenitore delle due ricerche -->
         <div style="padding: 25px 30px; display: flex; gap: 40px; flex-wrap: wrap; justify-content: space-between;">
 
             <!-- SINISTRA: Cerca per Numero -->
@@ -511,14 +510,13 @@ funzionamento di questo software sono di proprietà esclusiva di
                     style="display: block; font-size: 12px; color: #6c757d; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;">📍
                     Cerca per Numero (Traccia)</label>
 
-                <!-- Barra di ricerca unita -->
                 <div
                     style="display: flex; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-radius: 8px; overflow: hidden; border: 1px solid #ced4da; transition: border-color 0.2s;">
                     <input type="text" id="input-stanza" placeholder="Es. 3012..."
                         style="flex: 1; padding: 12px 15px; border: none; font-size: 15px; outline: none; background: #f8f9fa;">
                     <button class="btn-azione"
-    style="background-color: #28a745; margin: 0; padding: 0 25px; border: none; border-radius: 0; font-weight: bold; font-size: 15px; flex-shrink: 0;"
-    onclick="cercaETracciaStanza()">Cerca</button>
+                        style="background-color: #28a745; margin: 0; padding: 0 25px; border: none; border-radius: 0; font-weight: bold; font-size: 15px; flex-shrink: 0;"
+                        onclick="cercaETracciaStanza()">Cerca</button>
                 </div>
                 <div id="risultato-ricerca" style="margin-top: 10px; font-size: 13px; min-height: 20px;"></div>
             </div>
@@ -526,7 +524,6 @@ funzionamento di questo software sono di proprietà esclusiva di
             <!-- DESTRA: Cerca per Metratura -->
             <div style="flex: 1; min-width: 280px; position: relative;">
 
-                <!-- Bottone chiudi spostato in un posto più elegante -->
                 <button onclick="document.getElementById('risultati-ricerca').style.display='none'"
                     style="position: absolute; top: -5px; right: 0; background: none; color: #adb5bd; border: none; font-size: 18px; cursor: pointer; padding: 0; transition: color 0.2s;"
                     onmouseover="this.style.color='#dc3545'" onmouseout="this.style.color='#adb5bd'"
@@ -536,7 +533,6 @@ funzionamento di questo software sono di proprietà esclusiva di
                     style="display: block; font-size: 12px; color: #6c757d; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;">🔎
                     Libere per Metratura</label>
 
-                <!-- Barra di ricerca unita -->
                 <div
                     style="display: flex; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-radius: 8px; overflow: hidden; border: 1px solid #ced4da;">
                     <input type="number" id="input-ricerca-mq" placeholder="Mq (es: 10)"
@@ -546,7 +542,6 @@ funzionamento di questo software sono di proprietà esclusiva di
                         onclick="cercaStanzeLibere()">Trova Box</button>
                 </div>
 
-                <!-- Qui comparirà la lista -->
                 <div id="risultati-ricerca"
                     style="margin-top: 15px; max-height: 250px; overflow-y: auto; font-size: 13px; display: none; padding-right: 5px;">
                 </div>
@@ -578,14 +573,12 @@ funzionamento di questo software sono di proprietà esclusiva di
             onclick="gestisciClickBottone('paidahead')">💰 Carica Paid Ahead</button>
         <input type="file" id="filePaidAhead" accept=".xlsx, .xls, .csv" style="display: none;"
             onchange="elaboraPaidAhead(event)">
-
     </div>
 
     <button id="btn-moveout" class="btn-azione" onclick="gestisciClickBottone('moveout')"
         style="background-color: #17a2b8;">📦 Carica File MOVE OUT</button>
     <input type="file" id="fileMoveOut" accept=".xlsx, .xls, .csv" style="display: none;"
         onchange="elaboraMoveOut(event)">
-    </div>
 
     <button class="btn-azione" onclick="toggleBoxEsporta()" style="background-color: #007bff;">📤 ESPORTA DATI</button>
     <div id="box-esporta"
@@ -607,11 +600,9 @@ funzionamento di questo software sono di proprietà esclusiva di
         <button class="btn-azione" onclick="generaFilePerMacro()">💬 Genera Invio WhatsApp</button>
         <button id="btn-genera-email" class="btn-azione" style="background-color: #0078D4;"
             onclick="generaFileEmail()">📧 Genera Invio Email</button>
-
     </div>
 
     <!-- Scelta Piani e Legenda -->
-
     <div class="sezione-menu" id="menu-piani" style="margin-top: 20px;">
         <h3>Seleziona l'Area / Piano:</h3>
         <div id="piani-centro" class="gruppo-piani">
@@ -630,7 +621,6 @@ funzionamento di questo software sono di proprietà esclusiva di
             <div class="item-legenda"><span class="pallino debitore"></span> Debitore</div>
             <div class="item-legenda"><span class="pallino move-in"></span> Move In</div>
             <div class="item-legenda"><span class="pallino in-ritardo"></span> 1-9 gg Ritardo</div>
-
         </div>
 
         <!-- Pannello Controllo (Cambio Stato) -->
@@ -648,13 +638,14 @@ funzionamento di questo software sono di proprietà esclusiva di
             <button id="btn-maintenance" class="btn-stato">Maintenance</button>
             <button id="btn-movein" class="btn-stato">MoveIn</button>
             <button id="btn-held" class="btn-stato">Held</button>
-                        <hr class="divisore-pannello">
+            <hr class="divisore-pannello">
             <div style="display: flex; gap: 8px; margin: 5px;">
                 <button id="btn-da-pulire" class="btn-stato">🧹 Richiedi Pulizia (Mail)</button>
                 <button id="btn-pulita" class="btn-stato">✅ Togli "Da Pulire"</button>
             </div>
         </div>
-  <!-- ========================================================================= -->
+
+        <!-- ========================================================================= -->
         <!-- ZONA 3: I CONTENITORI DELLE MAPPE (Non modificare le SVG qui dentro)      -->
         <!-- ========================================================================= -->
 
@@ -663,56 +654,1868 @@ funzionamento di questo software sono di proprietà esclusiva di
             <img src="centro_p1.jpg" alt="Centro Piano 1">
             <svg class="mappa-interattiva" viewBox="0 0 1300 1011" preserveAspectRatio="xMidYMid meet">
                 <!-- INSERISCI QUI TUTTI I TUOI <rect> DEL PIANO 1 -->
-  </svg>
+<rect id="stanza-centro-500" class="stanza" x="317" y="813" width="58" height="100" data-nome="500"
+                    data-mq="12" data-nodo-x="385" data-nodo-y="865"></rect>
+                <rect id="stanza-centro-501" class="stanza" x="245" y="812" width="72" height="100" data-nome="501"
+                    data-mq="12" data-nodo-x="280" data-nodo-y="793"></rect>
+                <rect id="stanza-centro-502" class="stanza" x="119" y="813" width="122" height="97" data-nome="502"
+                    data-mq="16" data-nodo-x="213" data-nodo-y="799"></rect>
+                <rect id="stanza-centro-503" class="stanza" x="95" y="645" width="67" height="163" data-nome="503"
+                    data-mq="10" data-nodo-x="173" data-nodo-y="734"></rect>
+                <rect id="stanza-centro-504" class="stanza" x="86" y="579" width="77" height="62" data-nome="504"
+                    data-mq="6" data-nodo-x="174" data-nodo-y="614"></rect>
+                <rect id="stanza-centro-505" class="stanza" x="87" y="530" width="76" height="46" data-nome="505"
+                    data-mq="4" data-nodo-x="173" data-nodo-y="558"></rect>
+                <rect id="stanza-centro-506" class="stanza" x="80" y="497" width="83" height="30" data-nome="506"
+                    data-mq="4" data-nodo-x="180" data-nodo-y="512"></rect>
+                <rect id="stanza-centro-507" class="stanza" x="75" y="461" width="88" height="33" data-nome="507"
+                    data-mq="4" data-nodo-x="177" data-nodo-y="479"></rect>
+                <rect id="stanza-centro-508" class="stanza" x="62" y="414" width="101" height="42" data-nome="508"
+                    data-mq="6" data-nodo-x="174" data-nodo-y="438"></rect>
+                <rect id="stanza-centro-509" class="stanza" x="67" y="349" width="98" height="62" data-nome="509"
+                    data-mq="6" data-nodo-x="174" data-nodo-y="383"></rect>
+                <rect id="stanza-centro-510" class="stanza" x="51" y="307" width="116" height="39" data-nome="510"
+                    data-mq="8" data-nodo-x="180" data-nodo-y="328"></rect>
+                <rect id="stanza-centro-511" class="stanza" x="51" y="257" width="111" height="47" data-nome="511"
+                    data-mq="8" data-nodo-x="176" data-nodo-y="285"></rect>
+                <rect id="stanza-centro-512" class="stanza" x="44" y="196" width="121" height="57" data-nome="512"
+                    data-mq="8" data-nodo-x="184" data-nodo-y="224"></rect>
+                <rect id="stanza-centro-513" class="stanza" x="32" y="121" width="132" height="72" data-nome="513"
+                    data-mq="20" data-nodo-x="172" data-nodo-y="166"></rect>
+                <rect id="stanza-centro-514" class="stanza" x="271" y="64" width="31" height="45" data-nome="514"
+                    data-mq="2" data-nodo-x="288" data-nodo-y="122"></rect>
+                <rect id="stanza-centro-515" class="stanza" x="304" y="67" width="30" height="42" data-nome="515"
+                    data-mq="2" data-nodo-x="318" data-nodo-y="120"></rect>
+                <rect id="stanza-centro-516" class="stanza" x="339" y="65" width="29" height="46" data-nome="516"
+                    data-mq="2" data-nodo-x="355" data-nodo-y="119"></rect>
+                <rect id="stanza-centro-517" class="stanza" x="372" y="70" width="26" height="39" data-nome="517"
+                    data-mq="2" data-nodo-x="388" data-nodo-y="120"></rect>
+                <rect id="stanza-centro-518" class="stanza" x="400" y="67" width="33" height="44" data-nome="518"
+                    data-mq="2" data-nodo-x="420" data-nodo-y="122"></rect>
+                <rect id="stanza-centro-519" class="stanza" x="438" y="67" width="23" height="44" data-nome="519"
+                    data-mq="2" data-nodo-x="451" data-nodo-y="120"></rect>
+                <rect id="stanza-centro-520" class="stanza" x="467" y="66" width="29" height="45" data-nome="520"
+                    data-mq="2" data-nodo-x="483" data-nodo-y="121"></rect>
+                <rect id="stanza-centro-521" class="stanza" x="498" y="66" width="29" height="43" data-nome="521"
+                    data-mq="2" data-nodo-x="513" data-nodo-y="120"></rect>
+                <rect id="stanza-centro-522" class="stanza" x="532" y="68" width="30" height="41" data-nome="522"
+                    data-mq="2" data-nodo-x="548" data-nodo-y="121"></rect>
+                <rect id="stanza-centro-523" class="stanza" x="564" y="68" width="31" height="41" data-nome="523"
+                    data-mq="2" data-nodo-x="579" data-nodo-y="120"></rect>
+                <rect id="stanza-centro-524" class="stanza" x="595" y="70" width="34" height="41" data-nome="524"
+                    data-mq="2" data-nodo-x="616" data-nodo-y="118"></rect>
+                <rect id="stanza-centro-525" class="stanza" x="590" y="145" width="48" height="21" data-nome="525"
+                    data-mq="2" data-nodo-x="608" data-nodo-y="137"></rect>
+                <rect id="stanza-centro-526" class="stanza" x="542" y="148" width="50" height="19" data-nome="526"
+                    data-mq="2" data-nodo-x="561" data-nodo-y="139"></rect>
+                <rect id="stanza-centro-527" class="stanza" x="497" y="144" width="42" height="26" data-nome="527"
+                    data-mq="2" data-nodo-x="524" data-nodo-y="138"></rect>
+                <rect id="stanza-centro-528" class="stanza" x="448" y="147" width="46" height="22" data-nome="528"
+                    data-mq="2" data-nodo-x="469" data-nodo-y="137"></rect>
+                <rect id="stanza-centro-529" class="stanza" x="402" y="146" width="44" height="22" data-nome="529"
+                    data-mq="2" data-nodo-x="432" data-nodo-y="140"></rect>
+                <rect id="stanza-centro-530" class="stanza" x="351" y="145" width="50" height="23" data-nome="530"
+                    data-mq="2" data-nodo-x="375" data-nodo-y="139"></rect>
+                <rect id="stanza-centro-531" class="stanza" x="303" y="146" width="46" height="24" data-nome="531"
+                    data-mq="2" data-nodo-x="332" data-nodo-y="139"></rect>
+                <rect id="stanza-centro-532" class="stanza" x="253" y="145" width="52" height="23" data-nome="532"
+                    data-mq="2" data-nodo-x="281" data-nodo-y="134"></rect>
+                <rect id="stanza-centro-533" class="stanza" x="202" y="146" width="50" height="22" data-nome="533"
+                    data-mq="2" data-nodo-x="229" data-nodo-y="129"></rect>
+                <rect id="stanza-centro-534" class="stanza" x="203" y="172" width="48" height="22" data-nome="534"
+                    data-mq="2" data-nodo-x="232" data-nodo-y="203"></rect>
+                <rect id="stanza-centro-535" class="stanza" x="254" y="173" width="46" height="21" data-nome="535"
+                    data-mq="2" data-nodo-x="278" data-nodo-y="203"></rect>
+                <rect id="stanza-centro-536" class="stanza" x="306" y="174" width="44" height="21" data-nome="536"
+                    data-mq="2" data-nodo-x="328" data-nodo-y="206"></rect>
+                <rect id="stanza-centro-537" class="stanza" x="354" y="172" width="44" height="23" data-nome="537"
+                    data-mq="2" data-nodo-x="372" data-nodo-y="203"></rect>
+                <rect id="stanza-centro-538" class="stanza" x="401" y="174" width="46" height="21" data-nome="538"
+                    data-mq="2" data-nodo-x="422" data-nodo-y="203"></rect>
+                <rect id="stanza-centro-539" class="stanza" x="450" y="173" width="43" height="23" data-nome="539"
+                    data-mq="2" data-nodo-x="473" data-nodo-y="205"></rect>
+                <rect id="stanza-centro-540" class="stanza" x="496" y="174" width="43" height="21" data-nome="540"
+                    data-mq="2" data-nodo-x="519" data-nodo-y="202"></rect>
+                <rect id="stanza-centro-541" class="stanza" x="541" y="174" width="45" height="19" data-nome="541"
+                    data-mq="2" data-nodo-x="566" data-nodo-y="202"></rect>
+                <rect id="stanza-centro-542" class="stanza" x="588" y="171" width="52" height="24" data-nome="542"
+                    data-mq="2" data-nodo-x="612" data-nodo-y="203"></rect>
+                <rect id="stanza-centro-543" class="stanza" x="611" y="232" width="31" height="35" data-nome="543"
+                    data-mq="2" data-nodo-x="622" data-nodo-y="224"></rect>
+                <rect id="stanza-centro-544" class="stanza" x="579" y="232" width="26" height="34" data-nome="544"
+                    data-mq="2" data-nodo-x="590" data-nodo-y="222"></rect>
+                <rect id="stanza-centro-545" class="stanza" x="548" y="233" width="28" height="34" data-nome="545"
+                    data-mq="2" data-nodo-x="563" data-nodo-y="223"></rect>
+                <rect id="stanza-centro-546" class="stanza" x="519" y="233" width="28" height="34" data-nome="546"
+                    data-mq="2" data-nodo-x="530" data-nodo-y="223"></rect>
+                <rect id="stanza-centro-44" class="stanza" x="378" y="895" width="33" height="18" data-nome="44"
+                    data-mq="1" data-nodo-x="422" data-nodo-y="903"></rect>
+                <rect id="stanza-centro-45" class="stanza" x="377" y="827" width="33" height="18" data-nome="45"
+                    data-mq="1" data-nodo-x="415" data-nodo-y="841"></rect>
+                <rect id="stanza-centro-46" class="stanza" x="379" y="878" width="33" height="16" data-nome="46"
+                    data-mq="1" data-nodo-x="422" data-nodo-y="889"></rect>
+                <rect id="stanza-centro-47" class="stanza" x="377" y="805" width="34" height="20" data-nome="47"
+                    data-mq="1" data-nodo-x="418" data-nodo-y="821"></rect>
+                <rect id="stanza-centro-130" class="stanza" x="619" y="829" width="29" height="17" data-nome="130"
+                    data-mq="1" data-nodo-x="655" data-nodo-y="838"></rect>
+                <rect id="stanza-centro-131" class="stanza" x="622" y="804" width="27" height="23" data-nome="131"
+                    data-mq="1" data-nodo-x="656" data-nodo-y="817"></rect>
+                <rect id="stanza-centro-547" class="stanza" x="487" y="230" width="29" height="38" data-nome="547"
+                    data-mq="2" data-nodo-x="502" data-nodo-y="221"></rect>
+                <rect id="stanza-centro-548" class="stanza" x="457" y="230" width="29" height="36" data-nome="548"
+                    data-mq="2" data-nodo-x="473" data-nodo-y="221"></rect>
+                <rect id="stanza-centro-549" class="stanza" x="424" y="232" width="30" height="35" data-nome="549"
+                    data-mq="2" data-nodo-x="438" data-nodo-y="223"></rect>
+                <rect id="stanza-centro-550" class="stanza" x="393" y="230" width="28" height="38" data-nome="550"
+                    data-mq="2" data-nodo-x="405" data-nodo-y="220"></rect>
+                <rect id="stanza-centro-551" class="stanza" x="361" y="231" width="31" height="36" data-nome="551"
+                    data-mq="2" data-nodo-x="381" data-nodo-y="224"></rect>
+                <rect id="stanza-centro-552" class="stanza" x="330" y="231" width="29" height="34" data-nome="552"
+                    data-mq="2" data-nodo-x="338" data-nodo-y="217"></rect>
+                <rect id="stanza-centro-553" class="stanza" x="298" y="233" width="30" height="35" data-nome="553"
+                    data-mq="2" data-nodo-x="311" data-nodo-y="220"></rect>
+                <rect id="stanza-centro-554" class="stanza" x="268" y="233" width="28" height="34" data-nome="554"
+                    data-mq="2" data-nodo-x="279" data-nodo-y="228"></rect>
+                <rect id="stanza-centro-555" class="stanza" x="237" y="231" width="26" height="34" data-nome="555"
+                    data-mq="2" data-nodo-x="251" data-nodo-y="220"></rect>
+                <rect id="stanza-centro-556" class="stanza" x="204" y="234" width="29" height="29" data-nome="556"
+                    data-mq="2" data-nodo-x="220" data-nodo-y="224"></rect>
+                <rect id="stanza-centro-557" class="stanza" x="205" y="268" width="26" height="38" data-nome="557"
+                    data-mq="2" data-nodo-x="218" data-nodo-y="315"></rect>
+                <rect id="stanza-centro-558" class="stanza" x="234" y="269" width="31" height="37" data-nome="558"
+                    data-mq="2" data-nodo-x="253" data-nodo-y="315"></rect>
+                <rect id="stanza-centro-559" class="stanza" x="270" y="271" width="27" height="34" data-nome="559"
+                    data-mq="2" data-nodo-x="287" data-nodo-y="313"></rect>
+                <rect id="stanza-centro-560" class="stanza" x="301" y="272" width="31" height="33" data-nome="560"
+                    data-mq="2" data-nodo-x="315" data-nodo-y="314"></rect>
+                <rect id="stanza-centro-561" class="stanza" x="337" y="271" width="27" height="36" data-nome="561"
+                    data-mq="2" data-nodo-x="350" data-nodo-y="312"></rect>
+                <rect id="stanza-centro-562" class="stanza" x="367" y="273" width="29" height="32" data-nome="562"
+                    data-mq="2" data-nodo-x="383" data-nodo-y="318"></rect>
+                <rect id="stanza-centro-563" class="stanza" x="399" y="273" width="30" height="32" data-nome="563"
+                    data-mq="2" data-nodo-x="412" data-nodo-y="312"></rect>
+                <rect id="stanza-centro-564" class="stanza" x="432" y="271" width="29" height="34" data-nome="564"
+                    data-mq="2" data-nodo-x="446" data-nodo-y="317"></rect>
+                <rect id="stanza-centro-565" class="stanza" x="465" y="271" width="31" height="35" data-nome="565"
+                    data-mq="2" data-nodo-x="483" data-nodo-y="315"></rect>
+                <rect id="stanza-centro-566" class="stanza" x="499" y="271" width="28" height="34" data-nome="566"
+                    data-mq="2" data-nodo-x="516" data-nodo-y="318"></rect>
+                <rect id="stanza-centro-567" class="stanza" x="530" y="272" width="29" height="36" data-nome="567"
+                    data-mq="2" data-nodo-x="549" data-nodo-y="318"></rect>
+                <rect id="stanza-centro-568" class="stanza" x="563" y="272" width="29" height="35" data-nome="568"
+                    data-mq="2" data-nodo-x="583" data-nodo-y="319"></rect>
+                <rect id="stanza-centro-569" class="stanza" x="595" y="273" width="44" height="31" data-nome="569"
+                    data-mq="3" data-nodo-x="617" data-nodo-y="314"></rect>
+                <rect id="stanza-centro-570" class="stanza" x="562" y="344" width="73" height="64" data-nome="570"
+                    data-mq="9" data-nodo-x="601" data-nodo-y="334"></rect>
+                <rect id="stanza-centro-571" class="stanza" x="510" y="344" width="52" height="67" data-nome="571"
+                    data-mq="6" data-nodo-x="535" data-nodo-y="332"></rect>
+                <rect id="stanza-centro-572" class="stanza" x="461" y="343" width="44" height="69" data-nome="572"
+                    data-mq="6" data-nodo-x="482" data-nodo-y="330"></rect>
+                <rect id="stanza-centro-573" class="stanza" x="408" y="342" width="49" height="70" data-nome="573"
+                    data-mq="6" data-nodo-x="430" data-nodo-y="330"></rect>
+                <rect id="stanza-centro-574" class="stanza" x="355" y="340" width="49" height="73" data-nome="574"
+                    data-mq="6" data-nodo-x="372" data-nodo-y="330"></rect>
+                <rect id="stanza-centro-575" class="stanza" x="305" y="343" width="46" height="67" data-nome="575"
+                    data-mq="6" data-nodo-x="328" data-nodo-y="331"></rect>
+                <rect id="stanza-centro-576" class="stanza" x="254" y="341" width="47" height="70" data-nome="576"
+                    data-mq="6" data-nodo-x="272" data-nodo-y="331"></rect>
+                <rect id="stanza-centro-577" class="stanza" x="202" y="342" width="49" height="70" data-nome="577"
+                    data-mq="6" data-nodo-x="189" data-nodo-y="379"></rect>
+                <rect id="stanza-centro-578" class="stanza" x="204" y="417" width="50" height="65" data-nome="578"
+                    data-mq="6" data-nodo-x="193" data-nodo-y="454"></rect>
+                <rect id="stanza-centro-579" class="stanza" x="257" y="418" width="45" height="64" data-nome="579"
+                    data-mq="6" data-nodo-x="279" data-nodo-y="493"></rect>
+                <rect id="stanza-centro-580" class="stanza" x="307" y="416" width="45" height="67" data-nome="580"
+                    data-mq="6" data-nodo-x="336" data-nodo-y="493"></rect>
+                <rect id="stanza-centro-581" class="stanza" x="357" y="415" width="49" height="68" data-nome="581"
+                    data-mq="6" data-nodo-x="374" data-nodo-y="493"></rect>
+                <rect id="stanza-centro-582" class="stanza" x="411" y="420" width="45" height="63" data-nome="582"
+                    data-mq="6" data-nodo-x="428" data-nodo-y="491"></rect>
+                <rect id="stanza-centro-583" class="stanza" x="460" y="416" width="47" height="67" data-nome="583"
+                    data-mq="6" data-nodo-x="480" data-nodo-y="494"></rect>
+                <rect id="stanza-centro-584" class="stanza" x="510" y="414" width="50" height="70" data-nome="584"
+                    data-mq="6" data-nodo-x="531" data-nodo-y="492"></rect>
+                <rect id="stanza-centro-585" class="stanza" x="566" y="416" width="35" height="66" data-nome="585"
+                    data-mq="6" data-nodo-x="582" data-nodo-y="494"></rect>
+                <rect id="stanza-centro-586" class="stanza" x="605" y="413" width="34" height="68" data-nome="586"
+                    data-mq="6" data-nodo-x="624" data-nodo-y="491"></rect>
+                <rect id="stanza-centro-587" class="stanza" x="591" y="518" width="46" height="130" data-nome="587"
+                    data-mq="12" data-nodo-x="613" data-nodo-y="505"></rect>
+                <rect id="stanza-centro-588" class="stanza" x="560" y="519" width="26" height="41" data-nome="588"
+                    data-mq="2" data-nodo-x="571" data-nodo-y="507"></rect>
+                <rect id="stanza-centro-589" class="stanza" x="526" y="517" width="29" height="42" data-nome="589"
+                    data-mq="2" data-nodo-x="540" data-nodo-y="508"></rect>
+                <rect id="stanza-centro-590" class="stanza" x="491" y="517" width="33" height="41" data-nome="590"
+                    data-mq="2" data-nodo-x="508" data-nodo-y="507"></rect>
+                <rect id="stanza-centro-591" class="stanza" x="463" y="519" width="24" height="40" data-nome="591"
+                    data-mq="2" data-nodo-x="468" data-nodo-y="506"></rect>
+                <rect id="stanza-centro-592" class="stanza" x="428" y="519" width="29" height="39" data-nome="592"
+                    data-mq="2" data-nodo-x="441" data-nodo-y="511"></rect>
+                <rect id="stanza-centro-593" class="stanza" x="395" y="518" width="30" height="40" data-nome="593"
+                    data-mq="2" data-nodo-x="410" data-nodo-y="509"></rect>
+                <rect id="stanza-centro-594" class="stanza" x="364" y="519" width="29" height="40" data-nome="594"
+                    data-mq="2" data-nodo-x="376" data-nodo-y="511"></rect>
+                <rect id="stanza-centro-595" class="stanza" x="333" y="520" width="29" height="37" data-nome="595"
+                    data-mq="2" data-nodo-x="346" data-nodo-y="510"></rect>
+                <rect id="stanza-centro-596" class="stanza" x="296" y="520" width="33" height="38" data-nome="596"
+                    data-mq="2" data-nodo-x="312" data-nodo-y="505"></rect>
+                <rect id="stanza-centro-597" class="stanza" x="266" y="520" width="27" height="40" data-nome="597"
+                    data-mq="2" data-nodo-x="281" data-nodo-y="509"></rect>
+                <rect id="stanza-centro-598" class="stanza" x="230" y="519" width="34" height="41" data-nome="598"
+                    data-mq="2" data-nodo-x="252" data-nodo-y="512"></rect>
+                <rect id="stanza-centro-599" class="stanza" x="202" y="518" width="23" height="41" data-nome="599"
+                    data-mq="2" data-nodo-x="212" data-nodo-y="506"></rect>
+                <rect id="stanza-centro-600" class="stanza" x="201" y="561" width="51" height="86" data-nome="600"
+                    data-mq="8" data-nodo-x="191" data-nodo-y="600"></rect>
+                <rect id="stanza-centro-601" class="stanza" x="256" y="562" width="52" height="86" data-nome="601"
+                    data-mq="8" data-nodo-x="279" data-nodo-y="660"></rect>
+                <rect id="stanza-centro-602" class="stanza" x="314" y="561" width="50" height="88" data-nome="602"
+                    data-mq="8" data-nodo-x="335" data-nodo-y="663"></rect>
+                <rect id="stanza-centro-603" class="stanza" x="370" y="561" width="49" height="87" data-nome="603"
+                    data-mq="8" data-nodo-x="394" data-nodo-y="656"></rect>
+                <rect id="stanza-centro-604" class="stanza" x="425" y="563" width="51" height="82" data-nome="604"
+                    data-mq="8" data-nodo-x="456" data-nodo-y="658"></rect>
+                <rect id="stanza-centro-605" class="stanza" x="481" y="562" width="53" height="87" data-nome="605"
+                    data-mq="8" data-nodo-x="503" data-nodo-y="656"></rect>
+                <rect id="stanza-centro-606" class="stanza" x="539" y="562" width="47" height="85" data-nome="606"
+                    data-mq="8" data-nodo-x="562" data-nodo-y="658"></rect>
+                <rect id="stanza-centro-608" class="stanza" x="587" y="685" width="51" height="41" data-nome="608"
+                    data-mq="4" data-nodo-x="609" data-nodo-y="670"></rect>
+                <rect id="stanza-centro-609" class="stanza" x="546" y="685" width="35" height="40" data-nome="609"
+                    data-mq="3" data-nodo-x="559" data-nodo-y="674"></rect>
+                <rect id="stanza-centro-610" class="stanza" x="507" y="687" width="34" height="37" data-nome="610"
+                    data-mq="3" data-nodo-x="520" data-nodo-y="675"></rect>
+                <rect id="stanza-centro-611" class="stanza" x="469" y="686" width="34" height="38" data-nome="611"
+                    data-mq="3" data-nodo-x="481" data-nodo-y="676"></rect>
+                <rect id="stanza-centro-612" class="stanza" x="433" y="685" width="34" height="41" data-nome="612"
+                    data-mq="3" data-nodo-x="442" data-nodo-y="675"></rect>
+                <rect id="stanza-centro-613" class="stanza" x="396" y="685" width="34" height="39" data-nome="613"
+                    data-mq="3" data-nodo-x="405" data-nodo-y="673"></rect>
+                <rect id="stanza-centro-614" class="stanza" x="361" y="688" width="33" height="37" data-nome="614"
+                    data-mq="3" data-nodo-x="376" data-nodo-y="673"></rect>
+                <rect id="stanza-centro-615" class="stanza" x="322" y="686" width="34" height="40" data-nome="615"
+                    data-mq="3" data-nodo-x="342" data-nodo-y="675"></rect>
+                <rect id="stanza-centro-616" class="stanza" x="284" y="686" width="35" height="40" data-nome="616"
+                    data-mq="3" data-nodo-x="304" data-nodo-y="674"></rect>
+                <rect id="stanza-centro-617" class="stanza" x="245" y="683" width="34" height="41" data-nome="617"
+                    data-mq="3" data-nodo-x="260" data-nodo-y="668"></rect>
+                <rect id="stanza-centro-618" class="stanza" x="202" y="685" width="38" height="41" data-nome="618"
+                    data-mq="3" data-nodo-x="221" data-nodo-y="673"></rect>
+                <rect id="stanza-centro-619" class="stanza" x="201" y="729" width="43" height="46" data-nome="619"
+                    data-mq="4" data-nodo-x="231" data-nodo-y="784"></rect>
+                <rect id="stanza-centro-620" class="stanza" x="248" y="730" width="44" height="44" data-nome="620"
+                    data-mq="4" data-nodo-x="268" data-nodo-y="785"></rect>
+                <rect id="stanza-centro-621" class="stanza" x="296" y="730" width="46" height="42" data-nome="621"
+                    data-mq="4" data-nodo-x="323" data-nodo-y="787"></rect>
+                <rect id="stanza-centro-622" class="stanza" x="346" y="732" width="43" height="42" data-nome="622"
+                    data-mq="4" data-nodo-x="374" data-nodo-y="779"></rect>
+                <rect id="stanza-centro-623" class="stanza" x="394" y="731" width="41" height="43" data-nome="623"
+                    data-mq="4" data-nodo-x="418" data-nodo-y="781"></rect>
+                <rect id="stanza-centro-625" class="stanza" x="441" y="730" width="88" height="43" data-nome="625"
+                    data-mq="8" data-nodo-x="505" data-nodo-y="783"></rect>
+                <rect id="stanza-centro-626" class="stanza" x="535" y="731" width="45" height="43" data-nome="626"
+                    data-mq="4" data-nodo-x="553" data-nodo-y="784"></rect>
+                <rect id="stanza-centro-627" class="stanza" x="585" y="731" width="54" height="41" data-nome="627"
+                    data-mq="4" data-nodo-x="617" data-nodo-y="784"></rect>
+                <rect id="stanza-centro-630" class="stanza" x="675" y="696" width="69" height="89" data-nome="630"
+                    data-mq="12" data-nodo-x="711" data-nodo-y="796"></rect>
+                <rect id="stanza-centro-631" class="stanza" x="751" y="696" width="63" height="86" data-nome="631"
+                    data-mq="12" data-nodo-x="780" data-nodo-y="796"></rect>
+                <rect id="stanza-centro-632" class="stanza" x="821" y="697" width="73" height="88" data-nome="632"
+                    data-mq="12" data-nodo-x="852" data-nodo-y="795"></rect>
+                <rect id="stanza-centro-633" class="stanza" x="899" y="696" width="79" height="89" data-nome="633"
+                    data-mq="12" data-nodo-x="939" data-nodo-y="795"></rect>
+                <rect id="stanza-centro-634" class="stanza" x="982" y="697" width="73" height="87" data-nome="634"
+                    data-mq="12" data-nodo-x="1013" data-nodo-y="795"></rect>
+                <rect id="stanza-centro-635" class="stanza" x="1058" y="697" width="99" height="89" data-nome="635"
+                    data-mq="15" data-nodo-x="1105" data-nodo-y="797"></rect>
+                <rect id="stanza-centro-636" class="stanza" x="677" y="580" width="59" height="80" data-nome="636"
+                    data-mq="10" data-nodo-x="704" data-nodo-y="677"></rect>
+                <rect id="stanza-centro-637" class="stanza" x="742" y="581" width="60" height="80" data-nome="637"
+                    data-mq="10" data-nodo-x="771" data-nodo-y="678"></rect>
+                <rect id="stanza-centro-638" class="stanza" x="809" y="583" width="135" height="77" data-nome="638"
+                    data-mq="20" data-nodo-x="872" data-nodo-y="676"></rect>
+                <rect id="stanza-centro-639" class="stanza" x="949" y="581" width="140" height="79" data-nome="639"
+                    data-mq="20" data-nodo-x="1011" data-nodo-y="677"></rect>
+                <rect id="stanza-centro-640" class="stanza" x="1093" y="584" width="64" height="77" data-nome="640"
+                    data-mq="10" data-nodo-x="1125" data-nodo-y="677"></rect>
+                <rect id="stanza-centro-641" class="stanza" x="976" y="520" width="55" height="56" data-nome="641"
+                    data-mq="6" data-nodo-x="1000" data-nodo-y="500"></rect>
+                <rect id="stanza-centro-642" class="stanza" x="1033" y="521" width="61" height="55" data-nome="642"
+                    data-mq="6" data-nodo-x="1061" data-nodo-y="506"></rect>
+                <rect id="stanza-centro-643" class="stanza" x="1123" y="454" width="113" height="28" data-nome="643"
+                    data-mq="13" data-nodo-x="1161" data-nodo-y="493"></rect>
+                <rect id="stanza-centro-644" class="stanza" x="674" y="144" width="62" height="72" data-nome="644"
+                    data-mq="8" data-nodo-x="707" data-nodo-y="130"></rect>
+                <rect id="stanza-centro-645" class="stanza" x="1130" y="825" width="110" height="85" data-nome="645"
+                    data-mq="15" data-nodo-x="1155" data-nodo-y="811"></rect>
+                <rect id="stanza-centro-646" class="stanza" x="719" y="825" width="61" height="85" data-nome="646"
+                    data-mq="10" data-nodo-x="750" data-nodo-y="808"></rect>
+                <rect id="stanza-centro-647" class="stanza" x="785" y="823" width="59" height="88" data-nome="647"
+                    data-mq="10" data-nodo-x="812" data-nodo-y="807"></rect>
+                <rect id="stanza-centro-648" class="stanza" x="850" y="823" width="66" height="90" data-nome="648"
+                    data-mq="10" data-nodo-x="887" data-nodo-y="806"></rect>
+                <rect id="stanza-centro-649" class="stanza" x="920" y="823" width="65" height="90" data-nome="649"
+                    data-mq="10" data-nodo-x="960" data-nodo-y="807"></rect>
+                <rect id="stanza-centro-650" class="stanza" x="988" y="825" width="63" height="86" data-nome="650"
+                    data-mq="10" data-nodo-x="1024" data-nodo-y="809"></rect>
+                <rect id="stanza-centro-651" class="stanza" x="1057" y="825" width="68" height="88" data-nome="651"
+                    data-mq="10" data-nodo-x="1084" data-nodo-y="804"></rect>
+                <rect id="stanza-centro-652" class="stanza" x="1191" y="766" width="48" height="54" data-nome="652"
+                    data-mq="3" data-nodo-x="1172" data-nodo-y="794"></rect>
+                <rect id="stanza-centro-653" class="stanza" x="1192" y="708" width="49" height="54" data-nome="653"
+                    data-mq="3" data-nodo-x="1179" data-nodo-y="734"></rect>
+                <rect id="stanza-centro-654" class="stanza" x="1191" y="652" width="49" height="53" data-nome="654"
+                    data-mq="3" data-nodo-x="1177" data-nodo-y="684"></rect>
+                <rect id="stanza-centro-655" class="stanza" x="1189" y="596" width="51" height="53" data-nome="655"
+                    data-mq="3" data-nodo-x="1177" data-nodo-y="624"></rect>
+                <rect id="stanza-centro-656" class="stanza" x="1192" y="540" width="48" height="51" data-nome="656"
+                    data-mq="3" data-nodo-x="1177" data-nodo-y="568"></rect>
+                <rect id="stanza-centro-657" class="stanza" x="1191" y="485" width="51" height="52" data-nome="657"
+                    data-mq="2" data-nodo-x="1173" data-nodo-y="515"></rect>
+                <rect id="stanza-centro-658" class="stanza" x="1064" y="454" width="55" height="28" data-nome="658"
+                    data-mq="2.5" data-nodo-x="1096" data-nodo-y="498"></rect>
+                <rect id="stanza-centro-659" class="stanza" x="1005" y="457" width="54" height="26" data-nome="659"
+                    data-mq="2.5" data-nodo-x="1035" data-nodo-y="489"></rect>
+                <rect id="stanza-centro-660" class="stanza" x="1054" y="267" width="31" height="112" data-nome="660"
+                    data-mq="3" data-nodo-x="1041" data-nodo-y="323"></rect>
+                <rect id="stanza-centro-661" class="stanza" x="1054" y="218" width="30" height="47" data-nome="661"
+                    data-mq="3" data-nodo-x="1040" data-nodo-y="246"></rect>
+                <rect id="stanza-centro-662" class="stanza" x="1053" y="167" width="30" height="46" data-nome="662"
+                    data-mq="3" data-nodo-x="1034" data-nodo-y="193"></rect>
+                <rect id="stanza-centro-663" class="stanza" x="1051" y="114" width="34" height="48" data-nome="663"
+                    data-mq="3" data-nodo-x="1036" data-nodo-y="152"></rect>
+                <rect id="stanza-centro-664" class="stanza" x="1022" y="66" width="61" height="44" data-nome="664"
+                    data-mq="5" data-nodo-x="1035" data-nodo-y="121"></rect>
+                <rect id="stanza-centro-665" class="stanza" x="989" y="65" width="30" height="44" data-nome="665"
+                    data-mq="2" data-nodo-x="1003" data-nodo-y="122"></rect>
+                <rect id="stanza-centro-666" class="stanza" x="955" y="68" width="29" height="41" data-nome="666"
+                    data-mq="2" data-nodo-x="973" data-nodo-y="122"></rect>
+                <rect id="stanza-centro-667" class="stanza" x="922" y="67" width="29" height="41" data-nome="667"
+                    data-mq="2" data-nodo-x="934" data-nodo-y="124"></rect>
+                <rect id="stanza-centro-668" class="stanza" x="888" y="65" width="30" height="46" data-nome="668"
+                    data-mq="2" data-nodo-x="903" data-nodo-y="120"></rect>
+                <rect id="stanza-centro-669" class="stanza" x="858" y="66" width="26" height="46" data-nome="669"
+                    data-mq="2" data-nodo-x="872" data-nodo-y="122"></rect>
+                <rect id="stanza-centro-670" class="stanza" x="823" y="67" width="30" height="44" data-nome="670"
+                    data-mq="2" data-nodo-x="839" data-nodo-y="122"></rect>
+                <rect id="stanza-centro-671" class="stanza" x="794" y="68" width="26" height="44" data-nome="671"
+                    data-mq="2" data-nodo-x="812" data-nodo-y="125"></rect>
+                <rect id="stanza-centro-672" class="stanza" x="761" y="67" width="28" height="45" data-nome="672"
+                    data-mq="2" data-nodo-x="781" data-nodo-y="126"></rect>
+                <rect id="stanza-centro-673" class="stanza" x="726" y="64" width="31" height="47" data-nome="673"
+                    data-mq="2" data-nodo-x="746" data-nodo-y="121"></rect>
+                <rect id="stanza-centro-674" class="stanza" x="695" y="67" width="26" height="44" data-nome="674"
+                    data-mq="2" data-nodo-x="712" data-nodo-y="120"></rect>
+                <rect id="stanza-centro-675" class="stanza" x="662" y="66" width="32" height="42" data-nome="675"
+                    data-mq="2" data-nodo-x="677" data-nodo-y="119"></rect>
+                <rect id="stanza-centro-676" class="stanza" x="633" y="68" width="29" height="41" data-nome="676"
+                    data-mq="2" data-nodo-x="650" data-nodo-y="122"></rect>
+                <rect id="stanza-centro-677" class="stanza" x="676" y="221" width="44" height="69" data-nome="677"
+                    data-mq="6" data-nodo-x="696" data-nodo-y="302"></rect>
+                <rect id="stanza-centro-678" class="stanza" x="740" y="147" width="61" height="71" data-nome="678"
+                    data-mq="8" data-nodo-x="766" data-nodo-y="130"></rect>
+                <rect id="stanza-centro-679" class="stanza" x="803" y="148" width="82" height="71" data-nome="679"
+                    data-mq="16" data-nodo-x="850" data-nodo-y="133"></rect>
+                <rect id="stanza-centro-681" class="stanza" x="885" y="147" width="133" height="71" data-nome="681"
+                    data-mq="11" data-nodo-x="971" data-nodo-y="131"></rect>
+                <rect id="stanza-centro-682" class="stanza" x="965" y="221" width="53" height="67" data-nome="682"
+                    data-mq="7" data-nodo-x="987" data-nodo-y="303"></rect>
+                <rect id="stanza-centro-683" class="stanza" x="916" y="222" width="45" height="69" data-nome="683"
+                    data-mq="6" data-nodo-x="939" data-nodo-y="302"></rect>
+                <rect id="stanza-centro-684" class="stanza" x="868" y="220" width="45" height="70" data-nome="684"
+                    data-mq="6" data-nodo-x="890" data-nodo-y="298"></rect>
+                <rect id="stanza-centro-685" class="stanza" x="821" y="222" width="44" height="67" data-nome="685"
+                    data-mq="6" data-nodo-x="845" data-nodo-y="300"></rect>
+                <rect id="stanza-centro-686" class="stanza" x="774" y="220" width="43" height="69" data-nome="686"
+                    data-mq="6" data-nodo-x="788" data-nodo-y="299"></rect>
+                <rect id="stanza-centro-687" class="stanza" x="724" y="221" width="46" height="70" data-nome="687"
+                    data-mq="6" data-nodo-x="749" data-nodo-y="301"></rect>
+                <rect id="stanza-centro-688" class="stanza" x="676" y="326" width="40" height="78" data-nome="688"
+                    data-mq="6" data-nodo-x="703" data-nodo-y="317"></rect>
+                <rect id="stanza-centro-689" class="stanza" x="720" y="326" width="33" height="78" data-nome="689"
+                    data-mq="5" data-nodo-x="736" data-nodo-y="317"></rect>
+                <rect id="stanza-centro-690" class="stanza" x="757" y="325" width="33" height="78" data-nome="690"
+                    data-mq="5" data-nodo-x="772" data-nodo-y="318"></rect>
+                <rect id="stanza-centro-691" class="stanza" x="793" y="326" width="36" height="78" data-nome="691"
+                    data-mq="5" data-nodo-x="813" data-nodo-y="318"></rect>
+                <rect id="stanza-centro-692" class="stanza" x="834" y="326" width="34" height="77" data-nome="692"
+                    data-mq="5" data-nodo-x="857" data-nodo-y="315"></rect>
+                <rect id="stanza-centro-693" class="stanza" x="872" y="325" width="38" height="80" data-nome="693"
+                    data-mq="5" data-nodo-x="891" data-nodo-y="309"></rect>
+                <rect id="stanza-centro-694" class="stanza" x="913" y="327" width="47" height="78" data-nome="694"
+                    data-mq="7" data-nodo-x="933" data-nodo-y="316"></rect>
+                <rect id="stanza-centro-695" class="stanza" x="964" y="327" width="58" height="51" data-nome="695"
+                    data-mq="5" data-nodo-x="991" data-nodo-y="392"></rect>
+                <rect id="stanza-centro-696" class="stanza" x="908" y="407" width="55" height="76" data-nome="696"
+                    data-mq="8" data-nodo-x="973" data-nodo-y="439"></rect>
+                <rect id="stanza-centro-697" class="stanza" x="869" y="408" width="36" height="73" data-nome="697"
+                    data-mq="5" data-nodo-x="885" data-nodo-y="495"></rect>
+                <rect id="stanza-centro-698" class="stanza" x="831" y="408" width="36" height="73" data-nome="698"
+                    data-mq="5" data-nodo-x="847" data-nodo-y="492"></rect>
+                <rect id="stanza-centro-699" class="stanza" x="792" y="410" width="38" height="72" data-nome="699"
+                    data-mq="5" data-nodo-x="806" data-nodo-y="495"></rect>
+                <rect id="stanza-centro-700" class="stanza" x="752" y="407" width="39" height="77" data-nome="700"
+                    data-mq="5" data-nodo-x="768" data-nodo-y="495"></rect>
+                <rect id="stanza-centro-701" class="stanza" x="715" y="409" width="35" height="75" data-nome="701"
+                    data-mq="5" data-nodo-x="730" data-nodo-y="494"></rect>
+                <rect id="stanza-centro-702" class="stanza" x="675" y="409" width="38" height="75" data-nome="702"
+                    data-mq="5" data-nodo-x="700" data-nodo-y="491"></rect>
+                <rect id="stanza-centro-703" class="stanza" x="676" y="521" width="56" height="57" data-nome="703"
+                    data-mq="6" data-nodo-x="705" data-nodo-y="511"></rect>
+                <rect id="stanza-centro-704" class="stanza" x="735" y="519" width="60" height="59" data-nome="704"
+                    data-mq="6" data-nodo-x="760" data-nodo-y="508"></rect>
+                <rect id="stanza-centro-705" class="stanza" x="799" y="521" width="53" height="57" data-nome="705"
+                    data-mq="6" data-nodo-x="831" data-nodo-y="517"></rect>
+                <rect id="stanza-centro-706" class="stanza" x="859" y="520" width="114" height="57" data-nome="706"
+                    data-mq="12" data-nodo-x="917" data-nodo-y="505"></rect>
+                <rect id="stanza-centro-708" class="stanza" x="1095" y="520" width="61" height="57" data-nome="708"
+                    data-mq="6" data-nodo-x="1127" data-nodo-y="510"></rect>
+                <rect id="stanza-centro-709" class="stanza" x="986" y="456" width="21" height="28" data-nome="709"
+                    data-mq="0.5" data-nodo-x="974" data-nodo-y="472"></rect>
+                <rect id="stanza-centro-710" class="stanza" x="1087" y="361" width="49" height="17" data-nome="710"
+                    data-mq="2" data-nodo-x="1118" data-nodo-y="388"></rect>
+                <rect id="stanza-centro-711" class="stanza" x="1088" y="276" width="49" height="81" data-nome="711"
+                    data-mq="7" data-nodo-x="1144" data-nodo-y="325"></rect>
+                <rect id="stanza-centro-712" class="stanza" x="1088" y="208" width="49" height="64" data-nome="712"
+                    data-mq="5" data-nodo-x="1147" data-nodo-y="242"></rect>
+                <rect id="stanza-centro-713" class="stanza" x="1088" y="139" width="49" height="66" data-nome="713"
+                    data-mq="6" data-nodo-x="1142" data-nodo-y="177"></rect>
+                <rect id="stanza-centro-714" class="stanza" x="1087" y="66" width="48" height="70" data-nome="714"
+                    data-mq="6" data-nodo-x="1144" data-nodo-y="116"></rect>
+                <rect id="stanza-centro-715" class="stanza" x="1139" y="68" width="36" height="18" data-nome="715"
+                    data-mq="1.5" data-nodo-x="1149" data-nodo-y="97"></rect>
+                <rect id="stanza-centro-716" class="stanza" x="1178" y="68" width="61" height="64" data-nome="716"
+                    data-mq="8" data-nodo-x="1163" data-nodo-y="114"></rect>
+                <rect id="stanza-centro-717" class="stanza" x="1175" y="138" width="62" height="64" data-nome="717"
+                    data-mq="7" data-nodo-x="1163" data-nodo-y="169"></rect>
+                <rect id="stanza-centro-718" class="stanza" x="1176" y="209" width="65" height="55" data-nome="718"
+                    data-mq="7" data-nodo-x="1163" data-nodo-y="233"></rect>
+                <rect id="stanza-centro-719" class="stanza" x="1174" y="269" width="64" height="92" data-nome="719"
+                    data-mq="12" data-nodo-x="1160" data-nodo-y="306"></rect>
+                <rect id="stanza-centro-899" class="stanza" x="446" y="809" width="1" height="1" data-nome="899"
+                    data-mq="0" data-nodo-x="531" data-nodo-y="799" style="pointer-events: none;"></rect>
+                <rect id="stanza-centro-900" class="stanza" x="999" y="410" width="1" height="1" data-nome="900"
+                    data-mq="0" data-nodo-x="981" data-nodo-y="427" style="pointer-events: none;"></rect>
+                <rect id="stanza-centro-901" class="stanza" x="35" y="64" width="1" height="1" data-nome="901"
+                    data-mq="0" data-nodo-x="245" data-nodo-y="95" style="pointer-events: none;"></rect>
+
+            </svg>
+        </div>
+
+        <!-- MAPPA PIANO TERRA -->
+        <div id="map-centro-pt" class="container-mappa" data-filiale="centro">
+            <img src="centro_pt.jpg" alt="Centro Piano Terra">
+            <svg class="mappa-interattiva" viewBox="0 0 955 785" preserveAspectRatio="xMidYMid meet">
+                <!-- INSERISCI QUI TUTTI I TUOI <rect> DEL PIANO TERRA -->
+ <<rect id="stanza-centro-1" class="stanza" x="746" y="292" width="20" height="10" data-nome="1" data-mq="1"
+                data-nodo-x="761" data-nodo-y="270">
+                </rect>
+                <rect id="stanza-centro-2" class="stanza" x="744" y="278" width="23" height="11" data-nome="2"
+                    data-mq="1" data-nodo-x="746" data-nodo-y="272"></rect>
+                <rect id="stanza-centro-3" class="stanza" x="847" y="237" width="31" height="10" data-nome="3"
+                    data-mq="0.5" data-nodo-x="866" data-nodo-y="258"></rect>
+                <rect id="stanza-centro-4" class="stanza" x="823" y="237" width="22" height="10" data-nome="4"
+                    data-mq="1" data-nodo-x="833" data-nodo-y="257"></rect>
+                <rect id="stanza-centro-5" class="stanza" x="805" y="237" width="16" height="13" data-nome="5"
+                    data-mq="0.5" data-nodo-x="809" data-nodo-y="259"></rect>
+                <rect id="stanza-centro-6" class="stanza" x="771" y="216" width="33" height="29" data-nome="6"
+                    data-mq="3" data-nodo-x="759" data-nodo-y="231"></rect>
+                <rect id="stanza-centro-7" class="stanza" x="769" y="185" width="36" height="29" data-nome="7"
+                    data-mq="3" data-nodo-x="757" data-nodo-y="204"></rect>
+                <rect id="stanza-centro-8" class="stanza" x="769" y="153" width="36" height="30" data-nome="8"
+                    data-mq="3" data-nodo-x="756" data-nodo-y="170"></rect>
+                <rect id="stanza-centro-9" class="stanza" x="770" y="121" width="35" height="29" data-nome="9"
+                    data-mq="3" data-nodo-x="756" data-nodo-y="134"></rect>
+                <rect id="stanza-centro-10" class="stanza" x="767" y="90" width="36" height="30" data-nome="10"
+                    data-mq="3" data-nodo-x="756" data-nodo-y="109"></rect>
+                <rect id="stanza-centro-11" class="stanza" x="667" y="11" width="136" height="75" data-nome="11"
+                    data-mq="36" data-nodo-x="722" data-nodo-y="94"></rect>
+                <rect id="stanza-centro-13" class="stanza" x="616" y="12" width="50" height="73" data-nome="13"
+                    data-mq="10" data-nodo-x="641" data-nodo-y="97"></rect>
+                <rect id="stanza-centro-14" class="stanza" x="515" y="12" width="100" height="76" data-nome="14"
+                    data-mq="28" data-nodo-x="572" data-nodo-y="95"></rect>
+                <rect id="stanza-centro-16" class="stanza" x="472" y="12" width="40" height="75" data-nome="16"
+                    data-mq="10" data-nodo-x="498" data-nodo-y="98"></rect>
+                <rect id="stanza-centro-17" class="stanza" x="428" y="11" width="42" height="75" data-nome="17"
+                    data-mq="10" data-nodo-x="452" data-nodo-y="94"></rect>
+                <rect id="stanza-centro-18" class="stanza" x="385" y="12" width="40" height="76" data-nome="18"
+                    data-mq="9" data-nodo-x="407" data-nodo-y="94"></rect>
+                <rect id="stanza-centro-19" class="stanza" x="343" y="11" width="41" height="76" data-nome="19"
+                    data-mq="9" data-nodo-x="365" data-nodo-y="97"></rect>
+                <rect id="stanza-centro-20" class="stanza" x="300" y="10" width="41" height="76" data-nome="20"
+                    data-mq="10" data-nodo-x="324" data-nodo-y="94"></rect>
+                <rect id="stanza-centro-21" class="stanza" x="259" y="11" width="38" height="77" data-nome="21"
+                    data-mq="10" data-nodo-x="281" data-nodo-y="96"></rect>
+                <rect id="stanza-centro-22" class="stanza" x="213" y="10" width="44" height="78" data-nome="22"
+                    data-mq="10" data-nodo-x="243" data-nodo-y="93"></rect>
+                <rect id="stanza-centro-23" class="stanza" x="167" y="10" width="45" height="77" data-nome="23"
+                    data-mq="10" data-nodo-x="187" data-nodo-y="94"></rect>
+                <rect id="stanza-centro-24" class="stanza" x="128" y="12" width="39" height="74" data-nome="24"
+                    data-mq="10" data-nodo-x="148" data-nodo-y="96"></rect>
+                <rect id="stanza-centro-25" class="stanza" x="96" y="58" width="30" height="31" data-nome="25"
+                    data-mq="2.5" data-nodo-x="116" data-nodo-y="98"></rect>
+                <rect id="stanza-centro-26" class="stanza" x="52" y="58" width="43" height="31" data-nome="26"
+                    data-mq="3" data-nodo-x="76" data-nodo-y="99"></rect>
+                <rect id="stanza-centro-27" class="stanza" x="2" y="20" width="14" height="17" data-nome="27"
+                    data-mq="0.5" data-nodo-x="26" data-nodo-y="31"></rect>
+                <rect id="stanza-centro-28" class="stanza" x="4" y="40" width="16" height="17" data-nome="28"
+                    data-mq="0.5" data-nodo-x="29" data-nodo-y="50"></rect>
+                <rect id="stanza-centro-29" class="stanza" x="5" y="59" width="19" height="16" data-nome="29"
+                    data-mq="0.5" data-nodo-x="32" data-nodo-y="68"></rect>
+                <rect id="stanza-centro-30" class="stanza" x="5" y="78" width="24" height="13" data-nome="30"
+                    data-mq="0.5" data-nodo-x="39" data-nodo-y="86"></rect>
+                <rect id="stanza-centro-31" class="stanza" x="11" y="95" width="21" height="18" data-nome="31"
+                    data-mq="0.5" data-nodo-x="40" data-nodo-y="107"></rect>
+                <rect id="stanza-centro-32" class="stanza" x="107" y="117" width="49" height="80" data-nome="32"
+                    data-mq="15" data-nodo-x="134" data-nodo-y="110"></rect>
+                <rect id="stanza-centro-33" class="stanza" x="163" y="117" width="53" height="84" data-nome="33"
+                    data-mq="15" data-nodo-x="188" data-nodo-y="107"></rect>
+                <rect id="stanza-centro-34" class="stanza" x="218" y="116" width="49" height="85" data-nome="34"
+                    data-mq="15" data-nodo-x="233" data-nodo-y="108"></rect>
+                <rect id="stanza-centro-35" class="stanza" x="270" y="115" width="53" height="84" data-nome="35"
+                    data-mq="15" data-nodo-x="300" data-nodo-y="106"></rect>
+                <rect id="stanza-centro-36" class="stanza" x="325" y="114" width="58" height="95" data-nome="36"
+                    data-mq="17.5" data-nodo-x="349" data-nodo-y="106"></rect>
+                <rect id="stanza-centro-37" class="stanza" x="385" y="116" width="62" height="95" data-nome="37"
+                    data-mq="20" data-nodo-x="416" data-nodo-y="106"></rect>
+                <rect id="stanza-centro-38" class="stanza" x="450" y="114" width="72" height="87" data-nome="38"
+                    data-mq="20" data-nodo-x="475" data-nodo-y="108"></rect>
+                <rect id="stanza-centro-39" class="stanza" x="523" y="114" width="73" height="87" data-nome="39"
+                    data-mq="20" data-nodo-x="554" data-nodo-y="107"></rect>
+                <rect id="stanza-centro-40" class="stanza" x="597" y="115" width="69" height="85" data-nome="40"
+                    data-mq="20" data-nodo-x="622" data-nodo-y="106"></rect>
+                <rect id="stanza-centro-49" class="stanza" x="669" y="116" width="69" height="145" data-nome="49"
+                    data-mq="35" data-nodo-x="748" data-nodo-y="243"></rect>
+                <rect id="stanza-centro-50" class="stanza" x="706" y="265" width="33" height="40" data-nome="50"
+                    data-mq="3" data-nodo-x="724" data-nodo-y="314"></rect>
+                <rect id="stanza-centro-51" class="stanza" x="668" y="265" width="38" height="40" data-nome="51"
+                    data-mq="3" data-nodo-x="690" data-nodo-y="312"></rect>
+                <rect id="stanza-centro-52" class="stanza" x="596" y="205" width="71" height="100" data-nome="52"
+                    data-mq="22.5" data-nodo-x="630" data-nodo-y="314"></rect>
+                <rect id="stanza-centro-53" class="stanza" x="526" y="204" width="68" height="103" data-nome="53"
+                    data-mq="22.5" data-nodo-x="559" data-nodo-y="315"></rect>
+                <rect id="stanza-centro-54" class="stanza" x="450" y="205" width="72" height="100" data-nome="54"
+                    data-mq="22.5" data-nodo-x="486" data-nodo-y="314"></rect>
+                <rect id="stanza-centro-55" class="stanza" x="383" y="214" width="64" height="91" data-nome="55"
+                    data-mq="20" data-nodo-x="415" data-nodo-y="314"></rect>
+                <rect id="stanza-centro-56" class="stanza" x="326" y="212" width="54" height="93" data-nome="56"
+                    data-mq="17.5" data-nodo-x="354" data-nodo-y="315"></rect>
+                <rect id="stanza-centro-57" class="stanza" x="269" y="206" width="56" height="100" data-nome="57"
+                    data-mq="17.5" data-nodo-x="295" data-nodo-y="314"></rect>
+                <rect id="stanza-centro-58" class="stanza" x="219" y="205" width="47" height="102" data-nome="58"
+                    data-mq="15" data-nodo-x="242" data-nodo-y="316"></rect>
+                <rect id="stanza-centro-59" class="stanza" x="160" y="204" width="55" height="103" data-nome="59"
+                    data-mq="15" data-nodo-x="190" data-nodo-y="314"></rect>
+                <rect id="stanza-centro-60" class="stanza" x="110" y="202" width="48" height="103" data-nome="60"
+                    data-mq="20" data-nodo-x="141" data-nodo-y="313"></rect>
+                <rect id="stanza-centro-61" class="stanza" x="83" y="196" width="25" height="22" data-nome="61"
+                    data-mq="1.5" data-nodo-x="78" data-nodo-y="211"></rect>
+                <rect id="stanza-centro-62" class="stanza" x="80" y="175" width="27" height="19" data-nome="62"
+                    data-mq="1.5" data-nodo-x="75" data-nodo-y="189"></rect>
+                <rect id="stanza-centro-63" class="stanza" x="76" y="158" width="32" height="16" data-nome="63"
+                    data-mq="1.5" data-nodo-x="73" data-nodo-y="172"></rect>
+                <rect id="stanza-centro-64" class="stanza" x="76" y="140" width="31" height="17" data-nome="64"
+                    data-mq="1.5" data-nodo-x="68" data-nodo-y="153"></rect>
+                <rect id="stanza-centro-65" class="stanza" x="76" y="125" width="29" height="14" data-nome="65"
+                    data-mq="1.5" data-nodo-x="72" data-nodo-y="132"></rect>
+                <rect id="stanza-centro-66" class="stanza" x="16" y="128" width="32" height="25" data-nome="66"
+                    data-mq="3" data-nodo-x="57" data-nodo-y="139"></rect>
+                <rect id="stanza-centro-67" class="stanza" x="18" y="156" width="34" height="30" data-nome="67"
+                    data-mq="3" data-nodo-x="60" data-nodo-y="168"></rect>
+                <rect id="stanza-centro-68" class="stanza" x="24" y="190" width="36" height="31" data-nome="68"
+                    data-mq="3" data-nodo-x="68" data-nodo-y="206"></rect>
+                <rect id="stanza-centro-69" class="stanza" x="28" y="237" width="37" height="29" data-nome="69"
+                    data-mq="3" data-nodo-x="79" data-nodo-y="250"></rect>
+                <rect id="stanza-centro-70" class="stanza" x="34" y="269" width="35" height="29" data-nome="70"
+                    data-mq="3" data-nodo-x="80" data-nodo-y="286"></rect>
+                <rect id="stanza-centro-71" class="stanza" x="31" y="303" width="43" height="26" data-nome="71"
+                    data-mq="2" data-nodo-x="87" data-nodo-y="315"></rect>
+                <rect id="stanza-centro-72" class="stanza" x="121" y="338" width="39" height="26" data-nome="72"
+                    data-mq="3" data-nodo-x="115" data-nodo-y="351"></rect>
+                <rect id="stanza-centro-73" class="stanza" x="161" y="339" width="71" height="88" data-nome="73"
+                    data-mq="20" data-nodo-x="195" data-nodo-y="330"></rect>
+                <rect id="stanza-centro-74" class="stanza" x="234" y="339" width="69" height="89" data-nome="74"
+                    data-mq="20" data-nodo-x="265" data-nodo-y="332"></rect>
+                <rect id="stanza-centro-75" class="stanza" x="307" y="338" width="69" height="88" data-nome="75"
+                    data-mq="20" data-nodo-x="337" data-nodo-y="331"></rect>
+                <rect id="stanza-centro-76" class="stanza" x="379" y="337" width="68" height="90" data-nome="76"
+                    data-mq="20" data-nodo-x="407" data-nodo-y="329"></rect>
+                <rect id="stanza-centro-77" class="stanza" x="449" y="336" width="73" height="89" data-nome="77"
+                    data-mq="20" data-nodo-x="478" data-nodo-y="327"></rect>
+                <rect id="stanza-centro-78" class="stanza" x="522" y="337" width="71" height="90" data-nome="78"
+                    data-mq="20" data-nodo-x="551" data-nodo-y="329"></rect>
+                <rect id="stanza-centro-79" class="stanza" x="594" y="336" width="70" height="91" data-nome="79"
+                    data-mq="20" data-nodo-x="618" data-nodo-y="327"></rect>
+                <rect id="stanza-centro-80" class="stanza" x="666" y="336" width="74" height="91" data-nome="80"
+                    data-mq="20" data-nodo-x="702" data-nodo-y="327"></rect>
+                <rect id="stanza-centro-81" class="stanza" x="742" y="342" width="67" height="84" data-nome="81"
+                    data-mq="17.5" data-nodo-x="769" data-nodo-y="332"></rect>
+                <rect id="stanza-centro-82" class="stanza" x="809" y="344" width="21" height="24" data-nome="82"
+                    data-mq="1.5" data-nodo-x="813" data-nodo-y="332"></rect>
+                <rect id="stanza-centro-83" class="stanza" x="830" y="344" width="19" height="22" data-nome="83"
+                    data-mq="1.5" data-nodo-x="835" data-nodo-y="333"></rect>
+                <rect id="stanza-centro-84" class="stanza" x="851" y="342" width="17" height="23" data-nome="84"
+                    data-mq="1.5" data-nodo-x="877" data-nodo-y="353"></rect>
+                <rect id="stanza-centro-85" class="stanza" x="809" y="370" width="55" height="56" data-nome="85"
+                    data-mq="10" data-nodo-x="877" data-nodo-y="402"></rect>
+                <rect id="stanza-centro-86" class="stanza" x="836" y="428" width="30" height="53" data-nome="86"
+                    data-mq="4.5" data-nodo-x="850" data-nodo-y="489"></rect>
+                <rect id="stanza-centro-87" class="stanza" x="801" y="429" width="33" height="51" data-nome="87"
+                    data-mq="6" data-nodo-x="817" data-nodo-y="487"></rect>
+                <rect id="stanza-centro-88" class="stanza" x="770" y="428" width="30" height="54" data-nome="88"
+                    data-mq="4.5" data-nodo-x="783" data-nodo-y="487"></rect>
+                <rect id="stanza-centro-89" class="stanza" x="743" y="429" width="27" height="51" data-nome="89"
+                    data-mq="4.5" data-nodo-x="755" data-nodo-y="486"></rect>
+                <rect id="stanza-centro-90" class="stanza" x="698" y="430" width="43" height="50" data-nome="90"
+                    data-mq="7.5" data-nodo-x="718" data-nodo-y="488"></rect>
+                <rect id="stanza-centro-91" class="stanza" x="668" y="429" width="29" height="52" data-nome="91"
+                    data-mq="4.5" data-nodo-x="684" data-nodo-y="489"></rect>
+                <rect id="stanza-centro-92" class="stanza" x="640" y="429" width="26" height="53" data-nome="92"
+                    data-mq="4.5" data-nodo-x="655" data-nodo-y="488"></rect>
+                <rect id="stanza-centro-93" class="stanza" x="596" y="429" width="42" height="53" data-nome="93"
+                    data-mq="7.5" data-nodo-x="617" data-nodo-y="490"></rect>
+                <rect id="stanza-centro-94" class="stanza" x="552" y="428" width="42" height="55" data-nome="94"
+                    data-mq="7.5" data-nodo-x="574" data-nodo-y="488"></rect>
+                <rect id="stanza-centro-95" class="stanza" x="524" y="430" width="26" height="51" data-nome="95"
+                    data-mq="4.5" data-nodo-x="538" data-nodo-y="489"></rect>
+                <rect id="stanza-centro-96" class="stanza" x="495" y="430" width="27" height="52" data-nome="96"
+                    data-mq="4.5" data-nodo-x="507" data-nodo-y="488"></rect>
+                <rect id="stanza-centro-97" class="stanza" x="453" y="429" width="42" height="54" data-nome="97"
+                    data-mq="7.5" data-nodo-x="474" data-nodo-y="491"></rect>
+                <rect id="stanza-centro-98" class="stanza" x="409" y="428" width="42" height="54" data-nome="98"
+                    data-mq="7.5" data-nodo-x="430" data-nodo-y="488"></rect>
+                <rect id="stanza-centro-99" class="stanza" x="365" y="428" width="42" height="54" data-nome="99"
+                    data-mq="7.5" data-nodo-x="386" data-nodo-y="487"></rect>
+                <rect id="stanza-centro-100" class="stanza" x="337" y="428" width="27" height="53" data-nome="100"
+                    data-mq="4.5" data-nodo-x="350" data-nodo-y="488"></rect>
+                <rect id="stanza-centro-101" class="stanza" x="293" y="430" width="42" height="50" data-nome="101"
+                    data-mq="7.5" data-nodo-x="314" data-nodo-y="489"></rect>
+                <rect id="stanza-centro-102" class="stanza" x="251" y="431" width="40" height="49" data-nome="102"
+                    data-mq="7.5" data-nodo-x="271" data-nodo-y="487"></rect>
+                <rect id="stanza-centro-103" class="stanza" x="206" y="429" width="41" height="51" data-nome="103"
+                    data-mq="7.5" data-nodo-x="228" data-nodo-y="487"></rect>
+                <rect id="stanza-centro-104" class="stanza" x="162" y="429" width="41" height="52" data-nome="104"
+                    data-mq="6" data-nodo-x="184" data-nodo-y="489"></rect>
+                <rect id="stanza-centro-105" class="stanza" x="130" y="428" width="31" height="53" data-nome="105"
+                    data-mq="4.5" data-nodo-x="120" data-nodo-y="449"></rect>
+                <rect id="stanza-centro-106" class="stanza" x="130" y="397" width="29" height="28" data-nome="106"
+                    data-mq="3" data-nodo-x="120" data-nodo-y="414"></rect>
+                <rect id="stanza-centro-107" class="stanza" x="124" y="367" width="35" height="28" data-nome="107"
+                    data-mq="3" data-nodo-x="120" data-nodo-y="380"></rect>
+                <rect id="stanza-centro-108" class="stanza" x="42" y="348" width="56" height="38" data-nome="108"
+                    data-mq="8" data-nodo-x="107" data-nodo-y="369"></rect>
+                <rect id="stanza-centro-109" class="stanza" x="47" y="389" width="56" height="38" data-nome="109"
+                    data-mq="6" data-nodo-x="111" data-nodo-y="404"></rect>
+                <rect id="stanza-centro-110" class="stanza" x="58" y="461" width="56" height="46" data-nome="110"
+                    data-mq="8" data-nodo-x="123" data-nodo-y="488"></rect>
+                <rect id="stanza-centro-111" class="stanza" x="71" y="510" width="80" height="32" data-nome="111"
+                    data-mq="12" data-nodo-x="159" data-nodo-y="525"></rect>
+                <rect id="stanza-centro-112" class="stanza" x="96" y="543" width="55" height="77" data-nome="112"
+                    data-mq="15" data-nodo-x="162" data-nodo-y="582"></rect>
+                <rect id="stanza-centro-113" class="stanza" x="94" y="623" width="57" height="33" data-nome="113"
+                    data-mq="6" data-nodo-x="159" data-nodo-y="640"></rect>
+                <rect id="stanza-centro-114" class="stanza" x="96" y="657" width="55" height="58" data-nome="114"
+                    data-mq="10" data-nodo-x="161" data-nodo-y="686"></rect>
+                <rect id="stanza-centro-115" class="stanza" x="97" y="716" width="55" height="46" data-nome="115"
+                    data-mq="6" data-nodo-x="159" data-nodo-y="737"></rect>
+                <rect id="stanza-centro-116" class="stanza" x="180" y="726" width="50" height="39" data-nome="116"
+                    data-mq="6" data-nodo-x="171" data-nodo-y="750"></rect>
+                <rect id="stanza-centro-117" class="stanza" x="179" y="691" width="50" height="34" data-nome="117"
+                    data-mq="6" data-nodo-x="168" data-nodo-y="708"></rect>
+                <rect id="stanza-centro-118" class="stanza" x="179" y="656" width="48" height="34" data-nome="118"
+                    data-mq="6" data-nodo-x="171" data-nodo-y="669"></rect>
+                <rect id="stanza-centro-119" class="stanza" x="179" y="620" width="50" height="34" data-nome="119"
+                    data-mq="6" data-nodo-x="167" data-nodo-y="634"></rect>
+                <rect id="stanza-centro-120" class="stanza" x="177" y="587" width="52" height="31" data-nome="120"
+                    data-mq="6" data-nodo-x="169" data-nodo-y="603"></rect>
+                <rect id="stanza-centro-121" class="stanza" x="178" y="553" width="51" height="34" data-nome="121"
+                    data-mq="6" data-nodo-x="170" data-nodo-y="564"></rect>
+                <rect id="stanza-centro-122" class="stanza" x="179" y="536" width="33" height="15" data-nome="122"
+                    data-mq="1.5" data-nodo-x="171" data-nodo-y="543"></rect>
+                <rect id="stanza-centro-123" class="stanza" x="179" y="522" width="32" height="12" data-nome="123"
+                    data-mq="1.5" data-nodo-x="172" data-nodo-y="528"></rect>
+                <rect id="stanza-centro-124" class="stanza" x="179" y="508" width="32" height="12" data-nome="124"
+                    data-mq="1.5" data-nodo-x="199" data-nodo-y="501"></rect>
+                <rect id="stanza-centro-125" class="stanza" x="213" y="508" width="32" height="43" data-nome="125"
+                    data-mq="4.5" data-nodo-x="231" data-nodo-y="500"></rect>
+                <rect id="stanza-centro-126" class="stanza" x="246" y="507" width="35" height="15" data-nome="126"
+                    data-mq="1.5" data-nodo-x="267" data-nodo-y="498"></rect>
+                <rect id="stanza-centro-127" class="stanza" x="247" y="522" width="35" height="15" data-nome="127"
+                    data-mq="1.5" data-nodo-x="291" data-nodo-y="528"></rect>
+                <rect id="stanza-centro-128" class="stanza" x="249" y="539" width="33" height="13" data-nome="128"
+                    data-mq="1.5" data-nodo-x="291" data-nodo-y="545"></rect>
+                <rect id="stanza-centro-129" class="stanza" x="231" y="554" width="49" height="33" data-nome="129"
+                    data-mq="6" data-nodo-x="286" data-nodo-y="571"></rect>
+                <rect id="stanza-centro-140" class="stanza" x="231" y="587" width="49" height="33" data-nome="140"
+                    data-mq="6" data-nodo-x="288" data-nodo-y="603"></rect>
+                <rect id="stanza-centro-143" class="stanza" x="230" y="621" width="50" height="34" data-nome="143"
+                    data-mq="6" data-nodo-x="288" data-nodo-y="635"></rect>
+                <rect id="stanza-centro-144" class="stanza" x="231" y="655" width="51" height="35" data-nome="144"
+                    data-mq="6" data-nodo-x="288" data-nodo-y="674"></rect>
+                <rect id="stanza-centro-145" class="stanza" x="231" y="690" width="50" height="37" data-nome="145"
+                    data-mq="6" data-nodo-x="288" data-nodo-y="710"></rect>
+                <rect id="stanza-centro-152" class="stanza" x="232" y="727" width="50" height="35" data-nome="152"
+                    data-mq="6" data-nodo-x="285" data-nodo-y="750"></rect>
+                <rect id="stanza-centro-146" class="stanza" x="291" y="739" width="20" height="15" data-nome="146"
+                    data-mq="1" data-nodo-x="291" data-nodo-y="730"></rect>
+                <rect id="stanza-centro-147" class="stanza" x="291" y="753" width="20" height="15" data-nome="147"
+                    data-mq="1" data-nodo-x="303" data-nodo-y="734"></rect>
+                <rect id="stanza-centro-148" class="stanza" x="315" y="754" width="24" height="15" data-nome="148"
+                    data-mq="1" data-nodo-x="316" data-nodo-y="732"></rect>
+                <rect id="stanza-centro-149" class="stanza" x="315" y="738" width="20" height="15" data-nome="149"
+                    data-mq="1" data-nodo-x="327" data-nodo-y="732"></rect>
+                <rect id="stanza-centro-260" class="stanza" x="355" y="722" width="91" height="47" data-nome="260"
+                    data-mq="12" data-nodo-x="343" data-nodo-y="734"></rect>
+                <rect id="stanza-centro-153" class="stanza" x="307" y="699" width="23" height="27" data-nome="153"
+                    data-mq="1.5" data-nodo-x="299" data-nodo-y="713"></rect>
+                <rect id="stanza-centro-156" class="stanza" x="306" y="672" width="25" height="26" data-nome="156"
+                    data-mq="1.5" data-nodo-x="297" data-nodo-y="686"></rect>
+                <rect id="stanza-centro-157" class="stanza" x="307" y="644" width="22" height="26" data-nome="157"
+                    data-mq="1.5" data-nodo-x="299" data-nodo-y="657"></rect>
+                <rect id="stanza-centro-159" class="stanza" x="307" y="576" width="63" height="39" data-nome="159"
+                    data-mq="10" data-nodo-x="297" data-nodo-y="590"></rect>
+                <rect id="stanza-centro-160" class="stanza" x="307" y="543" width="35" height="32" data-nome="160"
+                    data-mq="4" data-nodo-x="300" data-nodo-y="562"></rect>
+                <rect id="stanza-centro-161" class="stanza" x="309" y="507" width="32" height="36" data-nome="161"
+                    data-mq="4" data-nodo-x="301" data-nodo-y="519"></rect>
+                <rect id="stanza-centro-162" class="stanza" x="343" y="506" width="25" height="69" data-nome="162"
+                    data-mq="6" data-nodo-x="355" data-nodo-y="499"></rect>
+                <rect id="stanza-centro-163" class="stanza" x="370" y="507" width="25" height="71" data-nome="163"
+                    data-mq="6" data-nodo-x="385" data-nodo-y="500"></rect>
+                <rect id="stanza-centro-164" class="stanza" x="396" y="506" width="28" height="71" data-nome="164"
+                    data-mq="6" data-nodo-x="407" data-nodo-y="497"></rect>
+                <rect id="stanza-centro-165" class="stanza" x="426" y="507" width="24" height="71" data-nome="165"
+                    data-mq="6" data-nodo-x="435" data-nodo-y="499"></rect>
+                <rect id="stanza-centro-166" class="stanza" x="451" y="508" width="31" height="35" data-nome="166"
+                    data-mq="3" data-nodo-x="464" data-nodo-y="499"></rect>
+                <rect id="stanza-centro-167" class="stanza" x="451" y="543" width="29" height="33" data-nome="167"
+                    data-mq="3" data-nodo-x="486" data-nodo-y="561"></rect>
+                <rect id="stanza-centro-168" class="stanza" x="507" y="558" width="45" height="31" data-nome="168"
+                    data-mq="4.5" data-nodo-x="499" data-nodo-y="575"></rect>
+                <rect id="stanza-centro-169" class="stanza" x="508" y="508" width="43" height="51" data-nome="169"
+                    data-mq="7" data-nodo-x="528" data-nodo-y="500"></rect>
+                <rect id="stanza-centro-170" class="stanza" x="552" y="507" width="38" height="56" data-nome="170"
+                    data-mq="6" data-nodo-x="568" data-nodo-y="499"></rect>
+                <rect id="stanza-centro-171" class="stanza" x="591" y="508" width="35" height="55" data-nome="171"
+                    data-mq="6" data-nodo-x="606" data-nodo-y="500"></rect>
+                <rect id="stanza-centro-190" class="stanza" x="627" y="507" width="35" height="56" data-nome="190"
+                    data-mq="6" data-nodo-x="642" data-nodo-y="497"></rect>
+                <rect id="stanza-centro-198" class="stanza" x="662" y="506" width="34" height="57" data-nome="198"
+                    data-mq="6" data-nodo-x="671" data-nodo-y="496"></rect>
+                <rect id="stanza-centro-218" class="stanza" x="697" y="507" width="32" height="57" data-nome="218"
+                    data-mq="6" data-nodo-x="707" data-nodo-y="499"></rect>
+                <rect id="stanza-centro-219" class="stanza" x="730" y="507" width="34" height="57" data-nome="219"
+                    data-mq="6" data-nodo-x="741" data-nodo-y="501"></rect>
+                <rect id="stanza-centro-220" class="stanza" x="763" y="506" width="34" height="56" data-nome="220"
+                    data-mq="6" data-nodo-x="774" data-nodo-y="499"></rect>
+                <rect id="stanza-centro-221" class="stanza" x="797" y="507" width="35" height="56" data-nome="221"
+                    data-mq="6" data-nodo-x="811" data-nodo-y="499"></rect>
+                <rect id="stanza-centro-222" class="stanza" x="833" y="507" width="16" height="28" data-nome="222"
+                    data-mq="1.5" data-nodo-x="836" data-nodo-y="499"></rect>
+                <rect id="stanza-centro-223" class="stanza" x="849" y="507" width="19" height="28" data-nome="223"
+                    data-mq="1.5" data-nodo-x="873" data-nodo-y="520"></rect>
+                <rect id="stanza-centro-224" class="stanza" x="832" y="536" width="34" height="27" data-nome="224"
+                    data-mq="3" data-nodo-x="874" data-nodo-y="549"></rect>
+                <rect id="stanza-centro-225" class="stanza" x="841" y="563" width="24" height="21" data-nome="225"
+                    data-mq="1.5" data-nodo-x="872" data-nodo-y="575"></rect>
+                <rect id="stanza-centro-226" class="stanza" x="841" y="584" width="25" height="19" data-nome="226"
+                    data-mq="1.5" data-nodo-x="872" data-nodo-y="593"></rect>
+                <rect id="stanza-centro-227" class="stanza" x="840" y="605" width="28" height="17" data-nome="227"
+                    data-mq="1.5" data-nodo-x="853" data-nodo-y="629"></rect>
+                <rect id="stanza-centro-228" class="stanza" x="805" y="563" width="34" height="59" data-nome="228"
+                    data-mq="1.5" data-nodo-x="820" data-nodo-y="628"></rect>
+                <rect id="stanza-centro-229" class="stanza" x="771" y="564" width="34" height="56" data-nome="229"
+                    data-mq="6" data-nodo-x="790" data-nodo-y="630"></rect>
+                <rect id="stanza-centro-230" class="stanza" x="740" y="565" width="30" height="57" data-nome="230"
+                    data-mq="6" data-nodo-x="756" data-nodo-y="629"></rect>
+                <rect id="stanza-centro-231" class="stanza" x="705" y="566" width="32" height="57" data-nome="231"
+                    data-mq="6" data-nodo-x="722" data-nodo-y="628"></rect>
+                <rect id="stanza-centro-232" class="stanza" x="670" y="564" width="36" height="59" data-nome="232"
+                    data-mq="6" data-nodo-x="689" data-nodo-y="631"></rect>
+                <rect id="stanza-centro-233" class="stanza" x="627" y="564" width="42" height="58" data-nome="233"
+                    data-mq="6" data-nodo-x="651" data-nodo-y="628"></rect>
+                <rect id="stanza-centro-234" class="stanza" x="589" y="564" width="37" height="58" data-nome="234"
+                    data-mq="7.5" data-nodo-x="610" data-nodo-y="629"></rect>
+                <rect id="stanza-centro-235" class="stanza" x="551" y="565" width="37" height="56" data-nome="235"
+                    data-mq="6" data-nodo-x="569" data-nodo-y="631"></rect>
+                <rect id="stanza-centro-236" class="stanza" x="507" y="591" width="43" height="32" data-nome="236"
+                    data-mq="6" data-nodo-x="530" data-nodo-y="629"></rect>
+                <rect id="stanza-centro-237" class="stanza" x="540" y="646" width="26" height="10" data-nome="237"
+                    data-mq="0.5" data-nodo-x="550" data-nodo-y="639"></rect>
+                <rect id="stanza-centro-238" class="stanza" x="567" y="646" width="22" height="10" data-nome="238"
+                    data-mq="0.5" data-nodo-x="581" data-nodo-y="639"></rect>
+                <rect id="stanza-centro-239" class="stanza" x="604" y="647" width="23" height="11" data-nome="239"
+                    data-mq="0.5" data-nodo-x="607" data-nodo-y="641"></rect>
+                <rect id="stanza-centro-240" class="stanza" x="627" y="647" width="19" height="11" data-nome="240"
+                    data-mq="0.5" data-nodo-x="634" data-nodo-y="639"></rect>
+                <rect id="stanza-centro-241" class="stanza" x="649" y="646" width="23" height="12" data-nome="241"
+                    data-mq="0.5" data-nodo-x="662" data-nodo-y="639"></rect>
+                <rect id="stanza-centro-242" class="stanza" x="689" y="647" width="23" height="11" data-nome="242"
+                    data-mq="0.5" data-nodo-x="702" data-nodo-y="638"></rect>
+                <rect id="stanza-centro-243" class="stanza" x="714" y="647" width="23" height="9" data-nome="243"
+                    data-mq="0.5" data-nodo-x="720" data-nodo-y="643"></rect>
+                <rect id="stanza-centro-244" class="stanza" x="740" y="647" width="23" height="11" data-nome="244"
+                    data-mq="0.5" data-nodo-x="746" data-nodo-y="641"></rect>
+                <rect id="stanza-centro-245" class="stanza" x="772" y="647" width="27" height="10" data-nome="245"
+                    data-mq="0.5" data-nodo-x="781" data-nodo-y="641"></rect>
+                <rect id="stanza-centro-246" class="stanza" x="803" y="647" width="22" height="10" data-nome="246"
+                    data-mq="0.5" data-nodo-x="808" data-nodo-y="637"></rect>
+                <rect id="stanza-centro-247" class="stanza" x="825" y="647" width="28" height="12" data-nome="247"
+                    data-mq="0.5" data-nodo-x="837" data-nodo-y="639"></rect>
+                <rect id="stanza-centro-24" class="stanza" x="894" y="603" width="29" height="19" data-nome="24"
+                    data-mq="10" data-nodo-x="885" data-nodo-y="614"></rect>
+                <rect id="stanza-centro-249" class="stanza" x="893" y="585" width="31" height="16" data-nome="249"
+                    data-mq="1.5" data-nodo-x="883" data-nodo-y="594"></rect>
+                <rect id="stanza-centro-250" class="stanza" x="893" y="568" width="32" height="15" data-nome="250"
+                    data-mq="1.5" data-nodo-x="884" data-nodo-y="576"></rect>
+                <rect id="stanza-centro-251" class="stanza" x="893" y="551" width="31" height="14" data-nome="251"
+                    data-mq="1.5" data-nodo-x="882" data-nodo-y="559"></rect>
+                <rect id="stanza-centro-252" class="stanza" x="893" y="535" width="33" height="14" data-nome="252"
+                    data-mq="1.5" data-nodo-x="884" data-nodo-y="543"></rect>
+                <rect id="stanza-centro-253" class="stanza" x="890" y="512" width="34" height="21" data-nome="253"
+                    data-mq="1.5" data-nodo-x="882" data-nodo-y="523"></rect>
+                <rect id="stanza-centro-254" class="stanza" x="895" y="492" width="30" height="18" data-nome="254"
+                    data-mq="1.5" data-nodo-x="886" data-nodo-y="499"></rect>
+                <rect id="stanza-centro-255" class="stanza" x="895" y="475" width="28" height="17" data-nome="255"
+                    data-mq="1.5" data-nodo-x="885" data-nodo-y="483"></rect>
+                <rect id="stanza-centro-256" class="stanza" x="893" y="457" width="32" height="17" data-nome="256"
+                    data-mq="1.5" data-nodo-x="883" data-nodo-y="467"></rect>
+                <rect id="stanza-centro-257" class="stanza" x="893" y="439" width="33" height="16" data-nome="257"
+                    data-mq="1.5" data-nodo-x="881" data-nodo-y="447"></rect>
+                <rect id="stanza-centro-258" class="stanza" x="889" y="424" width="34" height="14" data-nome="258"
+                    data-mq="1.5" data-nodo-x="881" data-nodo-y="432"></rect>
+                <rect id="stanza-centro-259" class="stanza" x="51" y="9" width="74" height="19" data-nome="259"
+                    data-mq="1.5" data-nodo-x="42" data-nodo-y="21"></rect>
+                <rect id="stanza-centro-300" class="stanza" x="902" y="247" width="1" height="1" data-nome="300"
+                    data-mq="0" data-nodo-x="919" data-nodo-y="243" style="pointer-events: none;"></rect>
+
+            </svg>
+        </div>
+
+        <!-- MAPPA PIANO -1 -->
+        <div id="map-centro-p-1" class="container-mappa" data-filiale="centro">
+            <img src="centro_p-1.jpg" alt="Centro Piano -1">
+            <svg class="mappa-interattiva" viewBox="0 0 900 800" preserveAspectRatio="xMidYMid meet">
+                <!-- INSERISCI QUI TUTTI I TUOI <rect> DEL PIANO -1 -->
+ <rect id="stanza-centro-1097" class="stanza" x="382" y="603" width="26" height="13" data-nome="1097"
+                data-mq="1" data-nodo-x="393" data-nodo-y="623"></rect>
+            <rect id="stanza-centro-1109" class="stanza" x="213" y="754" width="26" height="9" data-nome="1109"
+                data-mq="1" data-nodo-x="225" data-nodo-y="747"></rect>
+            <rect id="stanza-centro-1055" class="stanza" x="86" y="13" width="54" height="77" data-nome="1055"
+                data-mq="11" data-nodo-x="115" data-nodo-y="99"></rect>
+            <rect id="stanza-centro-1054" class="stanza" x="144" y="15" width="86" height="54" data-nome="1054"
+                data-mq="13" data-nodo-x="170" data-nodo-y="80"></rect>
+            <rect id="stanza-centro-1053" class="stanza" x="213" y="72" width="18" height="33" data-nome="1053"
+                data-mq="2" data-nodo-x="203" data-nodo-y="89"></rect>
+            <rect id="stanza-centro-1052" class="stanza" x="171" y="108" width="60" height="45" data-nome="1052"
+                data-mq="6" data-nodo-x="161" data-nodo-y="130"></rect>
+            <rect id="stanza-centro-1057" class="stanza" x="25" y="124" width="116" height="65" data-nome="1057"
+                data-mq="20" data-nodo-x="149" data-nodo-y="154"></rect>
+            <rect id="stanza-centro-1051" class="stanza" x="171" y="158" width="59" height="72" data-nome="1051"
+                data-mq="15" data-nodo-x="162" data-nodo-y="191"></rect>
+            <rect id="stanza-centro-1058" class="stanza" x="39" y="194" width="101" height="55" data-nome="1058"
+                data-mq="16" data-nodo-x="149" data-nodo-y="226"></rect>
+            <rect id="stanza-centro-1059" class="stanza" x="45" y="254" width="96" height="56" data-nome="1059"
+                data-mq="11" data-nodo-x="155" data-nodo-y="270"></rect>
+            <rect id="stanza-centro-1050" class="stanza" x="171" y="264" width="61" height="42" data-nome="1050"
+                data-mq="7" data-nodo-x="157" data-nodo-y="295"></rect>
+            <rect id="stanza-centro-1060" class="stanza" x="52" y="314" width="90" height="53" data-nome="1060"
+                data-mq="11" data-nodo-x="154" data-nodo-y="346"></rect>
+            <rect id="stanza-centro-1049" class="stanza" x="170" y="310" width="62" height="42" data-nome="1049"
+                data-mq="6" data-nodo-x="158" data-nodo-y="323"></rect>
+            <rect id="stanza-centro-1061" class="stanza" x="60" y="371" width="82" height="41" data-nome="1061"
+                data-mq="8" data-nodo-x="155" data-nodo-y="396"></rect>
+            <rect id="stanza-centro-1048" class="stanza" x="171" y="356" width="64" height="50" data-nome="1048"
+                data-mq="10" data-nodo-x="158" data-nodo-y="371"></rect>
+            <rect id="stanza-centro-1047" class="stanza" x="171" y="409" width="61" height="54" data-nome="1047"
+                data-mq="9" data-nodo-x="158" data-nodo-y="422"></rect>
+            <rect id="stanza-centro-1062" class="stanza" x="64" y="415" width="79" height="39" data-nome="1062"
+                data-mq="7" data-nodo-x="154" data-nodo-y="445"></rect>
+            <rect id="stanza-centro-1063" class="stanza" x="69" y="457" width="73" height="36" data-nome="1063"
+                data-mq="6" data-nodo-x="154" data-nodo-y="474"></rect>
+            <rect id="stanza-centro-1046" class="stanza" x="171" y="465" width="62" height="58" data-nome="1046"
+                data-mq="11" data-nodo-x="155" data-nodo-y="502"></rect>
+            <rect id="stanza-centro-1064" class="stanza" x="75" y="495" width="67" height="43" data-nome="1064"
+                data-mq="7" data-nodo-x="152" data-nodo-y="523"></rect>
+            <rect id="stanza-centro-1045" class="stanza" x="170" y="523" width="65" height="81" data-nome="1045"
+                data-mq="11" data-nodo-x="156" data-nodo-y="554"></rect>
+            <rect id="stanza-centro-1065" class="stanza" x="82" y="541" width="59" height="48" data-nome="1065"
+                data-mq="7" data-nodo-x="152" data-nodo-y="575"></rect>
+            <rect id="stanza-centro-1066" class="stanza" x="86" y="592" width="56" height="60" data-nome="1066"
+                data-mq="10" data-nodo-x="152" data-nodo-y="608"></rect>
+            <rect id="stanza-centro-1117" class="stanza" x="99" y="654" width="42" height="24" data-nome="1117"
+                data-mq="4.5" data-nodo-x="147" data-nodo-y="659"></rect>
+            <rect id="stanza-centro-1118" class="stanza" x="165" y="653" width="43" height="27" data-nome="1118"
+                data-mq="7.5" data-nodo-x="158" data-nodo-y="666"></rect>
+            <rect id="stanza-centro-1116" class="stanza" x="106" y="681" width="31" height="24" data-nome="1116"
+                data-mq="2.5" data-nodo-x="144" data-nodo-y="685"></rect>
+            <rect id="stanza-centro-1119" class="stanza" x="166" y="680" width="42" height="25" data-nome="1119"
+                data-mq="5" data-nodo-x="154" data-nodo-y="695"></rect>
+            <rect id="stanza-centro-1115" class="stanza" x="107" y="705" width="31" height="20" data-nome="1115"
+                data-mq="2.5" data-nodo-x="145" data-nodo-y="708"></rect>
+            <rect id="stanza-centro-1120" class="stanza" x="167" y="707" width="41" height="26" data-nome="1120"
+                data-mq="1.5" data-nodo-x="157" data-nodo-y="719"></rect>
+            <rect id="stanza-centro-1114" class="stanza" x="107" y="726" width="30" height="18" data-nome="1114"
+                data-mq="2.5" data-nodo-x="144" data-nodo-y="731"></rect>
+            <rect id="stanza-centro-1113" class="stanza" x="106" y="746" width="27" height="18" data-nome="1113"
+                data-mq="2.5" data-nodo-x="140" data-nodo-y="748"></rect>
+            <rect id="stanza-centro-1112" class="stanza" x="136" y="754" width="20" height="12" data-nome="1112"
+                data-mq="1.5" data-nodo-x="151" data-nodo-y="744"></rect>
+            <rect id="stanza-centro-1111" class="stanza" x="158" y="752" width="24" height="18" data-nome="1111"
+                data-mq="1" data-nodo-x="164" data-nodo-y="746"></rect>
+            <rect id="stanza-centro-1121" class="stanza" x="169" y="733" width="26" height="11" data-nome="1121"
+                data-mq="1" data-nodo-x="181" data-nodo-y="746"></rect>
+            <rect id="stanza-centro-1110" class="stanza" x="183" y="753" width="24" height="15" data-nome="1110"
+                data-mq="1" data-nodo-x="194" data-nodo-y="746"></rect>
+            <rect id="stanza-centro-1122" class="stanza" x="197" y="732" width="25" height="13" data-nome="1122"
+                data-mq="2.5" data-nodo-x="207" data-nodo-y="746"></rect>
+            <rect id="stanza-centro-1119" class="stanza" x="210" y="752" width="22" height="18" data-nome="1119"
+                data-mq="5" data-nodo-x="224" data-nodo-y="745"></rect>
+            <rect id="stanza-centro-1123" class="stanza" x="224" y="732" width="25" height="14" data-nome="1123"
+                data-mq="2.5" data-nodo-x="237" data-nodo-y="745"></rect>
+            <rect id="stanza-centro-1108" class="stanza" x="234" y="753" width="26" height="15" data-nome="1108"
+                data-mq="1" data-nodo-x="245" data-nodo-y="747"></rect>
+            <rect id="stanza-centro-1107" class="stanza" x="262" y="731" width="84" height="33" data-nome="1107"
+                data-mq="15" data-nodo-x="258" data-nodo-y="736"></rect>
+            <rect id="stanza-centro-1106" class="stanza" x="305" y="704" width="42" height="25" data-nome="1106"
+                data-mq="3" data-nodo-x="289" data-nodo-y="716"></rect>
+            <rect id="stanza-centro-1105" class="stanza" x="304" y="678" width="43" height="26" data-nome="1105"
+                data-mq="3" data-nodo-x="295" data-nodo-y="692"></rect>
+            <rect id="stanza-centro-1104" class="stanza" x="303" y="652" width="43" height="24" data-nome="1104"
+                data-mq="3" data-nodo-x="294" data-nodo-y="663"></rect>
+            <rect id="stanza-centro-1127" class="stanza" x="210" y="654" width="43" height="18" data-nome="1127"
+                data-mq="8" data-nodo-x="263" data-nodo-y="661"></rect>
+            <rect id="stanza-centro-1126" class="stanza" x="210" y="674" width="42" height="20" data-nome="1126"
+                data-mq="5" data-nodo-x="260" data-nodo-y="684"></rect>
+            <rect id="stanza-centro-1125" class="stanza" x="210" y="695" width="42" height="17" data-nome="1125"
+                data-mq="1.5" data-nodo-x="260" data-nodo-y="700"></rect>
+            <rect id="stanza-centro-1124" class="stanza" x="210" y="711" width="41" height="20" data-nome="1124"
+                data-mq="1" data-nodo-x="261" data-nodo-y="717"></rect>
+            <rect id="stanza-centro-132" class="stanza" x="161" y="639" width="15" height="12" data-nome="132"
+                data-mq="1" data-nodo-x="162" data-nodo-y="615"></rect>
+            <rect id="stanza-centro-133" class="stanza" x="160" y="627" width="16" height="11" data-nome="133"
+                data-mq="1" data-nodo-x="172" data-nodo-y="615"></rect>
+            <rect id="stanza-centro-135" class="stanza" x="178" y="639" width="17" height="12" data-nome="135"
+                data-mq="1" data-nodo-x="183" data-nodo-y="615"></rect>
+            <rect id="stanza-centro-134" class="stanza" x="176" y="626" width="18" height="12" data-nome="134"
+                data-mq="1" data-nodo-x="192" data-nodo-y="614"></rect>
+            <rect id="stanza-centro-137" class="stanza" x="196" y="638" width="17" height="14" data-nome="137"
+                data-mq="1" data-nodo-x="201" data-nodo-y="614"></rect>
+            <rect id="stanza-centro-136" class="stanza" x="196" y="627" width="16" height="11" data-nome="136"
+                data-mq="1" data-nodo-x="209" data-nodo-y="615"></rect>
+            <rect id="stanza-centro-139" class="stanza" x="213" y="640" width="16" height="13" data-nome="139"
+                data-mq="1" data-nodo-x="218" data-nodo-y="610"></rect>
+            <rect id="stanza-centro-138" class="stanza" x="213" y="628" width="16" height="12" data-nome="138"
+                data-mq="1" data-nodo-x="225" data-nodo-y="616"></rect>
+            <rect id="stanza-centro-197" class="stanza" x="231" y="640" width="14" height="15" data-nome="197"
+                data-mq="1" data-nodo-x="235" data-nodo-y="614"></rect>
+            <rect id="stanza-centro-196" class="stanza" x="231" y="629" width="15" height="10" data-nome="196"
+                data-mq="1" data-nodo-x="243" data-nodo-y="619"></rect>
+            <rect id="stanza-centro-195" class="stanza" x="246" y="641" width="19" height="12" data-nome="195"
+                data-mq="1" data-nodo-x="254" data-nodo-y="614"></rect>
+            <rect id="stanza-centro-194" class="stanza" x="249" y="627" width="17" height="12" data-nome="194"
+                data-mq="1" data-nodo-x="264" data-nodo-y="618"></rect>
+            <rect id="stanza-centro-193" class="stanza" x="289" y="637" width="28" height="14" data-nome="193"
+                data-mq="1" data-nodo-x="289" data-nodo-y="609"></rect>
+            <rect id="stanza-centro-192" class="stanza" x="288" y="622" width="29" height="13" data-nome="192"
+                data-mq="1" data-nodo-x="306" data-nodo-y="613"></rect>
+            <rect id="stanza-centro-191" class="stanza" x="320" y="637" width="28" height="13" data-nome="191"
+                data-mq="1" data-nodo-x="326" data-nodo-y="618"></rect>
+            <rect id="stanza-centro-199" class="stanza" x="321" y="622" width="27" height="13" data-nome="199"
+                data-mq="1" data-nodo-x="337" data-nodo-y="614"></rect>
+            <rect id="stanza-centro-1086" class="stanza" x="268" y="232" width="43" height="31" data-nome="1086"
+                data-mq="3.5" data-nodo-x="248" data-nodo-y="247"></rect>
+            <rect id="stanza-centro-1085" class="stanza" x="265" y="265" width="43" height="53" data-nome="1085"
+                data-mq="8" data-nodo-x="248" data-nodo-y="291"></rect>
+            <rect id="stanza-centro-1084" class="stanza" x="265" y="322" width="44" height="37" data-nome="1084"
+                data-mq="4" data-nodo-x="249" data-nodo-y="342"></rect>
+            <rect id="stanza-centro-1083" class="stanza" x="265" y="362" width="44" height="41" data-nome="1083"
+                data-mq="5" data-nodo-x="250" data-nodo-y="382"></rect>
+            <rect id="stanza-centro-1082" class="stanza" x="265" y="406" width="44" height="42" data-nome="1082"
+                data-mq="5" data-nodo-x="250" data-nodo-y="427"></rect>
+            <rect id="stanza-centro-1081" class="stanza" x="265" y="451" width="44" height="35" data-nome="1081"
+                data-mq="4" data-nodo-x="250" data-nodo-y="462"></rect>
+            <rect id="stanza-centro-1080" class="stanza" x="265" y="486" width="44" height="43" data-nome="1080"
+                data-mq="5" data-nodo-x="248" data-nodo-y="503"></rect>
+            <rect id="stanza-centro-1079" class="stanza" x="264" y="529" width="45" height="41" data-nome="1079"
+                data-mq="5" data-nodo-x="249" data-nodo-y="547"></rect>
+            <rect id="stanza-centro-1078" class="stanza" x="263" y="572" width="43" height="29" data-nome="1078"
+                data-mq="4" data-nodo-x="254" data-nodo-y="583"></rect>
+            <rect id="stanza-centro-1098" class="stanza" x="312" y="231" width="43" height="31" data-nome="1098"
+                data-mq="3.5" data-nodo-x="369" data-nodo-y="245"></rect>
+            <rect id="stanza-centro-1077" class="stanza" x="311" y="264" width="47" height="86" data-nome="1077"
+                data-mq="8" data-nodo-x="365" data-nodo-y="295"></rect>
+            <rect id="stanza-centro-1076" class="stanza" x="311" y="352" width="46" height="53" data-nome="1076"
+                data-mq="9" data-nodo-x="368" data-nodo-y="380"></rect>
+            <rect id="stanza-centro-1075" class="stanza" x="312" y="406" width="45" height="58" data-nome="1075"
+                data-mq="5" data-nodo-x="366" data-nodo-y="441"></rect>
+            <rect id="stanza-centro-1074" class="stanza" x="312" y="465" width="45" height="60" data-nome="1074"
+                data-mq="8" data-nodo-x="369" data-nodo-y="494"></rect>
+            <rect id="stanza-centro-1073" class="stanza" x="311" y="525" width="44" height="75" data-nome="1073"
+                data-mq="9" data-nodo-x="365" data-nodo-y="560"></rect>
+            <rect id="stanza-centro-1072" class="stanza" x="387" y="544" width="84" height="55" data-nome="1072"
+                data-mq="12" data-nodo-x="374" data-nodo-y="577"></rect>
+            <rect id="stanza-centro-1094" class="stanza" x="452" y="603" width="24" height="13" data-nome="1094"
+                data-mq="1" data-nodo-x="462" data-nodo-y="624"></rect>
+            <rect id="stanza-centro-1095" class="stanza" x="430" y="601" width="21" height="17" data-nome="1095"
+                data-mq="1" data-nodo-x="441" data-nodo-y="623"></rect>
+            <rect id="stanza-centro-1096" class="stanza" x="404" y="600" width="24" height="17" data-nome="1096"
+                data-mq="1" data-nodo-x="413" data-nodo-y="625"></rect>
+            <rect id="stanza-centro-10967" class="stanza" x="381" y="600" width="22" height="17" data-nome="10967"
+                data-mq="1" data-nodo-x="392" data-nodo-y="612"></rect>
+            <rect id="stanza-centro-1071" class="stanza" x="386" y="492" width="86" height="51" data-nome="1071"
+                data-mq="12" data-nodo-x="370" data-nodo-y="517"></rect>
+            <rect id="stanza-centro-1070" class="stanza" x="387" y="440" width="86" height="51" data-nome="1070"
+                data-mq="12" data-nodo-x="370" data-nodo-y="464"></rect>
+            <rect id="stanza-centro-1069" class="stanza" x="387" y="394" width="87" height="44" data-nome="1069"
+                data-mq="12" data-nodo-x="372" data-nodo-y="411"></rect>
+            <rect id="stanza-centro-1068" class="stanza" x="388" y="341" width="86" height="51" data-nome="1068"
+                data-mq="9" data-nodo-x="372" data-nodo-y="357"></rect>
+            <rect id="stanza-centro-1067" class="stanza" x="388" y="264" width="84" height="76" data-nome="1067"
+                data-mq="20" data-nodo-x="375" data-nodo-y="318"></rect>
+            <rect id="stanza-centro-1099" class="stanza" x="388" y="222" width="84" height="41" data-nome="1099"
+                data-mq="10" data-nodo-x="379" data-nodo-y="249"></rect>
+            <rect id="stanza-centro-1100" class="stanza" x="388" y="182" width="83" height="37" data-nome="1100"
+                data-mq="10" data-nodo-x="377" data-nodo-y="203"></rect>
+            <rect id="stanza-centro-1044" class="stanza" x="232" y="15" width="126" height="215" data-nome="1044"
+                data-mq="70" data-nodo-x="369" data-nodo-y="138"></rect>
+            <rect id="stanza-centro-1101" class="stanza" x="388" y="140" width="86" height="41" data-nome="1101"
+                data-mq="10" data-nodo-x="372" data-nodo-y="163"></rect>
+            <rect id="stanza-centro-1102" class="stanza" x="388" y="99" width="84" height="40" data-nome="1102"
+                data-mq="10" data-nodo-x="372" data-nodo-y="114"></rect>
+            <rect id="stanza-centro-1103" class="stanza" x="387" y="71" width="87" height="28" data-nome="1103"
+                data-mq="8" data-nodo-x="373" data-nodo-y="87"></rect>
+            <rect id="stanza-centro-142" class="stanza" x="407" y="56" width="28" height="14" data-nome="142"
+                data-mq="1" data-nodo-x="404" data-nodo-y="29"></rect>
+            <rect id="stanza-centro-141" class="stanza" x="405" y="40" width="30" height="15" data-nome="141"
+                data-mq="1" data-nodo-x="421" data-nodo-y="32"></rect>
+            <rect id="stanza-centro-185" class="stanza" x="438" y="56" width="27" height="13" data-nome="185"
+                data-mq="1" data-nodo-x="442" data-nodo-y="30"></rect>
+            <rect id="stanza-centro-187" class="stanza" x="438" y="41" width="27" height="13" data-nome="187"
+                data-mq="1" data-nodo-x="456" data-nodo-y="29"></rect>
+            <rect id="stanza-centro-1010" class="stanza" x="823" y="12" width="34" height="29" data-nome="1010"
+                data-mq="2" data-nodo-x="772" data-nodo-y="28"></rect>
+            <rect id="stanza-centro-1040" class="stanza" x="487" y="51" width="71" height="35" data-nome="1040"
+                data-mq="8" data-nodo-x="564" data-nodo-y="73"></rect>
+            <rect id="stanza-centro-1022" class="stanza" x="589" y="43" width="38" height="44" data-nome="1022"
+                data-mq="5" data-nodo-x="575" data-nodo-y="56"></rect>
+            <rect id="stanza-centro-1021" class="stanza" x="627" y="43" width="41" height="44" data-nome="1021"
+                data-mq="5" data-nodo-x="645" data-nodo-y="29"></rect>
+            <rect id="stanza-centro-1020" class="stanza" x="669" y="43" width="38" height="45" data-nome="1020"
+                data-mq="5" data-nodo-x="684" data-nodo-y="29"></rect>
+            <rect id="stanza-centro-1019" class="stanza" x="709" y="42" width="42" height="45" data-nome="1019"
+                data-mq="5" data-nodo-x="759" data-nodo-y="57"></rect>
+            <rect id="stanza-centro-1009" class="stanza" x="783" y="43" width="70" height="70" data-nome="1009"
+                data-mq="12" data-nodo-x="766" data-nodo-y="81"></rect>
+            <rect id="stanza-centro-1018" class="stanza" x="663" y="91" width="87" height="72" data-nome="1018"
+                data-mq="18" data-nodo-x="759" data-nodo-y="120"></rect>
+            <rect id="stanza-centro-1008" class="stanza" x="783" y="118" width="72" height="74" data-nome="1008"
+                data-mq="15" data-nodo-x="769" data-nodo-y="149"></rect>
+            <rect id="stanza-centro-1039" class="stanza" x="487" y="88" width="69" height="67" data-nome="1039"
+                data-mq="12" data-nodo-x="568" data-nodo-y="137"></rect>
+            <rect id="stanza-centro-1023" class="stanza" x="589" y="89" width="72" height="74" data-nome="1023"
+                data-mq="15" data-nodo-x="575" data-nodo-y="112"></rect>
+            <rect id="stanza-centro-1038" class="stanza" x="488" y="158" width="70" height="94" data-nome="1038"
+                data-mq="20" data-nodo-x="567" data-nodo-y="227"></rect>
+            <rect id="stanza-centro-1024" class="stanza" x="590" y="166" width="73" height="72" data-nome="1024"
+                data-mq="15" data-nodo-x="572" data-nodo-y="188"></rect>
+            <rect id="stanza-centro-1017" class="stanza" x="664" y="168" width="87" height="69" data-nome="1017"
+                data-mq="18" data-nodo-x="761" data-nodo-y="189"></rect>
+            <rect id="stanza-centro-1007" class="stanza" x="783" y="196" width="72" height="51" data-nome="1007"
+                data-mq="10" data-nodo-x="765" data-nodo-y="224"></rect>
+            <rect id="stanza-centro-1006" class="stanza" x="782" y="249" width="71" height="53" data-nome="1006"
+                data-mq="10" data-nodo-x="766" data-nodo-y="263"></rect>
+            <rect id="stanza-centro-1016" class="stanza" x="662" y="240" width="90" height="71" data-nome="1016"
+                data-mq="18" data-nodo-x="764" data-nodo-y="286"></rect>
+            <rect id="stanza-centro-1025" class="stanza" x="589" y="240" width="71" height="72" data-nome="1025"
+                data-mq="15" data-nodo-x="577" data-nodo-y="270"></rect>
+            <rect id="stanza-centro-1037" class="stanza" x="486" y="255" width="72" height="59" data-nome="1037"
+                data-mq="11" data-nodo-x="568" data-nodo-y="293"></rect>
+            <rect id="stanza-centro-1036" class="stanza" x="486" y="316" width="72" height="54" data-nome="1036"
+                data-mq="11" data-nodo-x="570" data-nodo-y="332"></rect>
+            <rect id="stanza-centro-1035" class="stanza" x="487" y="373" width="71" height="51" data-nome="1035"
+                data-mq="11" data-nodo-x="570" data-nodo-y="396"></rect>
+            <rect id="stanza-centro-1034" class="stanza" x="485" y="427" width="72" height="41" data-nome="1034"
+                data-mq="8" data-nodo-x="570" data-nodo-y="442"></rect>
+            <rect id="stanza-centro-1033" class="stanza" x="485" y="470" width="73" height="58" data-nome="1033"
+                data-mq="12" data-nodo-x="566" data-nodo-y="489"></rect>
+            <rect id="stanza-centro-1032" class="stanza" x="486" y="529" width="69" height="42" data-nome="1032"
+                data-mq="8" data-nodo-x="567" data-nodo-y="546"></rect>
+            <rect id="stanza-centro-1031" class="stanza" x="486" y="573" width="72" height="46" data-nome="1031"
+                data-mq="9" data-nodo-x="570" data-nodo-y="603"></rect>
+            <rect id="stanza-centro-188" class="stanza" x="528" y="619" width="31" height="12" data-nome="188"
+                data-mq="1" data-nodo-x="549" data-nodo-y="652"></rect>
+            <rect id="stanza-centro-189" class="stanza" x="527" y="631" width="32" height="14" data-nome="189"
+                data-mq="1" data-nodo-x="533" data-nodo-y="649"></rect>
+            <rect id="stanza-centro-1087" class="stanza" x="586" y="675" width="29" height="15" data-nome="1087"
+                data-mq="0.5" data-nodo-x="596" data-nodo-y="663"></rect>
+            <rect id="stanza-centro-1088" class="stanza" x="615" y="674" width="26" height="16" data-nome="1088"
+                data-mq="0.5" data-nodo-x="619" data-nodo-y="664"></rect>
+            <rect id="stanza-centro-1089" class="stanza" x="659" y="672" width="26" height="17" data-nome="1089"
+                data-mq="0.5" data-nodo-x="658" data-nodo-y="661"></rect>
+            <rect id="stanza-centro-1090" class="stanza" x="686" y="671" width="22" height="19" data-nome="1090"
+                data-mq="0.5" data-nodo-x="685" data-nodo-y="661"></rect>
+            <rect id="stanza-centro-1091" class="stanza" x="708" y="673" width="24" height="20" data-nome="1091"
+                data-mq="0.5" data-nodo-x="718" data-nodo-y="665"></rect>
+            <rect id="stanza-centro-1092" class="stanza" x="733" y="669" width="23" height="24" data-nome="1092"
+                data-mq="0.5" data-nodo-x="742" data-nodo-y="661"></rect>
+            <rect id="stanza-centro-1093" class="stanza" x="757" y="673" width="25" height="19" data-nome="1093"
+                data-mq="0.5" data-nodo-x="763" data-nodo-y="662"></rect>
+            <rect id="stanza-centro-1030" class="stanza" x="588" y="608" width="32" height="42" data-nome="1030"
+                data-mq="4" data-nodo-x="578" data-nodo-y="631"></rect>
+            <rect id="stanza-centro-1029" class="stanza" x="588" y="536" width="75" height="70" data-nome="1029"
+                data-mq="15" data-nodo-x="575" data-nodo-y="572"></rect>
+            <rect id="stanza-centro-1028" class="stanza" x="588" y="462" width="75" height="72" data-nome="1028"
+                data-mq="15" data-nodo-x="573" data-nodo-y="507"></rect>
+            <rect id="stanza-centro-1027" class="stanza" x="589" y="388" width="73" height="72" data-nome="1027"
+                data-mq="15" data-nodo-x="572" data-nodo-y="419"></rect>
+            <rect id="stanza-centro-1026" class="stanza" x="589" y="313" width="72" height="72" data-nome="1026"
+                data-mq="15" data-nodo-x="573" data-nodo-y="355"></rect>
+            <rect id="stanza-centro-1015" class="stanza" x="663" y="314" width="89" height="73" data-nome="1015"
+                data-mq="18" data-nodo-x="762" data-nodo-y="343"></rect>
+            <rect id="stanza-centro-1014" class="stanza" x="662" y="388" width="88" height="74" data-nome="1014"
+                data-mq="18" data-nodo-x="761" data-nodo-y="418"></rect>
+            <rect id="stanza-centro-1013" class="stanza" x="664" y="465" width="87" height="72" data-nome="1013"
+                data-mq="18" data-nodo-x="763" data-nodo-y="525"></rect>
+            <rect id="stanza-centro-1012" class="stanza" x="664" y="538" width="88" height="70" data-nome="1012"
+                data-mq="15" data-nodo-x="765" data-nodo-y="589"></rect>
+            <rect id="stanza-centro-1000" class="stanza" x="621" y="607" width="41" height="43" data-nome="1000"
+                data-mq="5" data-nodo-x="634" data-nodo-y="656"></rect>
+            <rect id="stanza-centro-1001" class="stanza" x="662" y="609" width="47" height="43" data-nome="1001"
+                data-mq="5" data-nodo-x="699" data-nodo-y="658"></rect>
+            <rect id="stanza-centro-1011" class="stanza" x="710" y="610" width="43" height="42" data-nome="1011"
+                data-mq="4" data-nodo-x="761" data-nodo-y="633"></rect>
+            <rect id="stanza-centro-debtors" class="stanza" x="782" y="618" width="75" height="70" data-nome="1001"
+                data-mq="5" data-nodo-x="770" data-nodo-y="643"></rect>
+            <rect id="stanza-centro-1002" class="stanza" x="783" y="538" width="74" height="79" data-nome="1002"
+                data-mq="15" data-nodo-x="764" data-nodo-y="561"></rect>
+            <rect id="stanza-centro-1003" class="stanza" x="782" y="487" width="76" height="49" data-nome="1003"
+                data-mq="10" data-nodo-x="765" data-nodo-y="502"></rect>
+            <rect id="stanza-centro-1004" class="stanza" x="787" y="404" width="65" height="81" data-nome="1004"
+                data-mq="16" data-nodo-x="765" data-nodo-y="454"></rect>
+            <rect id="stanza-centro-1005" class="stanza" x="782" y="304" width="74" height="98" data-nome="1005"
+                data-mq="20" data-nodo-x="764" data-nodo-y="371"></rect>
+            <rect id="stanza-centro-1128" class="stanza" x="353" y="692" width="1" height="1" data-nome="1128"
+                data-mq="0" data-nodo-x="455" data-nodo-y="685" style="pointer-events: none;"></rect>
+            <rect id="stanza-centro-1129" class="stanza" x="351" y="647" width="1" height="1" data-nome="1129"
+                data-mq="0" data-nodo-x="364" data-nodo-y="672" style="pointer-events: none;"></rect>
+            </svg>
+        </div>
+
+        <!-- MAPPA PIANO -2 -->
+        <div id="map-centro-p-2" class="container-mappa" data-filiale="centro">
+            <img src="centro_p-2.jpg" alt="Centro Piano -2">
+            <svg class="mappa-interattiva" viewBox="0 0 1312 726" preserveAspectRatio="xMidYMid meet">
+                <!-- INSERISCI QUI TUTTI I TUOI <rect> DEL PIANO -2 -->
+<rect id="stanza-centro-2000" class="stanza" x="1169" y="633" width="57" height="61" data-nome="2000"
+                data-mq="3" data-nodo-x="1188" data-nodo-y="621"></rect>
+            <rect id="stanza-centro-2001" class="stanza" x="1142" y="632" width="25" height="64" data-nome="2001"
+                data-mq="1.5" data-nodo-x="1150" data-nodo-y="621"></rect>
+            <rect id="stanza-centro-2002" class="stanza" x="1112" y="631" width="28" height="64" data-nome="2002"
+                data-mq="1.5" data-nodo-x="1121" data-nodo-y="621"></rect>
+            <rect id="stanza-centro-2003" class="stanza" x="1080" y="631" width="30" height="64" data-nome="2003"
+                data-mq="1.5" data-nodo-x="1093" data-nodo-y="618"></rect>
+            <rect id="stanza-centro-2004" class="stanza" x="1050" y="633" width="30" height="63" data-nome="2004"
+                data-mq="1.5" data-nodo-x="1062" data-nodo-y="619"></rect>
+            <rect id="stanza-centro-2005" class="stanza" x="1022" y="631" width="27" height="65" data-nome="2005"
+                data-mq="1" data-nodo-x="1035" data-nodo-y="618"></rect>
+            <rect id="stanza-centro-2006" class="stanza" x="988" y="632" width="33" height="64" data-nome="2006"
+                data-mq="1.5" data-nodo-x="1002" data-nodo-y="620"></rect>
+            <rect id="stanza-centro-2007" class="stanza" x="959" y="631" width="29" height="64" data-nome="2007"
+                data-mq="1.5" data-nodo-x="973" data-nodo-y="616"></rect>
+            <rect id="stanza-centro-2008" class="stanza" x="926" y="633" width="35" height="64" data-nome="2008"
+                data-mq="1.5" data-nodo-x="940" data-nodo-y="618"></rect>
+            <rect id="stanza-centro-2009" class="stanza" x="890" y="632" width="35" height="64" data-nome="2009"
+                data-mq="1.5" data-nodo-x="901" data-nodo-y="617"></rect>
+            <rect id="stanza-centro-2010" class="stanza" x="856" y="631" width="33" height="64" data-nome="2010"
+                data-mq="1.5" data-nodo-x="870" data-nodo-y="618"></rect>
+            <rect id="stanza-centro-2011" class="stanza" x="820" y="630" width="35" height="66" data-nome="2011"
+                data-mq="1.5" data-nodo-x="839" data-nodo-y="619"></rect>
+            <rect id="stanza-centro-2012" class="stanza" x="784" y="635" width="34" height="61" data-nome="2012"
+                data-mq="1.5" data-nodo-x="800" data-nodo-y="620"></rect>
+            <rect id="stanza-centro-2013" class="stanza" x="745" y="633" width="36" height="61" data-nome="2013"
+                data-mq="1.5" data-nodo-x="762" data-nodo-y="622"></rect>
+            <rect id="stanza-centro-2014" class="stanza" x="712" y="634" width="34" height="60" data-nome="2014"
+                data-mq="1.5" data-nodo-x="727" data-nodo-y="620"></rect>
+            <rect id="stanza-centro-2015" class="stanza" x="676" y="633" width="36" height="62" data-nome="2015"
+                data-mq="1.5" data-nodo-x="695" data-nodo-y="620"></rect>
+            <rect id="stanza-centro-2016" class="stanza" x="637" y="632" width="37" height="62" data-nome="2016"
+                data-mq="1.5" data-nodo-x="651" data-nodo-y="621"></rect>
+            <rect id="stanza-centro-2017" class="stanza" x="603" y="634" width="34" height="61" data-nome="2017"
+                data-mq="1.5" data-nodo-x="617" data-nodo-y="623"></rect>
+            <rect id="stanza-centro-2018" class="stanza" x="568" y="634" width="33" height="63" data-nome="2018"
+                data-mq="1.5" data-nodo-x="585" data-nodo-y="620"></rect>
+            <rect id="stanza-centro-2019" class="stanza" x="536" y="632" width="30" height="64" data-nome="2019"
+                data-mq="1.5" data-nodo-x="550" data-nodo-y="618"></rect>
+            <rect id="stanza-centro-2020" class="stanza" x="500" y="633" width="33" height="62" data-nome="2020"
+                data-mq="1.5" data-nodo-x="511" data-nodo-y="621"></rect>
+            <rect id="stanza-centro-2021" class="stanza" x="468" y="633" width="29" height="61" data-nome="2021"
+                data-mq="1.5" data-nodo-x="482" data-nodo-y="623"></rect>
+            <rect id="stanza-centro-2022" class="stanza" x="433" y="632" width="33" height="64" data-nome="2022"
+                data-mq="1.5" data-nodo-x="445" data-nodo-y="620"></rect>
+            <rect id="stanza-centro-2023" class="stanza" x="398" y="634" width="35" height="62" data-nome="2023"
+                data-mq="1.5" data-nodo-x="412" data-nodo-y="624"></rect>
+            <rect id="stanza-centro-2024" class="stanza" x="363" y="634" width="33" height="61" data-nome="2024"
+                data-mq="1.5" data-nodo-x="378" data-nodo-y="621"></rect>
+            <rect id="stanza-centro-2025" class="stanza" x="331" y="633" width="31" height="62" data-nome="2025"
+                data-mq="1.5" data-nodo-x="347" data-nodo-y="622"></rect>
+            <rect id="stanza-centro-2026" class="stanza" x="296" y="633" width="36" height="62" data-nome="2026"
+                data-mq="1.5" data-nodo-x="312" data-nodo-y="621"></rect>
+            <rect id="stanza-centro-2027" class="stanza" x="260" y="634" width="32" height="60" data-nome="2027"
+                data-mq="1.5" data-nodo-x="273" data-nodo-y="620"></rect>
+            <rect id="stanza-centro-2028" class="stanza" x="216" y="634" width="40" height="59" data-nome="2028"
+                data-mq="1.5" data-nodo-x="235" data-nodo-y="619"></rect>
+            <rect id="stanza-centro-2029" class="stanza" x="174" y="632" width="37" height="62" data-nome="2029"
+                data-mq="1.5" data-nodo-x="195" data-nodo-y="620"></rect>
+            <rect id="stanza-centro-2030" class="stanza" x="136" y="633" width="37" height="61" data-nome="2030"
+                data-mq="1.5" data-nodo-x="155" data-nodo-y="618"></rect>
+            <rect id="stanza-centro-2031" class="stanza" x="97" y="634" width="35" height="62" data-nome="2031"
+                data-mq="1.5" data-nodo-x="116" data-nodo-y="621"></rect>
+            <rect id="stanza-centro-2032" class="stanza" x="56" y="634" width="37" height="62" data-nome="2032"
+                data-mq="1.5" data-nodo-x="76" data-nodo-y="618"></rect>
+            <rect id="stanza-centro-2033" class="stanza" x="18" y="633" width="34" height="63" data-nome="2033"
+                data-mq="1.5" data-nodo-x="36" data-nodo-y="621"></rect>
+            <rect id="stanza-centro-2034" class="stanza" x="109" y="531" width="32" height="53" data-nome="2034"
+                data-mq="1.5" data-nodo-x="121" data-nodo-y="596"></rect>
+            <rect id="stanza-centro-2035" class="stanza" x="147" y="505" width="42" height="75" data-nome="2035"
+                data-mq="3" data-nodo-x="166" data-nodo-y="590"></rect>
+            <rect id="stanza-centro-2036" class="stanza" x="193" y="502" width="45" height="78" data-nome="2036"
+                data-mq="3" data-nodo-x="213" data-nodo-y="592"></rect>
+            <rect id="stanza-centro-2037" class="stanza" x="241" y="501" width="47" height="82" data-nome="2037"
+                data-mq="3" data-nodo-x="261" data-nodo-y="593"></rect>
+            <rect id="stanza-centro-2038" class="stanza" x="292" y="502" width="41" height="80" data-nome="2038"
+                data-mq="3" data-nodo-x="309" data-nodo-y="593"></rect>
+            <rect id="stanza-centro-2039" class="stanza" x="337" y="503" width="45" height="79" data-nome="2039"
+                data-mq="3" data-nodo-x="358" data-nodo-y="591"></rect>
+            <rect id="stanza-centro-2040" class="stanza" x="386" y="502" width="43" height="78" data-nome="2040"
+                data-mq="3" data-nodo-x="409" data-nodo-y="590"></rect>
+            <rect id="stanza-centro-2041" class="stanza" x="434" y="503" width="43" height="77" data-nome="2041"
+                data-mq="3" data-nodo-x="457" data-nodo-y="595"></rect>
+            <rect id="stanza-centro-2042" class="stanza" x="482" y="504" width="43" height="76" data-nome="2042"
+                data-mq="3" data-nodo-x="506" data-nodo-y="590"></rect>
+            <rect id="stanza-centro-2043" class="stanza" x="527" y="504" width="46" height="77" data-nome="2043"
+                data-mq="3" data-nodo-x="548" data-nodo-y="592"></rect>
+            <rect id="stanza-centro-2044" class="stanza" x="575" y="502" width="48" height="81" data-nome="2044"
+                data-mq="3" data-nodo-x="597" data-nodo-y="593"></rect>
+            <rect id="stanza-centro-2045" class="stanza" x="627" y="503" width="42" height="78" data-nome="2045"
+                data-mq="3" data-nodo-x="647" data-nodo-y="589"></rect>
+            <rect id="stanza-centro-2046" class="stanza" x="671" y="503" width="46" height="79" data-nome="2046"
+                data-mq="3" data-nodo-x="689" data-nodo-y="593"></rect>
+            <rect id="stanza-centro-2047" class="stanza" x="719" y="503" width="48" height="80" data-nome="2047"
+                data-mq="3" data-nodo-x="741" data-nodo-y="591"></rect>
+            <rect id="stanza-centro-2048" class="stanza" x="770" y="502" width="44" height="80" data-nome="2048"
+                data-mq="3" data-nodo-x="793" data-nodo-y="592"></rect>
+            <rect id="stanza-centro-2049" class="stanza" x="816" y="502" width="46" height="80" data-nome="2049"
+                data-mq="3" data-nodo-x="841" data-nodo-y="592"></rect>
+            <rect id="stanza-centro-2050" class="stanza" x="863" y="505" width="45" height="77" data-nome="2050"
+                data-mq="3" data-nodo-x="884" data-nodo-y="595"></rect>
+            <rect id="stanza-centro-2051" class="stanza" x="912" y="502" width="44" height="82" data-nome="2051"
+                data-mq="3" data-nodo-x="932" data-nodo-y="598"></rect>
+            <rect id="stanza-centro-2052" class="stanza" x="958" y="503" width="42" height="81" data-nome="2052"
+                data-mq="3" data-nodo-x="980" data-nodo-y="595"></rect>
+            <rect id="stanza-centro-2053" class="stanza" x="1002" y="533" width="81" height="51" data-nome="2053"
+                data-mq="3" data-nodo-x="1039" data-nodo-y="594"></rect>
+            <rect id="stanza-centro-2054" class="stanza" x="1085" y="532" width="80" height="53" data-nome="2054"
+                data-mq="3" data-nodo-x="1123" data-nodo-y="592"></rect>
+            <rect id="stanza-centro-2055" class="stanza" x="1083" y="482" width="82" height="47" data-nome="2055"
+                data-mq="3" data-nodo-x="1178" data-nodo-y="501"></rect>
+            <rect id="stanza-centro-2056" class="stanza" x="1084" y="431" width="80" height="49" data-nome="2056"
+                data-mq="3" data-nodo-x="1137" data-nodo-y="416"></rect>
+            <rect id="stanza-centro-2057" class="stanza" x="1002" y="431" width="80" height="100" data-nome="2057"
+                data-mq="6" data-nodo-x="1040" data-nodo-y="419"></rect>
+            <rect id="stanza-centro-2058" class="stanza" x="944" y="430" width="55" height="70" data-nome="2058"
+                data-mq="3" data-nodo-x="972" data-nodo-y="418"></rect>
+            <rect id="stanza-centro-2059" class="stanza" x="861" y="431" width="81" height="71" data-nome="2059"
+                data-mq="4.5" data-nodo-x="906" data-nodo-y="412"></rect>
+            <rect id="stanza-centro-2060" class="stanza" x="803" y="431" width="58" height="70" data-nome="2060"
+                data-mq="3" data-nodo-x="830" data-nodo-y="419"></rect>
+            <rect id="stanza-centro-2061" class="stanza" x="717" y="432" width="87" height="69" data-nome="2061"
+                data-mq="4.5" data-nodo-x="762" data-nodo-y="415"></rect>
+            <rect id="stanza-centro-2062" class="stanza" x="658" y="431" width="56" height="69" data-nome="2062"
+                data-mq="3" data-nodo-x="689" data-nodo-y="420"></rect>
+            <rect id="stanza-centro-2063" class="stanza" x="579" y="432" width="78" height="67" data-nome="2063"
+                data-mq="4.5" data-nodo-x="626" data-nodo-y="419"></rect>
+            <rect id="stanza-centro-2064" class="stanza" x="515" y="430" width="64" height="70" data-nome="2064"
+                data-mq="3" data-nodo-x="544" data-nodo-y="414"></rect>
+            <rect id="stanza-centro-2065" class="stanza" x="434" y="431" width="82" height="70" data-nome="2065"
+                data-mq="4.5" data-nodo-x="474" data-nodo-y="412"></rect>
+            <rect id="stanza-centro-2066" class="stanza" x="376" y="430" width="55" height="71" data-nome="2066"
+                data-mq="3" data-nodo-x="410" data-nodo-y="411"></rect>
+            <rect id="stanza-centro-2067" class="stanza" x="294" y="431" width="79" height="68" data-nome="2067"
+                data-mq="4.5" data-nodo-x="342" data-nodo-y="414"></rect>
+            <rect id="stanza-centro-2068" class="stanza" x="229" y="430" width="65" height="69" data-nome="2068"
+                data-mq="3" data-nodo-x="264" data-nodo-y="417"></rect>
+            <rect id="stanza-centro-2069" class="stanza" x="147" y="430" width="80" height="69" data-nome="2069"
+                data-mq="4.5" data-nodo-x="191" data-nodo-y="417"></rect>
+            <rect id="stanza-centro-2070" class="stanza" x="107" y="432" width="37" height="96" data-nome="2070"
+                data-mq="3" data-nodo-x="133" data-nodo-y="417"></rect>
+            <rect id="stanza-centro-2071" class="stanza" x="108" y="270" width="65" height="109" data-nome="2071"
+                data-mq="6" data-nodo-x="143" data-nodo-y="393"></rect>
+            <rect id="stanza-centro-2072" class="stanza" x="177" y="271" width="63" height="109" data-nome="2072"
+                data-mq="6" data-nodo-x="215" data-nodo-y="394"></rect>
+            <rect id="stanza-centro-2073" class="stanza" x="245" y="273" width="66" height="108" data-nome="2073"
+                data-mq="6" data-nodo-x="286" data-nodo-y="391"></rect>
+            <rect id="stanza-centro-2074" class="stanza" x="314" y="271" width="67" height="110" data-nome="2074"
+                data-mq="6" data-nodo-x="347" data-nodo-y="396"></rect>
+            <rect id="stanza-centro-2075" class="stanza" x="386" y="271" width="66" height="110" data-nome="2075"
+                data-mq="6" data-nodo-x="419" data-nodo-y="394"></rect>
+            <rect id="stanza-centro-2076" class="stanza" x="454" y="272" width="68" height="108" data-nome="2076"
+                data-mq="6" data-nodo-x="489" data-nodo-y="390"></rect>
+            <rect id="stanza-centro-2077" class="stanza" x="525" y="271" width="64" height="107" data-nome="2077"
+                data-mq="6" data-nodo-x="565" data-nodo-y="394"></rect>
+            <rect id="stanza-centro-2078" class="stanza" x="592" y="269" width="71" height="110" data-nome="2078"
+                data-mq="6" data-nodo-x="629" data-nodo-y="387"></rect>
+            <rect id="stanza-centro-2079" class="stanza" x="665" y="271" width="66" height="107" data-nome="2079"
+                data-mq="6" data-nodo-x="704" data-nodo-y="391"></rect>
+            <rect id="stanza-centro-2080" class="stanza" x="736" y="271" width="65" height="110" data-nome="2080"
+                data-mq="6" data-nodo-x="769" data-nodo-y="391"></rect>
+            <rect id="stanza-centro-2081" class="stanza" x="804" y="271" width="69" height="108" data-nome="2081"
+                data-mq="6" data-nodo-x="834" data-nodo-y="391"></rect>
+            <rect id="stanza-centro-2082" class="stanza" x="874" y="272" width="67" height="107" data-nome="2082"
+                data-mq="6" data-nodo-x="911" data-nodo-y="393"></rect>
+            <rect id="stanza-centro-2083" class="stanza" x="943" y="271" width="72" height="109" data-nome="2083"
+                data-mq="6" data-nodo-x="980" data-nodo-y="392"></rect>
+            <rect id="stanza-centro-2084" class="stanza" x="1017" y="272" width="75" height="107" data-nome="2084"
+                data-mq="6" data-nodo-x="1057" data-nodo-y="393"></rect>
+            <rect id="stanza-centro-2085" class="stanza" x="1094" y="273" width="68" height="107" data-nome="2085"
+                data-mq="6" data-nodo-x="1130" data-nodo-y="395"></rect>
+            <rect id="stanza-centro-2086" class="stanza" x="1110" y="196" width="55" height="73" data-nome="2086"
+                data-mq="3" data-nodo-x="1128" data-nodo-y="180"></rect>
+            <rect id="stanza-centro-2087" class="stanza" x="1050" y="196" width="59" height="75" data-nome="2087"
+                data-mq="3" data-nodo-x="1074" data-nodo-y="183"></rect>
+            <rect id="stanza-centro-2088" class="stanza" x="992" y="197" width="57" height="72" data-nome="2088"
+                data-mq="3" data-nodo-x="1010" data-nodo-y="183"></rect>
+            <rect id="stanza-centro-2089" class="stanza" x="937" y="196" width="55" height="73" data-nome="2089"
+                data-mq="3" data-nodo-x="960" data-nodo-y="182"></rect>
+            <rect id="stanza-centro-2090" class="stanza" x="881" y="193" width="57" height="77" data-nome="2090"
+                data-mq="3" data-nodo-x="909" data-nodo-y="184"></rect>
+            <rect id="stanza-centro-2091" class="stanza" x="827" y="196" width="51" height="71" data-nome="2091"
+                data-mq="3" data-nodo-x="852" data-nodo-y="184"></rect>
+            <rect id="stanza-centro-2092" class="stanza" x="772" y="196" width="52" height="72" data-nome="2092"
+                data-mq="3" data-nodo-x="801" data-nodo-y="180"></rect>
+            <rect id="stanza-centro-2093" class="stanza" x="716" y="194" width="54" height="74" data-nome="2093"
+                data-mq="3" data-nodo-x="737" data-nodo-y="181"></rect>
+            <rect id="stanza-centro-2094" class="stanza" x="664" y="194" width="46" height="75" data-nome="2094"
+                data-mq="3" data-nodo-x="687" data-nodo-y="186"></rect>
+            <rect id="stanza-centro-2095" class="stanza" x="612" y="195" width="47" height="70" data-nome="2095"
+                data-mq="3" data-nodo-x="638" data-nodo-y="180"></rect>
+            <rect id="stanza-centro-2096" class="stanza" x="559" y="194" width="48" height="73" data-nome="2096"
+                data-mq="3" data-nodo-x="582" data-nodo-y="181"></rect>
+            <rect id="stanza-centro-2097" class="stanza" x="508" y="194" width="48" height="72" data-nome="2097"
+                data-mq="3" data-nodo-x="529" data-nodo-y="176"></rect>
+            <rect id="stanza-centro-2098" class="stanza" x="454" y="196" width="51" height="72" data-nome="2098"
+                data-mq="3" data-nodo-x="482" data-nodo-y="181"></rect>
+            <rect id="stanza-centro-2099" class="stanza" x="401" y="194" width="52" height="75" data-nome="2099"
+                data-mq="3" data-nodo-x="427" data-nodo-y="184"></rect>
+            <rect id="stanza-centro-2100" class="stanza" x="348" y="196" width="50" height="72" data-nome="2100"
+                data-mq="3" data-nodo-x="377" data-nodo-y="181"></rect>
+            <rect id="stanza-centro-2101" class="stanza" x="289" y="196" width="57" height="71" data-nome="2101"
+                data-mq="3" data-nodo-x="319" data-nodo-y="182"></rect>
+            <rect id="stanza-centro-2102" class="stanza" x="231" y="196" width="54" height="71" data-nome="2102"
+                data-mq="3" data-nodo-x="262" data-nodo-y="184"></rect>
+            <rect id="stanza-centro-2103" class="stanza" x="174" y="195" width="54" height="70" data-nome="2103"
+                data-mq="3" data-nodo-x="198" data-nodo-y="186"></rect>
+            <rect id="stanza-centro-2104" class="stanza" x="107" y="197" width="64" height="71" data-nome="2104"
+                data-mq="4.5" data-nodo-x="137" data-nodo-y="186"></rect>
+            <rect id="stanza-centro-2105" class="stanza" x="3" y="20" width="59" height="41" data-nome="2105"
+                data-mq="1.5" data-nodo-x="35" data-nodo-y="160"></rect>
+            <rect id="stanza-centro-2106" class="stanza" x="66" y="20" width="67" height="126" data-nome="2106"
+                data-mq="7.5" data-nodo-x="101" data-nodo-y="162"></rect>
+            <rect id="stanza-centro-2107" class="stanza" x="142" y="20" width="73" height="124" data-nome="2107"
+                data-mq="7.5" data-nodo-x="178" data-nodo-y="160"></rect>
+            <rect id="stanza-centro-2108" class="stanza" x="217" y="20" width="74" height="125" data-nome="2108"
+                data-mq="7.5" data-nodo-x="250" data-nodo-y="161"></rect>
+            <rect id="stanza-centro-2109" class="stanza" x="295" y="18" width="75" height="126" data-nome="2109"
+                data-mq="7.5" data-nodo-x="330" data-nodo-y="159"></rect>
+            <rect id="stanza-centro-2110" class="stanza" x="373" y="17" width="72" height="130" data-nome="2110"
+                data-mq="7.5" data-nodo-x="417" data-nodo-y="159"></rect>
+            <rect id="stanza-centro-2111" class="stanza" x="449" y="16" width="78" height="129" data-nome="2111"
+                data-mq="7.5" data-nodo-x="489" data-nodo-y="158"></rect>
+            <rect id="stanza-centro-2112" class="stanza" x="530" y="18" width="73" height="127" data-nome="2112"
+                data-mq="7.5" data-nodo-x="566" data-nodo-y="159"></rect>
+            <rect id="stanza-centro-2113" class="stanza" x="605" y="17" width="76" height="127" data-nome="2113"
+                data-mq="7.5" data-nodo-x="642" data-nodo-y="160"></rect>
+            <rect id="stanza-centro-2114" class="stanza" x="683" y="16" width="75" height="131" data-nome="2114"
+                data-mq="7.5" data-nodo-x="720" data-nodo-y="159"></rect>
+            <rect id="stanza-centro-2115" class="stanza" x="761" y="18" width="77" height="128" data-nome="2115"
+                data-mq="7.5" data-nodo-x="801" data-nodo-y="160"></rect>
+            <rect id="stanza-centro-2116" class="stanza" x="838" y="19" width="79" height="127" data-nome="2116"
+                data-mq="7.5" data-nodo-x="878" data-nodo-y="159"></rect>
+            <rect id="stanza-centro-2117" class="stanza" x="917" y="17" width="76" height="129" data-nome="2117"
+                data-mq="7.5" data-nodo-x="962" data-nodo-y="158"></rect>
+            <rect id="stanza-centro-2118" class="stanza" x="997" y="18" width="76" height="127" data-nome="2118"
+                data-mq="7.5" data-nodo-x="1037" data-nodo-y="158"></rect>
+            <rect id="stanza-centro-2119" class="stanza" x="1074" y="18" width="78" height="128" data-nome="2119"
+                data-mq="7.5" data-nodo-x="1115" data-nodo-y="161"></rect>
+            <rect id="stanza-centro-2120" class="stanza" x="1152" y="17" width="69" height="130" data-nome="2120"
+                data-mq="7.5" data-nodo-x="1185" data-nodo-y="160"></rect>
+            <rect id="stanza-centro-2121" class="stanza" x="1223" y="16" width="35" height="130" data-nome="2121"
+                data-mq="4.5" data-nodo-x="1280" data-nodo-y="97"></rect>
+            <rect id="stanza-centro-175" class="stanza" x="1263" y="280" width="38" height="34" data-nome="175"
+                data-mq="1" data-nodo-x="1255" data-nodo-y="304"></rect>
+            <rect id="stanza-centro-200" class="stanza" x="1163" y="277" width="38" height="37" data-nome="200"
+                data-mq="1" data-nodo-x="1244" data-nodo-y="305"></rect>
+            <rect id="stanza-centro-201" class="stanza" x="1202" y="276" width="37" height="36" data-nome="201"
+                data-mq="1" data-nodo-x="1244" data-nodo-y="287"></rect>
+            <rect id="stanza-centro-202" class="stanza" x="1165" y="239" width="33" height="38" data-nome="202"
+                data-mq="1" data-nodo-x="1245" data-nodo-y="265"></rect>
+            <rect id="stanza-centro-203" class="stanza" x="1200" y="239" width="38" height="35" data-nome="203"
+                data-mq="1" data-nodo-x="1246" data-nodo-y="251"></rect>
+            <rect id="stanza-centro-204" class="stanza" x="69" y="534" width="34" height="47" data-nome="204"
+                data-mq="1" data-nodo-x="18" data-nodo-y="569"></rect>
+            <rect id="stanza-centro-205" class="stanza" x="29" y="535" width="38" height="46" data-nome="205"
+                data-mq="1" data-nodo-x="21" data-nodo-y="545"></rect>
+            <rect id="stanza-centro-206" class="stanza" x="69" y="482" width="34" height="49" data-nome="206"
+                data-mq="1" data-nodo-x="17" data-nodo-y="522"></rect>
+            <rect id="stanza-centro-207" class="stanza" x="32" y="484" width="34" height="47" data-nome="207"
+                data-mq="1" data-nodo-x="21" data-nodo-y="500"></rect>
+            <rect id="stanza-centro-208" class="stanza" x="66" y="433" width="38" height="48" data-nome="208"
+                data-mq="1" data-nodo-x="20" data-nodo-y="472"></rect>
+            <rect id="stanza-centro-209" class="stanza" x="29" y="429" width="34" height="52" data-nome="209"
+                data-mq="1" data-nodo-x="20" data-nodo-y="450"></rect>
+            <rect id="stanza-centro-210" class="stanza" x="68" y="339" width="40" height="41" data-nome="210"
+                data-mq="1" data-nodo-x="24" data-nodo-y="370"></rect>
+            <rect id="stanza-centro-211" class="stanza" x="31" y="339" width="34" height="45" data-nome="211"
+                data-mq="1" data-nodo-x="23" data-nodo-y="353"></rect>
+            <rect id="stanza-centro-212" class="stanza" x="68" y="291" width="38" height="46" data-nome="212"
+                data-mq="1" data-nodo-x="21" data-nodo-y="329"></rect>
+            <rect id="stanza-centro-213" class="stanza" x="28" y="291" width="38" height="45" data-nome="213"
+                data-mq="1" data-nodo-x="21" data-nodo-y="304"></rect>
+            <rect id="stanza-centro-214" class="stanza" x="69" y="241" width="37" height="47" data-nome="214"
+                data-mq="1" data-nodo-x="24" data-nodo-y="277"></rect>
+            <rect id="stanza-centro-215" class="stanza" x="29" y="243" width="37" height="46" data-nome="215"
+                data-mq="1" data-nodo-x="20" data-nodo-y="255"></rect>
+            <rect id="stanza-centro-216" class="stanza" x="66" y="198" width="40" height="41" data-nome="216"
+                data-mq="1" data-nodo-x="20" data-nodo-y="231"></rect>
+            <rect id="stanza-centro-217" class="stanza" x="25" y="200" width="42" height="40" data-nome="217"
+                data-mq="1" data-nodo-x="18" data-nodo-y="212"></rect>
+            <rect id="stanza-centro-20018" class="stanza" x="1278" y="344" width="1" height="1" data-nome="2018"
+                data-mq="0" data-nodo-x="1267" data-nodo-y="670" style="pointer-events: none;"></rect>
+            <rect id="stanza-centro-20019" class="stanza" x="1227" y="347" width="1" height="1" data-nome="2019"
+                data-mq="0" data-nodo-x="1257" data-nodo-y="655" style="pointer-events: none;"></rect>
+
+            </svg>
+        </div>
+
+        <!-- MAPPA PIANO -3 -->
+        <div id="map-centro-p-3" class="container-mappa" data-filiale="centro">
+            <img src="centro_p-3.jpg" alt="Centro Piano -3">
+            <svg class="mappa-interattiva" viewBox="0 0 668 500" preserveAspectRatio="xMidYMid meet">
+                <!-- INSERISCI QUI TUTTI I TUOI <rect> DEL PIANO -3 -->
+ <rect id="stanza-centro-3013" class="stanza" x="0" y="0" width="28" height="23" data-nome="3013" data-mq="2"
+                data-nodo-x="14" data-nodo-y="82"></rect>
+            <rect id="stanza-centro-3012" class="stanza" x="32" y="5" width="40" height="60" data-nome="3012"
+                data-mq="8" data-nodo-x="49" data-nodo-y="80"></rect>
+            <rect id="stanza-centro-3011" class="stanza" x="80" y="5" width="58" height="60" data-nome="3011"
+                data-mq="12" data-nodo-x="104" data-nodo-y="80"></rect>
+            <rect id="stanza-centro-3010" class="stanza" x="145" y="6" width="35" height="58" data-nome="3010"
+                data-mq="8" data-nodo-x="158" data-nodo-y="78"></rect>
+            <rect id="stanza-centro-3009" class="stanza" x="187" y="4" width="37" height="61" data-nome="3009"
+                data-mq="8" data-nodo-x="202" data-nodo-y="79"></rect>
+            <rect id="stanza-centro-3008" class="stanza" x="232" y="5" width="58" height="59" data-nome="3008"
+                data-mq="12" data-nodo-x="255" data-nodo-y="82"></rect>
+            <rect id="stanza-centro-3007" class="stanza" x="295" y="7" width="40" height="57" data-nome="3007"
+                data-mq="8" data-nodo-x="309" data-nodo-y="79"></rect>
+            <rect id="stanza-centro-3006" class="stanza" x="340" y="4" width="36" height="61" data-nome="3006"
+                data-mq="8" data-nodo-x="352" data-nodo-y="79"></rect>
+            <rect id="stanza-centro-3005" class="stanza" x="380" y="4" width="62" height="61" data-nome="3005"
+                data-mq="12" data-nodo-x="405" data-nodo-y="77"></rect>
+            <rect id="stanza-centro-3004" class="stanza" x="447" y="6" width="36" height="58" data-nome="3004"
+                data-mq="8" data-nodo-x="462" data-nodo-y="82"></rect>
+            <rect id="stanza-centro-3003" class="stanza" x="487" y="2" width="40" height="65" data-nome="3003"
+                data-mq="8" data-nodo-x="501" data-nodo-y="79"></rect>
+            <rect id="stanza-centro-3002" class="stanza" x="532" y="3" width="37" height="64" data-nome="3002"
+                data-mq="15" data-nodo-x="545" data-nodo-y="78"></rect>
+            <rect id="stanza-centro-3001" class="stanza" x="572" y="3" width="74" height="63" data-nome="3001"
+                data-mq="11" data-nodo-x="613" data-nodo-y="80"></rect>
+            <rect id="stanza-centro-3014" class="stanza" x="32" y="100" width="28" height="27" data-nome="3014"
+                data-mq="3" data-nodo-x="36" data-nodo-y="94"></rect>
+            <rect id="stanza-centro-3015" class="stanza" x="65" y="99" width="29" height="28" data-nome="3015"
+                data-mq="3" data-nodo-x="77" data-nodo-y="94"></rect>
+            <rect id="stanza-centro-3016" class="stanza" x="98" y="99" width="30" height="28" data-nome="3016"
+                data-mq="3" data-nodo-x="116" data-nodo-y="94"></rect>
+            <rect id="stanza-centro-3017" class="stanza" x="132" y="100" width="29" height="26" data-nome="3017"
+                data-mq="3" data-nodo-x="143" data-nodo-y="91"></rect>
+            <rect id="stanza-centro-3018" class="stanza" x="165" y="99" width="32" height="27" data-nome="3018"
+                data-mq="3" data-nodo-x="179" data-nodo-y="92"></rect>
+            <rect id="stanza-centro-3019" class="stanza" x="199" y="100" width="30" height="26" data-nome="3019"
+                data-mq="3" data-nodo-x="216" data-nodo-y="92"></rect>
+            <rect id="stanza-centro-3020" class="stanza" x="232" y="99" width="33" height="28" data-nome="3020"
+                data-mq="3" data-nodo-x="241" data-nodo-y="92"></rect>
+            <rect id="stanza-centro-3021" class="stanza" x="268" y="99" width="30" height="27" data-nome="3021"
+                data-mq="3" data-nodo-x="280" data-nodo-y="92"></rect>
+            <rect id="stanza-centro-3022" class="stanza" x="302" y="100" width="31" height="27" data-nome="3022"
+                data-mq="3" data-nodo-x="318" data-nodo-y="92"></rect>
+            <rect id="stanza-centro-3023" class="stanza" x="334" y="98" width="33" height="29" data-nome="3023"
+                data-mq="3" data-nodo-x="346" data-nodo-y="93"></rect>
+            <rect id="stanza-centro-3024" class="stanza" x="368" y="98" width="34" height="28" data-nome="3024"
+                data-mq="3" data-nodo-x="380" data-nodo-y="89"></rect>
+            <rect id="stanza-centro-3025" class="stanza" x="404" y="99" width="31" height="28" data-nome="3025"
+                data-mq="3" data-nodo-x="419" data-nodo-y="92"></rect>
+            <rect id="stanza-centro-3026" class="stanza" x="436" y="98" width="32" height="30" data-nome="3026"
+                data-mq="3" data-nodo-x="446" data-nodo-y="92"></rect>
+            <rect id="stanza-centro-3027" class="stanza" x="471" y="98" width="32" height="28" data-nome="3027"
+                data-mq="3" data-nodo-x="481" data-nodo-y="93"></rect>
+            <rect id="stanza-centro-3028" class="stanza" x="503" y="99" width="34" height="29" data-nome="3028"
+                data-mq="3" data-nodo-x="518" data-nodo-y="91"></rect>
+            <rect id="stanza-centro-3029" class="stanza" x="537" y="100" width="33" height="26" data-nome="3029"
+                data-mq="3" data-nodo-x="557" data-nodo-y="91"></rect>
+            <rect id="stanza-centro-3030" class="stanza" x="570" y="100" width="59" height="27" data-nome="3030"
+                data-mq="5" data-nodo-x="595" data-nodo-y="92"></rect>
+            <rect id="stanza-centro-3050" class="stanza" x="32" y="131" width="33" height="20" data-nome="3050"
+                data-mq="2" data-nodo-x="38" data-nodo-y="158"></rect>
+            <rect id="stanza-centro-3049" class="stanza" x="70" y="131" width="25" height="20" data-nome="3049"
+                data-mq="1.5" data-nodo-x="78" data-nodo-y="156"></rect>
+            <rect id="stanza-centro-3048" class="stanza" x="96" y="132" width="27" height="20" data-nome="3048"
+                data-mq="2" data-nodo-x="107" data-nodo-y="156"></rect>
+            <rect id="stanza-centro-3047" class="stanza" x="125" y="132" width="26" height="19" data-nome="3047"
+                data-mq="1.5" data-nodo-x="145" data-nodo-y="157"></rect>
+            <rect id="stanza-centro-3046" class="stanza" x="154" y="131" width="26" height="21" data-nome="3046"
+                data-mq="2" data-nodo-x="165" data-nodo-y="157"></rect>
+            <rect id="stanza-centro-3045" class="stanza" x="182" y="132" width="27" height="21" data-nome="3045"
+                data-mq="2" data-nodo-x="202" data-nodo-y="156"></rect>
+            <rect id="stanza-centro-3044" class="stanza" x="212" y="131" width="24" height="22" data-nome="3044"
+                data-mq="1.5" data-nodo-x="229" data-nodo-y="158"></rect>
+            <rect id="stanza-centro-3043" class="stanza" x="237" y="131" width="30" height="20" data-nome="3043"
+                data-mq="2" data-nodo-x="252" data-nodo-y="156"></rect>
+            <rect id="stanza-centro-3042" class="stanza" x="268" y="130" width="26" height="22" data-nome="3042"
+                data-mq="2" data-nodo-x="287" data-nodo-y="157"></rect>
+            <rect id="stanza-centro-3041" class="stanza" x="294" y="130" width="28" height="23" data-nome="3041"
+                data-mq="2" data-nodo-x="312" data-nodo-y="159"></rect>
+            <rect id="stanza-centro-3040" class="stanza" x="322" y="131" width="29" height="22" data-nome="3040"
+                data-mq="2" data-nodo-x="341" data-nodo-y="157"></rect>
+            <rect id="stanza-centro-3039" class="stanza" x="352" y="130" width="27" height="22" data-nome="3039"
+                data-mq="1.5" data-nodo-x="371" data-nodo-y="156"></rect>
+            <rect id="stanza-centro-3038" class="stanza" x="379" y="132" width="26" height="20" data-nome="3038"
+                data-mq="1.5" data-nodo-x="398" data-nodo-y="156"></rect>
+            <rect id="stanza-centro-3037" class="stanza" x="408" y="131" width="26" height="20" data-nome="3037"
+                data-mq="2" data-nodo-x="426" data-nodo-y="155"></rect>
+            <rect id="stanza-centro-3036" class="stanza" x="434" y="131" width="28" height="21" data-nome="3036"
+                data-mq="2" data-nodo-x="447" data-nodo-y="156"></rect>
+            <rect id="stanza-centro-3035" class="stanza" x="462" y="131" width="29" height="22" data-nome="3035"
+                data-mq="2" data-nodo-x="481" data-nodo-y="158"></rect>
+            <rect id="stanza-centro-3034" class="stanza" x="491" y="131" width="26" height="20" data-nome="3034"
+                data-mq="1.5" data-nodo-x="509" data-nodo-y="156"></rect>
+            <rect id="stanza-centro-3033" class="stanza" x="518" y="131" width="31" height="20" data-nome="3033"
+                data-mq="2" data-nodo-x="538" data-nodo-y="159"></rect>
+            <rect id="stanza-centro-3032" class="stanza" x="550" y="130" width="38" height="23" data-nome="3032"
+                data-mq="2.5" data-nodo-x="576" data-nodo-y="158"></rect>
+            <rect id="stanza-centro-3031" class="stanza" x="588" y="130" width="42" height="22" data-nome="3031"
+                data-mq="2.5" data-nodo-x="621" data-nodo-y="157"></rect>
+            <rect id="stanza-centro-3051" class="stanza" x="29" y="182" width="66" height="31" data-nome="3051"
+                data-mq="6" data-nodo-x="59" data-nodo-y="172"></rect>
+            <rect id="stanza-centro-3052" class="stanza" x="97" y="182" width="64" height="31" data-nome="3052"
+                data-mq="6" data-nodo-x="127" data-nodo-y="175"></rect>
+            <rect id="stanza-centro-3053" class="stanza" x="163" y="182" width="67" height="31" data-nome="3053"
+                data-mq="6" data-nodo-x="191" data-nodo-y="174"></rect>
+            <rect id="stanza-centro-3054" class="stanza" x="232" y="182" width="62" height="29" data-nome="3054"
+                data-mq="6" data-nodo-x="264" data-nodo-y="175"></rect>
+            <rect id="stanza-centro-3055" class="stanza" x="295" y="181" width="65" height="32" data-nome="3055"
+                data-mq="6" data-nodo-x="327" data-nodo-y="175"></rect>
+            <rect id="stanza-centro-3056" class="stanza" x="362" y="181" width="64" height="31" data-nome="3056"
+                data-mq="6" data-nodo-x="382" data-nodo-y="175"></rect>
+            <rect id="stanza-centro-3057" class="stanza" x="427" y="180" width="66" height="33" data-nome="3057"
+                data-mq="6" data-nodo-x="456" data-nodo-y="172"></rect>
+            <rect id="stanza-centro-3058" class="stanza" x="494" y="181" width="75" height="32" data-nome="3058"
+                data-mq="6" data-nodo-x="520" data-nodo-y="171"></rect>
+            <rect id="stanza-centro-3059" class="stanza" x="569" y="181" width="37" height="31" data-nome="3059"
+                data-mq="3" data-nodo-x="581" data-nodo-y="172"></rect>
+            <rect id="stanza-centro-3060" class="stanza" x="606" y="181" width="26" height="53" data-nome="3060"
+                data-mq="6" data-nodo-x="617" data-nodo-y="249"></rect>
+            <rect id="stanza-centro-3074" class="stanza" x="32" y="215" width="35" height="44" data-nome="3074"
+                data-mq="4.5" data-nodo-x="56" data-nodo-y="265"></rect>
+            <rect id="stanza-centro-3073" class="stanza" x="70" y="213" width="39" height="46" data-nome="3073"
+                data-mq="4.5" data-nodo-x="98" data-nodo-y="264"></rect>
+            <rect id="stanza-centro-3072" class="stanza" x="112" y="215" width="37" height="43" data-nome="3072"
+                data-mq="4.5" data-nodo-x="132" data-nodo-y="263"></rect>
+            <rect id="stanza-centro-3071" class="stanza" x="152" y="214" width="39" height="45" data-nome="3071"
+                data-mq="4.5" data-nodo-x="182" data-nodo-y="263"></rect>
+            <rect id="stanza-centro-3070" class="stanza" x="193" y="214" width="36" height="45" data-nome="3070"
+                data-mq="4.5" data-nodo-x="218" data-nodo-y="263"></rect>
+            <rect id="stanza-centro-3069" class="stanza" x="232" y="215" width="37" height="42" data-nome="3069"
+                data-mq="4.5" data-nodo-x="257" data-nodo-y="265"></rect>
+            <rect id="stanza-centro-3068" class="stanza" x="274" y="214" width="36" height="43" data-nome="3068"
+                data-mq="4.5" data-nodo-x="296" data-nodo-y="263"></rect>
+            <rect id="stanza-centro-3067" class="stanza" x="313" y="214" width="38" height="45" data-nome="3067"
+                data-mq="4.5" data-nodo-x="339" data-nodo-y="265"></rect>
+            <rect id="stanza-centro-3066" class="stanza" x="354" y="215" width="38" height="45" data-nome="3066"
+                data-mq="4.5" data-nodo-x="378" data-nodo-y="264"></rect>
+            <rect id="stanza-centro-3065" class="stanza" x="392" y="214" width="40" height="45" data-nome="3065"
+                data-mq="4.5" data-nodo-x="418" data-nodo-y="264"></rect>
+            <rect id="stanza-centro-3064" class="stanza" x="434" y="214" width="40" height="45" data-nome="3064"
+                data-mq="4.5" data-nodo-x="460" data-nodo-y="265"></rect>
+            <rect id="stanza-centro-3063" class="stanza" x="474" y="215" width="39" height="43" data-nome="3063"
+                data-mq="4.5" data-nodo-x="498" data-nodo-y="262"></rect>
+            <rect id="stanza-centro-3062" class="stanza" x="513" y="215" width="40" height="43" data-nome="3062"
+                data-mq="4.5" data-nodo-x="541" data-nodo-y="264"></rect>
+            <rect id="stanza-centro-3061" class="stanza" x="555" y="213" width="51" height="46" data-nome="3061"
+                data-mq="4.5" data-nodo-x="583" data-nodo-y="266"></rect>
+            <rect id="stanza-centro-3075" class="stanza" x="4" y="288" width="49" height="65" data-nome="3075"
+                data-mq="10" data-nodo-x="22" data-nodo-y="275"></rect>
+            <rect id="stanza-centro-3076" class="stanza" x="57" y="288" width="47" height="65" data-nome="3076"
+                data-mq="10" data-nodo-x="76" data-nodo-y="278"></rect>
+            <rect id="stanza-centro-3077" class="stanza" x="107" y="288" width="45" height="67" data-nome="3077"
+                data-mq="10" data-nodo-x="127" data-nodo-y="278"></rect>
+            <rect id="stanza-centro-3078" class="stanza" x="156" y="286" width="49" height="69" data-nome="3078"
+                data-mq="10" data-nodo-x="171" data-nodo-y="278"></rect>
+            <rect id="stanza-centro-3079" class="stanza" x="205" y="286" width="77" height="71" data-nome="3079"
+                data-mq="13" data-nodo-x="240" data-nodo-y="274"></rect>
+            <rect id="stanza-centro-3080" class="stanza" x="284" y="288" width="68" height="65" data-nome="3080"
+                data-mq="14" data-nodo-x="316" data-nodo-y="277"></rect>
+            <rect id="stanza-centro-3081" class="stanza" x="355" y="287" width="83" height="70" data-nome="3081"
+                data-mq="15" data-nodo-x="395" data-nodo-y="279"></rect>
+            <rect id="stanza-centro-3083" class="stanza" x="454" y="290" width="129" height="50" data-nome="3083"
+                data-mq="30" data-nodo-x="519" data-nodo-y="285"></rect>
+            <rect id="stanza-centro-154" class="stanza" x="597" y="354" width="20" height="25" data-nome="154"
+                data-mq="1" data-nodo-x="640" data-nodo-y="359"></rect>
+            <rect id="stanza-centro-155" class="stanza" x="619" y="356" width="17" height="23" data-nome="155"
+                data-mq="1" data-nodo-x="642" data-nodo-y="372"></rect>
+            <rect id="stanza-centro-151" class="stanza" x="595" y="381" width="22" height="21" data-nome="151"
+                data-mq="1" data-nodo-x="642" data-nodo-y="385"></rect>
+            <rect id="stanza-centro-150" class="stanza" x="617" y="379" width="19" height="23" data-nome="150"
+                data-mq="1" data-nodo-x="639" data-nodo-y="399"></rect>
+            <rect id="stanza-centro-183" class="stanza" x="595" y="415" width="21" height="19" data-nome="183"
+                data-mq="1" data-nodo-x="641" data-nodo-y="416"></rect>
+            <rect id="stanza-centro-184" class="stanza" x="617" y="414" width="20" height="21" data-nome="184"
+                data-mq="1" data-nodo-x="640" data-nodo-y="430"></rect>
+            <rect id="stanza-centro-181" class="stanza" x="591" y="436" width="26" height="20" data-nome="181"
+                data-mq="1" data-nodo-x="639" data-nodo-y="438"></rect>
+            <rect id="stanza-centro-180" class="stanza" x="617" y="434" width="18" height="23" data-nome="180"
+                data-mq="1" data-nodo-x="641" data-nodo-y="449"></rect>
+            <rect id="stanza-centro-186" class="stanza" x="594" y="456" width="23" height="23" data-nome="186"
+                data-mq="1" data-nodo-x="640" data-nodo-y="461"></rect>
+            <rect id="stanza-centro-182" class="stanza" x="617" y="455" width="19" height="24" data-nome="182"
+                data-mq="1" data-nodo-x="641" data-nodo-y="472"></rect>
+
+            </svg>
+        </div>
+
+        <!-- MAPPA PIANO -4 -->
+        <div id="map-centro-p-4" class="container-mappa" data-filiale="centro">
+            <img src="centro_p-4.jpg" alt="Centro Piano -4">
+            <svg class="mappa-interattiva" viewBox="0 0 734 500" preserveAspectRatio="xMidYMid meet">
+                <!-- INSERISCI QUI TUTTI I TUOI <rect> DEL PIANO -4 -->
+<<rect id="stanza-centro-4014" class="stanza" x="5" y="9" width="28" height="24" data-nome="4014"
+                data-mq="2" data-nodo-x="13" data-nodo-y="85">
+                </rect>
+                <rect id="stanza-centro-4013" class="stanza" x="36" y="10" width="39" height="63" data-nome="4013"
+                    data-mq="8" data-nodo-x="42" data-nodo-y="83"></rect>
+                <rect id="stanza-centro-4012" class="stanza" x="79" y="10" width="63" height="64" data-nome="4012"
+                    data-mq="12" data-nodo-x="108" data-nodo-y="83"></rect>
+                <rect id="stanza-centro-4011" class="stanza" x="147" y="10" width="35" height="64" data-nome="4011"
+                    data-mq="8" data-nodo-x="159" data-nodo-y="82"></rect>
+                <rect id="stanza-centro-4010" class="stanza" x="184" y="11" width="35" height="63" data-nome="4010"
+                    data-mq="8" data-nodo-x="203" data-nodo-y="82"></rect>
+                <rect id="stanza-centro-4009" class="stanza" x="222" y="10" width="70" height="64" data-nome="4009"
+                    data-mq="12" data-nodo-x="259" data-nodo-y="82"></rect>
+                <rect id="stanza-centro-4008" class="stanza" x="295" y="11" width="35" height="63" data-nome="4008"
+                    data-mq="8" data-nodo-x="312" data-nodo-y="82"></rect>
+                <rect id="stanza-centro-4007" class="stanza" x="332" y="10" width="38" height="64" data-nome="4007"
+                    data-mq="8" data-nodo-x="350" data-nodo-y="82"></rect>
+                <rect id="stanza-centro-4005" class="stanza" x="371" y="11" width="100" height="63" data-nome="4005"
+                    data-mq="20" data-nodo-x="420" data-nodo-y="83"></rect>
+                <rect id="stanza-centro-4004" class="stanza" x="471" y="10" width="39" height="64" data-nome="4004"
+                    data-mq="8" data-nodo-x="485" data-nodo-y="82"></rect>
+                <rect id="stanza-centro-4003" class="stanza" x="511" y="10" width="74" height="64" data-nome="4003"
+                    data-mq="12" data-nodo-x="544" data-nodo-y="82"></rect>
+                <rect id="stanza-centro-4002" class="stanza" x="585" y="11" width="47" height="63" data-nome="4002"
+                    data-mq="10" data-nodo-x="605" data-nodo-y="82"></rect>
+                <rect id="stanza-centro-4001" class="stanza" x="632" y="9" width="45" height="65" data-nome="4001"
+                    data-mq="6" data-nodo-x="650" data-nodo-y="81"></rect>
+                <rect id="stanza-centro-4000" class="stanza" x="676" y="8" width="37" height="66" data-nome="4000"
+                    data-mq="7" data-nodo-x="705" data-nodo-y="82"></rect>
+                <rect id="stanza-centro-4032" class="stanza" x="665" y="106" width="32" height="54" data-nome="4032"
+                    data-mq="4" data-nodo-x="677" data-nodo-y="100"></rect>
+                <rect id="stanza-centro-4031" class="stanza" x="635" y="106" width="28" height="26" data-nome="4031"
+                    data-mq="2.5" data-nodo-x="642" data-nodo-y="98"></rect>
+                <rect id="stanza-centro-4030" class="stanza" x="601" y="107" width="32" height="26" data-nome="4030"
+                    data-mq="3" data-nodo-x="616" data-nodo-y="99"></rect>
+                <rect id="stanza-centro-4029" class="stanza" x="565" y="107" width="34" height="26" data-nome="4029"
+                    data-mq="3" data-nodo-x="577" data-nodo-y="98"></rect>
+                <rect id="stanza-centro-4028" class="stanza" x="524" y="105" width="40" height="27" data-nome="4028"
+                    data-mq="3" data-nodo-x="544" data-nodo-y="99"></rect>
+                <rect id="stanza-centro-4027" class="stanza" x="487" y="107" width="34" height="26" data-nome="4027"
+                    data-mq="3" data-nodo-x="505" data-nodo-y="97"></rect>
+                <rect id="stanza-centro-4026" class="stanza" x="450" y="108" width="35" height="23" data-nome="4026"
+                    data-mq="3" data-nodo-x="464" data-nodo-y="98"></rect>
+                <rect id="stanza-centro-4025" class="stanza" x="412" y="107" width="34" height="25" data-nome="4025"
+                    data-mq="3" data-nodo-x="427" data-nodo-y="102"></rect>
+                <rect id="stanza-centro-4024" class="stanza" x="374" y="107" width="36" height="24" data-nome="4024"
+                    data-mq="3" data-nodo-x="390" data-nodo-y="99"></rect>
+                <rect id="stanza-centro-4023" class="stanza" x="338" y="108" width="34" height="25" data-nome="4023"
+                    data-mq="3" data-nodo-x="358" data-nodo-y="101"></rect>
+                <rect id="stanza-centro-4022" class="stanza" x="299" y="108" width="36" height="22" data-nome="4022"
+                    data-mq="3" data-nodo-x="327" data-nodo-y="99"></rect>
+                <rect id="stanza-centro-4021" class="stanza" x="261" y="106" width="36" height="26" data-nome="4021"
+                    data-mq="3" data-nodo-x="283" data-nodo-y="96"></rect>
+                <rect id="stanza-centro-4020" class="stanza" x="222" y="105" width="37" height="26" data-nome="4020"
+                    data-mq="3" data-nodo-x="235" data-nodo-y="95"></rect>
+                <rect id="stanza-centro-4019" class="stanza" x="184" y="107" width="35" height="25" data-nome="4019"
+                    data-mq="3" data-nodo-x="207" data-nodo-y="99"></rect>
+                <rect id="stanza-centro-4018" class="stanza" x="147" y="106" width="36" height="25" data-nome="4018"
+                    data-mq="3" data-nodo-x="169" data-nodo-y="98"></rect>
+                <rect id="stanza-centro-4017" class="stanza" x="108" y="107" width="36" height="23" data-nome="4017"
+                    data-mq="3" data-nodo-x="127" data-nodo-y="97"></rect>
+                <rect id="stanza-centro-4016" class="stanza" x="77" y="106" width="31" height="26" data-nome="4016"
+                    data-mq="3" data-nodo-x="93" data-nodo-y="99"></rect>
+                <rect id="stanza-centro-4015" class="stanza" x="38" y="107" width="38" height="25" data-nome="4015"
+                    data-mq="3" data-nodo-x="59" data-nodo-y="100"></rect>
+                <rect id="stanza-centro-4033" class="stanza" x="628" y="133" width="33" height="26" data-nome="4033"
+                    data-mq="3" data-nodo-x="644" data-nodo-y="170"></rect>
+                <rect id="stanza-centro-4034" class="stanza" x="598" y="137" width="29" height="22" data-nome="4034"
+                    data-mq="1.5" data-nodo-x="608" data-nodo-y="167"></rect>
+                <rect id="stanza-centro-4035" class="stanza" x="560" y="135" width="37" height="26" data-nome="4035"
+                    data-mq="3" data-nodo-x="573" data-nodo-y="168"></rect>
+                <rect id="stanza-centro-4036" class="stanza" x="522" y="136" width="36" height="24" data-nome="4036"
+                    data-mq="2" data-nodo-x="536" data-nodo-y="167"></rect>
+                <rect id="stanza-centro-4037" class="stanza" x="485" y="136" width="36" height="24" data-nome="4037"
+                    data-mq="3" data-nodo-x="495" data-nodo-y="167"></rect>
+                <rect id="stanza-centro-4038" class="stanza" x="447" y="136" width="36" height="23" data-nome="4038"
+                    data-mq="2" data-nodo-x="458" data-nodo-y="167"></rect>
+                <rect id="stanza-centro-4039" class="stanza" x="409" y="135" width="36" height="25" data-nome="4039"
+                    data-mq="3" data-nodo-x="419" data-nodo-y="168"></rect>
+                <rect id="stanza-centro-4040" class="stanza" x="371" y="136" width="35" height="23" data-nome="4040"
+                    data-mq="2" data-nodo-x="381" data-nodo-y="167"></rect>
+                <rect id="stanza-centro-4041" class="stanza" x="336" y="137" width="33" height="22" data-nome="4041"
+                    data-mq="3" data-nodo-x="343" data-nodo-y="166"></rect>
+                <rect id="stanza-centro-4042" class="stanza" x="299" y="135" width="36" height="24" data-nome="4042"
+                    data-mq="2" data-nodo-x="308" data-nodo-y="168"></rect>
+                <rect id="stanza-centro-4043" class="stanza" x="261" y="137" width="36" height="23" data-nome="4043"
+                    data-mq="3" data-nodo-x="271" data-nodo-y="168"></rect>
+                <rect id="stanza-centro-4044" class="stanza" x="224" y="136" width="36" height="23" data-nome="4044"
+                    data-mq="2" data-nodo-x="237" data-nodo-y="168"></rect>
+                <rect id="stanza-centro-4045" class="stanza" x="187" y="136" width="35" height="24" data-nome="4045"
+                    data-mq="3" data-nodo-x="197" data-nodo-y="168"></rect>
+                <rect id="stanza-centro-4046" class="stanza" x="148" y="135" width="37" height="25" data-nome="4046"
+                    data-mq="2" data-nodo-x="159" data-nodo-y="168"></rect>
+                <rect id="stanza-centro-4047" class="stanza" x="113" y="136" width="33" height="24" data-nome="4047"
+                    data-mq="3" data-nodo-x="124" data-nodo-y="168"></rect>
+                <rect id="stanza-centro-4048" class="stanza" x="78" y="135" width="32" height="24" data-nome="4048"
+                    data-mq="2" data-nodo-x="88" data-nodo-y="169"></rect>
+                <rect id="stanza-centro-4049" class="stanza" x="38" y="136" width="39" height="24" data-nome="4049"
+                    data-mq="3" data-nodo-x="42" data-nodo-y="168"></rect>
+                <rect id="stanza-centro-4050" class="stanza" x="36" y="190" width="39" height="35" data-nome="4050"
+                    data-mq="4" data-nodo-x="60" data-nodo-y="180"></rect>
+                <rect id="stanza-centro-4051" class="stanza" x="80" y="192" width="33" height="32" data-nome="4051"
+                    data-mq="4" data-nodo-x="101" data-nodo-y="184"></rect>
+                <rect id="stanza-centro-4052" class="stanza" x="116" y="192" width="36" height="32" data-nome="4052"
+                    data-mq="4" data-nodo-x="137" data-nodo-y="185"></rect>
+                <rect id="stanza-centro-4053" class="stanza" x="155" y="191" width="39" height="35" data-nome="4053"
+                    data-mq="4" data-nodo-x="175" data-nodo-y="182"></rect>
+                <rect id="stanza-centro-4054" class="stanza" x="196" y="191" width="37" height="35" data-nome="4054"
+                    data-mq="4" data-nodo-x="213" data-nodo-y="183"></rect>
+                <rect id="stanza-centro-4055" class="stanza" x="236" y="189" width="38" height="35" data-nome="4055"
+                    data-mq="4" data-nodo-x="255" data-nodo-y="180"></rect>
+                <rect id="stanza-centro-4056" class="stanza" x="276" y="189" width="38" height="36" data-nome="4056"
+                    data-mq="4" data-nodo-x="291" data-nodo-y="180"></rect>
+                <rect id="stanza-centro-4057" class="stanza" x="316" y="191" width="38" height="34" data-nome="4057"
+                    data-mq="4" data-nodo-x="331" data-nodo-y="183"></rect>
+                <rect id="stanza-centro-4058" class="stanza" x="356" y="191" width="38" height="34" data-nome="4058"
+                    data-mq="4" data-nodo-x="370" data-nodo-y="182"></rect>
+                <rect id="stanza-centro-4059" class="stanza" x="394" y="191" width="39" height="34" data-nome="4059"
+                    data-mq="4" data-nodo-x="410" data-nodo-y="183"></rect>
+                <rect id="stanza-centro-4060" class="stanza" x="434" y="191" width="40" height="34" data-nome="4060"
+                    data-mq="4" data-nodo-x="476" data-nodo-y="192"></rect>
+                <rect id="stanza-centro-4061" class="stanza" x="474" y="191" width="40" height="33" data-nome="4061"
+                    data-mq="4" data-nodo-x="494" data-nodo-y="184"></rect>
+                <rect id="stanza-centro-4062" class="stanza" x="515" y="191" width="40" height="36" data-nome="4062"
+                    data-mq="4" data-nodo-x="534" data-nodo-y="182"></rect>
+                <rect id="stanza-centro-4063" class="stanza" x="556" y="191" width="41" height="35" data-nome="4063"
+                    data-mq="4.5" data-nodo-x="581" data-nodo-y="182"></rect>
+                <rect id="stanza-centro-4065" class="stanza" x="598" y="192" width="29" height="72" data-nome="4065"
+                    data-mq="6" data-nodo-x="631" data-nodo-y="230"></rect>
+                <rect id="stanza-centro-4064" class="stanza" x="673" y="191" width="40" height="33" data-nome="4064"
+                    data-mq="4" data-nodo-x="688" data-nodo-y="183"></rect>
+                <rect id="stanza-centro-4066" class="stanza" x="569" y="227" width="27" height="36" data-nome="4066"
+                    data-mq="2.5" data-nodo-x="580" data-nodo-y="269"></rect>
+                <rect id="stanza-centro-4067" class="stanza" x="526" y="228" width="42" height="35" data-nome="4067"
+                    data-mq="5" data-nodo-x="545" data-nodo-y="271"></rect>
+                <rect id="stanza-centro-4068" class="stanza" x="473" y="227" width="53" height="35" data-nome="4068"
+                    data-mq="5" data-nodo-x="496" data-nodo-y="269"></rect>
+                <rect id="stanza-centro-4069" class="stanza" x="423" y="228" width="49" height="35" data-nome="4069"
+                    data-mq="5" data-nodo-x="439" data-nodo-y="271"></rect>
+                <rect id="stanza-centro-4070" class="stanza" x="374" y="227" width="48" height="37" data-nome="4070"
+                    data-mq="5" data-nodo-x="392" data-nodo-y="271"></rect>
+                <rect id="stanza-centro-4071" class="stanza" x="328" y="227" width="44" height="36" data-nome="4071"
+                    data-mq="5" data-nodo-x="345" data-nodo-y="271"></rect>
+                <rect id="stanza-centro-4072" class="stanza" x="279" y="228" width="47" height="34" data-nome="4072"
+                    data-mq="5" data-nodo-x="299" data-nodo-y="271"></rect>
+                <rect id="stanza-centro-4073" class="stanza" x="233" y="227" width="45" height="36" data-nome="4073"
+                    data-mq="5" data-nodo-x="244" data-nodo-y="268"></rect>
+                <rect id="stanza-centro-4074" class="stanza" x="184" y="229" width="48" height="35" data-nome="4074"
+                    data-mq="5" data-nodo-x="196" data-nodo-y="271"></rect>
+                <rect id="stanza-centro-4075" class="stanza" x="133" y="227" width="49" height="36" data-nome="4075"
+                    data-mq="5" data-nodo-x="148" data-nodo-y="271"></rect>
+                <rect id="stanza-centro-4076" class="stanza" x="83" y="227" width="49" height="36" data-nome="4076"
+                    data-mq="5" data-nodo-x="104" data-nodo-y="271"></rect>
+                <rect id="stanza-centro-4077" class="stanza" x="37" y="227" width="43" height="36" data-nome="4077"
+                    data-mq="5" data-nodo-x="56" data-nodo-y="269"></rect>
+                <rect id="stanza-centro-4078" class="stanza" x="8" y="293" width="50" height="69" data-nome="4078"
+                    data-mq="10" data-nodo-x="19" data-nodo-y="280"></rect>
+                <rect id="stanza-centro-4079" class="stanza" x="62" y="294" width="48" height="64" data-nome="4079"
+                    data-mq="10" data-nodo-x="84" data-nodo-y="283"></rect>
+                <rect id="stanza-centro-4080" class="stanza" x="113" y="293" width="48" height="67" data-nome="4080"
+                    data-mq="10" data-nodo-x="127" data-nodo-y="280"></rect>
+                <rect id="stanza-centro-4081" class="stanza" x="166" y="293" width="48" height="70" data-nome="4081"
+                    data-mq="10" data-nodo-x="184" data-nodo-y="283"></rect>
+                <rect id="stanza-centro-4082" class="stanza" x="218" y="293" width="80" height="68" data-nome="4082"
+                    data-mq="15" data-nodo-x="266" data-nodo-y="284"></rect>
+                <rect id="stanza-centro-4083" class="stanza" x="301" y="293" width="60" height="69" data-nome="4083"
+                    data-mq="12" data-nodo-x="324" data-nodo-y="283"></rect>
+                <rect id="stanza-centro-4084" class="stanza" x="362" y="293" width="53" height="69" data-nome="4084"
+                    data-mq="10" data-nodo-x="378" data-nodo-y="282"></rect>
+                <rect id="stanza-centro-4085" class="stanza" x="416" y="293" width="52" height="67" data-nome="4085"
+                    data-mq="10" data-nodo-x="450" data-nodo-y="283"></rect>
+                <rect id="stanza-centro-4086" class="stanza" x="470" y="294" width="41" height="69" data-nome="4086"
+                    data-mq="8" data-nodo-x="483" data-nodo-y="283"></rect>
+                <rect id="stanza-centro-4087" class="stanza" x="512" y="294" width="49" height="66" data-nome="4087"
+                    data-mq="10" data-nodo-x="526" data-nodo-y="284"></rect>
+                <rect id="stanza-centro-4088" class="stanza" x="562" y="293" width="33" height="69" data-nome="4088"
+                    data-mq="6" data-nodo-x="572" data-nodo-y="282"></rect>
+                <rect id="stanza-centro-4089" class="stanza" x="595" y="292" width="34" height="69" data-nome="4089"
+                    data-mq="4.5" data-nodo-x="608" data-nodo-y="279"></rect>
+                <rect id="stanza-centro-177" class="stanza" x="602" y="366" width="20" height="18" data-nome="177"
+                    data-mq="1" data-nodo-x="647" data-nodo-y="369"></rect>
+                <rect id="stanza-centro-176" class="stanza" x="622" y="365" width="20" height="18" data-nome="176"
+                    data-mq="1" data-nodo-x="657" data-nodo-y="379"></rect>
+                <rect id="stanza-centro-178" class="stanza" x="601" y="385" width="23" height="17" data-nome="178"
+                    data-mq="1" data-nodo-x="640" data-nodo-y="397"></rect>
+                <rect id="stanza-centro-179" class="stanza" x="601" y="402" width="21" height="22" data-nome="179"
+                    data-mq="1" data-nodo-x="653" data-nodo-y="406"></rect>
+                <rect id="stanza-centro-174" class="stanza" x="623" y="404" width="22" height="22" data-nome="174"
+                    data-mq="1" data-nodo-x="657" data-nodo-y="421"></rect>
+                <rect id="stanza-centro-173" class="stanza" x="601" y="427" width="22" height="15" data-nome="173"
+                    data-mq="1" data-nodo-x="633" data-nodo-y="436"></rect>
+                <rect id="stanza-centro-172" class="stanza" x="598" y="445" width="27" height="16" data-nome="172"
+                    data-mq="1" data-nodo-x="637" data-nodo-y="452"></rect>
+                <rect id="stanza-centro-5000" class="stanza" x="672" y="224" width="1" height="1" data-nome="5000"
+                    data-mq="0" data-nodo-x="653" data-nodo-y="319" style="pointer-events: none;"></rect>
+
+            </svg>
+        </div>
+
+        <p style="font-size: 14px; text-align: center;">© 2026 AdroCbox micentro. Tutti i diritti riservati.</p>
     </div>
 
-    <!-- MAPPA PIANO TERRA -->
-    <div id="map-centro-pt" class="container-mappa" data-filiale="centro">
-        <img src="centro_pt.jpg" alt="Centro Piano Terra">
-        <svg class="mappa-interattiva" viewBox="0 0 955 785" preserveAspectRatio="xMidYMid meet">
-            <!-- INSERISCI QUI TUTTI I TUOI <rect> DEL PIANO TERRA -->
- </svg>
-    </div>
+    <!-- ========================================== -->
+    <!-- COLLEGAMENTO AL FILE JAVASCRIPT ESTERNO    -->
+    <!-- ========================================== -->
+    <script type="module" src="script.js"></script>
 
-    <!-- MAPPA PIANO -1 -->
-    <div id="map-centro-p-1" class="container-mappa" data-filiale="centro">
-        <img src="centro_p-1.jpg" alt="Centro Piano -1">
-        <svg class="mappa-interattiva" viewBox="0 0 900 800" preserveAspectRatio="xMidYMid meet">
-            <!-- INSERISCI QUI TUTTI I TUOI <rect> DEL PIANO -1 -->
-</svg>
-    </div>
-
-    <!-- MAPPA PIANO -2 -->
-    <div id="map-centro-p-2" class="container-mappa" data-filiale="centro">
-        <img src="centro_p-2.jpg" alt="Centro Piano -2">
-        <svg class="mappa-interattiva" viewBox="0 0 1312 726" preserveAspectRatio="xMidYMid meet">
-            <!-- INSERISCI QUI TUTTI I TUOI <rect> DEL PIANO -2 -->
-  </svg>
-    </div>
-
-    <!-- MAPPA PIANO -3 -->
-    <div id="map-centro-p-3" class="container-mappa" data-filiale="centro">
-        <img src="centro_p-3.jpg" alt="Centro Piano -3">
-        <svg class="mappa-interattiva" viewBox="0 0 668 500" preserveAspectRatio="xMidYMid meet">
-            <!-- INSERISCI QUI TUTTI I TUOI <rect> DEL PIANO -3 -->
- </svg>
-    </div>
-
-    <!-- MAPPA PIANO -4 -->
-    <div id="map-centro-p-4" class="container-mappa" data-filiale="centro">
-        <img src="centro_p-4.jpg" alt="Centro Piano -4">
-        <svg class="mappa-interattiva" viewBox="0 0 734 500" preserveAspectRatio="xMidYMid meet">
-            <!-- INSERISCI QUI TUTTI I TUOI <rect> DEL PIANO -4 -->
-  </svg>
-    </div>
-
-    <p style="font-size: 14px; text-align: center;">© 2026 AdroCbox micentro. Tutti i diritti riservati.</p>
-</div>
-
-<!-- ========================================== -->
-<!-- COLLEGAMENTO AL FILE JAVASCRIPT ESTERNO    -->
-<!-- ========================================== -->
-<script type="module" src="script.js"></script>
+    <!-- ========================================== -->
+    <!-- REGISTRAZIONE SERVICE WORKER (PWA OFFLINE) -->
+    <!-- ========================================== -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(() => console.log('✅ Service Worker attivo: App pronta per uso Offline'))
+                    .catch(err => console.error('Errore registrazione Service Worker:', err));
+            });
+        }
+    </script>
 
 </body>
 </html>
