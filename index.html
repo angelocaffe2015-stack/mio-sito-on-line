@@ -619,6 +619,64 @@ funzionamento di questo software sono di proprietà esclusiva di
 
         </div>
     </div>
+    <!-- ========================================== -->
+    <!-- 1-BIS. PANNELLO OCCUPANCY (A TENDINA)      -->
+    <!-- Visibile solo a Operation e Admin          -->
+    <!-- ========================================== -->
+    <div id="sezione-occupancy-wrapper" style="max-width: 950px; margin: 0 auto 30px auto;">
+        
+        <!-- Barra cliccabile per aprire/chiudere la tendina -->
+        <div id="header-tendina-occupancy" onclick="toggleBoxOccupancy()"
+            style="background: linear-gradient(135deg, #28a745, #1e7e34); padding: 15px 25px; border-radius: 12px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1); color: white; user-select: none; transition: 0.2s;">
+            <span style="font-size: 18px; font-weight: 600; letter-spacing: 0.5px;">📊 Calcolo Tasso di Occupancy & Classifica Metrature</span>
+            <span id="freccia-tendina-occupancy" style="font-size: 18px; font-weight: bold; transition: transform 0.3s;">▼</span>
+        </div>
+
+        <!-- Contenuto a tendina (chiuso di default) -->
+        <div id="contenuto-tendina-occupancy" style="display: none; margin-top: 15px;">
+            <div id="dashboard-top">
+                
+                <!-- Box 1: Tasso Globale & Ricerca Singola Mq -->
+                <div id="form-occupancy">
+                    <h3>Tasso di Occupazione Globale</h3>
+                    <input type="text" id="percentuale-input" readonly placeholder="Calcolo...">
+                    
+                    <div style="margin-top: 15px; border-top: 1px solid #eee; padding-top: 15px; display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+                        <div style="display: flex; gap: 5px; align-items: center;">
+                            <input type="number" id="input-filtro-mq" placeholder="Mq" step="0.5" style="width: 75px; padding: 10px; border: 1px solid #ccc; border-radius: 4px; text-align: center; font-weight: bold; font-size: 15px;">
+                            <button class="btn-azione" onclick="calcolaOccupazionePerMq()" style="margin: 0; padding: 10px 15px;">🔍 Calcola</button>
+                        </div>
+                        <div id="risultato-mq" style="font-size: 14px; text-align: right; color: #555; line-height: 1.4;">
+                            Inserisci i Mq<br>da analizzare
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Box 2: Classifica a 3 Colonne (10 Elementi) -->
+                <div id="box-classifica">
+                    <h3 style="color: #fd7e14; margin-top: 0; font-size: 18px; text-align: center;">🏆 Classifica Occupazione per Metratura</h3>
+                    <div class="colonne-classifica">
+                        <!-- Colonna 1: Più Occupate -->
+                        <div class="colonna-classifica">
+                            <h4 style="color: #28a745;">🔥 Le 10 Più Occupate</h4>
+                            <div id="lista-piu-occupate" style="min-height: 150px; color: #888; font-style: italic; display: flex; flex-direction: column; justify-content: center;">In attesa di dati...</div>
+                        </div>
+                        <!-- Colonna 2: Medie -->
+                        <div class="colonna-classifica">
+                            <h4 style="color: #007bff;">⚖️️ Le 10 Medie</h4>
+                            <div id="lista-medie-occupate" style="min-height: 150px; color: #888; font-style: italic; display: flex; flex-direction: column; justify-content: center;">In attesa di dati...</div>
+                        </div>
+                        <!-- Colonna 3: Meno Occupate -->
+                        <div class="colonna-classifica">
+                            <h4 style="color: #dc3545;">🧊 Le 10 Meno Occupate</h4>
+                            <div id="lista-meno-occupate" style="min-height: 150px; color: #888; font-style: italic; display: flex; flex-direction: column; justify-content: center;">In attesa di dati...</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
 
     <!-- Pannelli Import/Export/Debitori -->
     <button class="btn-azione" onclick="toggleBoxImporta()">📥 IMPORTA DATI</button>
@@ -2573,7 +2631,7 @@ funzionamento di questo software sono di proprietà esclusiva di
     <!-- COLLEGAMENTO AL FILE JAVASCRIPT ESTERNO    -->
     <!-- ========================================== -->
     <script type="module" src="script.js"></script>
-    
+
        <!-- ========================================== -->
     <!-- REGISTRAZIONE SERVICE WORKER (PWA OFFLINE) -->
     <!-- ========================================== -->

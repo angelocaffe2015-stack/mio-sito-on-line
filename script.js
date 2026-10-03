@@ -375,6 +375,7 @@ window.applicaPermessiInterfaccia = function (emailUser, ruoloDb, sedeDb, paeseD
     const boxDebitori = document.getElementById('box-debitori');
     const btnTodo = document.getElementById('btn-todo');
     const containerTodo = document.getElementById('container-todo');
+    const sezioneOccupancy = document.getElementById('sezione-occupancy-wrapper');
 
     if (isAudit) {
         // Visualizzazione ridotta per Audit (come gdesogus@easybox.it)
@@ -382,10 +383,12 @@ window.applicaPermessiInterfaccia = function (emailUser, ruoloDb, sedeDb, paeseD
         if (boxDebitori) boxDebitori.style.display = 'none';
         if (btnTodo) btnTodo.style.display = 'none';
         if (containerTodo) containerTodo.style.display = 'none';
+        if (sezioneOccupancy) sezioneOccupancy.style.display = 'none';
     } else {
         // Visualizzazione completa per Operation e Admin
         if (btnDebitori) btnDebitori.style.display = 'inline-block';
         if (btnTodo) btnTodo.style.display = 'inline-block';
+        if (sezioneOccupancy) sezioneOccupancy.style.display = 'block';
     }
 
     if (isAdmin && typeof window.sbloccaInterfacciaAdmin === "function") {
@@ -450,7 +453,7 @@ onAuthStateChanged(auth, (user) => {
             });
         }
 
-        // C. Ascolto Stanze in Tempo Reale (Per tutti)
+// C. Ascolto Stanze in Tempo Reale (Per tutti)
         onSnapshot(collection(db, "stanze"), (snapshot) => {
             snapshot.docChanges().forEach((change) => {
                 const idStanza = change.doc.id;
@@ -478,6 +481,11 @@ onAuthStateChanged(auth, (user) => {
                     window.gestisciLucchetto(numStanzaPuro, (data.stato === "debitore" && data.isLongTerm === true));
                 }
             });
+
+            // Aggiorna in automatico il calcolo Occupancy appena arrivano i dati da Firebase
+            if (typeof window.calcolaTassoOccupazione === "function") {
+                window.calcolaTassoOccupazione();
+            }
         });
     } else {
         const schermataLogin = document.getElementById('schermata-login');
@@ -3650,3 +3658,186 @@ window.controllaAllarmeEmailDebitori = function () {
 
 window.controllaAllarmeEmailDebitori();
 setInterval(window.controllaAllarmeEmailDebitori, 60000);
+// ========================================================
+// 📊 CALCOLO TASSO DI OCCUPANCY E CLASSIFICA METRATURE
+// ========================================================
+window.toggleBoxOccupancy = function () {
+    const contenuto = document.getElementById('contenuto-tendina-occupancy');
+    const freccia = document.getElementById('freccia-tendina-occupancy');
+    if (!contenuto) return;
+
+    if (contenuto.style.display === 'none' || contenuto.style.display === '') {
+        contenuto.style.display = 'block';
+        if (freccia) freccia.style.transform = 'rotate(180deg)';
+        window.calcolaTassoOccupazione();
+    } else {
+        contenuto.style.display = 'none';
+        if (freccia) freccia.style.transform = 'rotate(0deg)';
+    }
+};
+
+window.calcolaTassoOccupazione = function () {
+    const tutteLeStanze = document.querySelectorAll('.stanza');
+    const stanze = Array.from(tutteLeStanze).filter(s => {
+        const mq = parseFloat((s.getAttribute('data-mq') || '0').replace(',', '.'));
+        return !isNaN(mq) && mq > 0;
+    });
+
+    if (stanze.length === 0) return;
+
+    let stanzeOccupate = 0;
+    let stanzeTotali = stanze.length;
+
+    stanze.forEach(stanza => {
+        if (stanza.classList.contains('occupata') ||
+            stanza.classList.contains('debitore') ||
+            stanza.classList.contains('company') ||
+            stanza.classList.contains('damaged') ||
+            stanza.classList.contains('movein') ||
+            stanza.classList.contains('held') ||
+            stanza.classList.contains('in-ritardo')) {
+            stanzeOccupate++;
+        }
+    });
+
+    const percentuale = (stanzeOccupate / stanzeTotali) * 100;
+    const inputPercentuale = document.getElementById('percentuale-input');
+    if (inputPercentuale) {
+        inputPercentuale.value = percentuale.toFixed(2) + "%";
+    }
+
+    const inputFiltroMq = document.getElementById('input-filtro-mq');
+    if (inputFiltroMq && inputFiltroMq.value !== "") {
+        window.calcolaOccupazionePerMq();
+    }
+
+    window.calcolaClassificaMq();
+};
+
+window.calcolaOccupazionePerMq = function () {
+    const inputMq = document.getElementById('input-filtro-mq');
+    const risultatoDiv = document.getElementById('risultato-mq');
+    if (!risultatoDiv) return;
+
+    const targetMq = inputMq && inputMq.value ? parseFloat(inputMq.value.replace(',', '.')) : 0;
+
+    if (targetMq === 0 || isNaN(targetMq)) {
+        risultatoDiv.innerHTML = "<span style='color:red;'>Inserisci<br>i Mq!</span>";
+        return;
+    }
+
+    const stanze = document.querySelectorAll('.stanza');
+    let totaliMq = 0;
+    let occupateMq = 0;
+    let libereMq = 0;
+
+    stanze.forEach(stanza => {
+        const mqStanza = parseFloat((stanza.getAttribute('data-mq') || '0').replace(',', '.')) || 0;
+
+        if (mqStanza === targetMq) {
+            totaliMq++;
+            if (stanza.classList.contains('occupata') ||
+                stanza.classList.contains('debitore') ||
+                stanza.classList.contains('company') ||
+                stanza.classList.contains('damaged') ||
+                stanza.classList.contains('movein') ||
+                stanza.classList.contains('held') ||
+                stanza.classList.contains('in-ritardo')) {
+                occupateMq++;
+            } else {
+                libereMq++;
+            }
+        }
+    });
+
+    if (totaliMq === 0) {
+        risultatoDiv.innerHTML = `<span style='color:orange;'>Nessun box<br>da ${targetMq} mq</span>`;
+    } else {
+        const perc = ((occupateMq / totaliMq) * 100).toFixed(1);
+        risultatoDiv.innerHTML = `<strong style="color: #007bff;">Occ: ${perc}%</strong><br>Libere: <strong style="color:#28a745;">${libereMq}</strong>/${totaliMq}`;
+    }
+};
+
+window.calcolaClassificaMq = function () {
+    const stanze = document.querySelectorAll('.stanza');
+    if (stanze.length === 0) return;
+
+    let stats = {};
+
+    stanze.forEach(stanza => {
+        const mqAttr = stanza.getAttribute('data-mq');
+        if (!mqAttr) return;
+        const mq = parseFloat(mqAttr.replace(',', '.'));
+        if (isNaN(mq) || mq === 0) return;
+
+        if (!stats[mq]) {
+            stats[mq] = { totali: 0, occupate: 0 };
+        }
+
+        stats[mq].totali++;
+
+        if (stanza.classList.contains('occupata') ||
+            stanza.classList.contains('debitore') ||
+            stanza.classList.contains('company') ||
+            stanza.classList.contains('damaged') ||
+            stanza.classList.contains('movein') ||
+            stanza.classList.contains('held') ||
+            stanza.classList.contains('in-ritardo')) {
+            stats[mq].occupate++;
+        }
+    });
+
+    let arrayMq = [];
+    for (let mq in stats) {
+        const perc = (stats[mq].occupate / stats[mq].totali) * 100;
+        arrayMq.push({
+            mq: parseFloat(mq),
+            perc: perc,
+            totali: stats[mq].totali,
+            occupate: stats[mq].occupate
+        });
+    }
+
+    let arrayPiuOccupate = [...arrayMq].sort((a, b) => {
+        if (b.perc !== a.perc) return b.perc - a.perc;
+        return b.totali - a.totali;
+    });
+
+    let arrayMenoOccupate = [...arrayMq].sort((a, b) => {
+        if (a.perc !== b.perc) return a.perc - b.perc;
+        return b.totali - a.totali;
+    });
+
+    const top10 = arrayPiuOccupate.slice(0, 10);
+    const bottom10 = arrayMenoOccupate.slice(0, 10);
+
+    let midStart = Math.floor((arrayPiuOccupate.length - 10) / 2);
+    if (midStart < 0) midStart = 0;
+    const middle10 = arrayPiuOccupate.slice(midStart, midStart + 10);
+
+    const formatRow = (item, color) => `
+        <div class="riga-classifica">
+            <strong style="font-size: 14px;">${item.mq} Mq</strong> 
+            <span style="color: ${color}; font-weight: bold; font-size: 14px;">${item.perc.toFixed(1)}% <span style="font-weight:normal; color:#aaa; font-size:11px; margin-left: 3px;">(${item.totali - item.occupate} lib.)</span></span>
+        </div>
+    `;
+
+    const divPiu = document.getElementById('lista-piu-occupate');
+    const divMedie = document.getElementById('lista-medie-occupate');
+    const divMeno = document.getElementById('lista-meno-occupate');
+
+    if (divPiu) {
+        divPiu.style.display = 'block';
+        divPiu.innerHTML = top10.length ? top10.map(x => formatRow(x, '#28a745')).join('') : 'Nessun dato';
+    }
+    if (divMedie) {
+        divMedie.style.display = 'block';
+        divMedie.innerHTML = middle10.length ? middle10.map(x => formatRow(x, '#007bff')).join('') : 'Nessun dato';
+    }
+    if (divMeno) {
+        divMeno.style.display = 'block';
+        divMeno.innerHTML = bottom10.length ? bottom10.map(x => formatRow(x, '#dc3545')).join('') : 'Nessun dato';
+    }
+};
+
+window.calcolaTassoOccupazione();
