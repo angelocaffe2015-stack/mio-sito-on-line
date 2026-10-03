@@ -405,16 +405,36 @@ onAuthStateChanged(auth, (user) => {
             window.applicaPermessiInterfaccia(emailUser, 'admin', 'MILANO CENTRO', 'it');
             document.getElementById('schermata-login').style.display = 'none';
         }
-        // B. SE È UN UTENTE NORMALE (Operation o Audit): Legge profilo e permessi
+        // B. SE È UN UTENTE NORMALE (Operation o Audit): Controlla se è attivo o in attesa di OTP
         else {
             const emailKey = emailUser.replace(/\./g, '_');
             firebase.database().ref('utenti/' + emailKey).once('value').then((snapshot) => {
                 const userData = snapshot.val() || {};
+
+                // Se l'account è ancora in stato 'pending', mostra la schermata di login col campo OTP aperto
+                if (!userData.stato || userData.stato === 'pending') {
+                    window.tempEmailUtente = emailUser;
+                    localStorage.setItem('pending_otp_email', emailUser);
+                    document.getElementById('schermata-login').style.display = 'flex';
+                    window.tornaAlLoginConOTP();
+                    return;
+                }
+
+                // Se l'account è attivo, applica i permessi
                 const ruolo = userData.ruolo || (emailUser === 'gdesogus@easybox.it' ? 'audit' : 'operation');
                 const sede = sessionStorage.getItem('audit_sede_scelta') || userData.sede || 'MILANO CENTRO';
                 const paese = sessionStorage.getItem('audit_paese_scelto') || userData.paese || 'it';
 
                 window.applicaPermessiInterfaccia(emailUser, ruolo, sede, paese);
+
+                if (ruolo === 'audit' && !sessionStorage.getItem('audit_sede_scelta')) {
+                    document.getElementById('schermata-login').style.display = 'flex';
+                    document.getElementById('box-login').style.display = 'none';
+                    document.getElementById('box-otp').style.display = 'none';
+                    document.getElementById('box-scelta-audit').style.display = 'block';
+                } else {
+                    document.getElementById('schermata-login').style.display = 'none';
+                }
             });
 
             const userRef = doc(db, "utenti", user.uid);
@@ -462,6 +482,11 @@ onAuthStateChanged(auth, (user) => {
     } else {
         const schermataLogin = document.getElementById('schermata-login');
         if (schermataLogin) schermataLogin.style.display = 'flex';
+        const savedPendingEmail = localStorage.getItem('pending_otp_email');
+        if (savedPendingEmail) {
+            window.tempEmailUtente = savedPendingEmail;
+            window.tornaAlLoginConOTP();
+        }
         if (unsubscribeSession) unsubscribeSession();
     }
 });
@@ -469,6 +494,24 @@ onAuthStateChanged(auth, (user) => {
 // ==========================================
 // 2. AUTENTICAZIONE E SESSIONE
 // ==========================================
+window.mostraCampoOtpLogin = function () {
+    const bloccoOtp = document.getElementById('blocco-otp-login');
+    if (bloccoOtp) bloccoOtp.style.display = 'block';
+    const emailSalvata = window.tempEmailUtente || localStorage.getItem('pending_otp_email');
+    const emailLoginInput = document.getElementById('email-login');
+    if (emailSalvata && emailLoginInput && !emailLoginInput.value) {
+        emailLoginInput.value = emailSalvata;
+    }
+};
+
+window.tornaAlLoginConOTP = function () {
+    document.getElementById('box-registrazione').style.display = 'none';
+    document.getElementById('box-otp').style.display = 'none';
+    document.getElementById('box-scelta-audit').style.display = 'none';
+    document.getElementById('box-login').style.display = 'block';
+    window.mostraCampoOtpLogin();
+};
+
 window.eseguiRegistrazione = function () {
     const nomeInput = document.getElementById('nome-registrazione');
     const emailInput = document.getElementById('email-registrazione');
@@ -498,13 +541,17 @@ window.eseguiRegistrazione = function () {
         return;
     }
 
-    firebase.auth().createUserWithEmailAndPassword(email, password)
+    const emailPulita = email.toLowerCase();
+    window.tempEmailUtente = emailPulita;
+    localStorage.setItem('pending_otp_email', emailPulita);
+
+    firebase.auth().createUserWithEmailAndPassword(emailPulita, password)
         .then(() => {
-            const emailKey = email.toLowerCase().replace(/\./g, '_');
+            const emailKey = emailPulita.replace(/\./g, '_');
 
             return firebase.database().ref('utenti/' + emailKey).set({
                 nome: nome,
-                email: email.toLowerCase(),
+                email: emailPulita,
                 paese: window.sceltaReg.paese,
                 ruolo: window.sceltaReg.ruolo,
                 sede: window.sceltaReg.ruolo === 'operation' ? window.sceltaReg.sede : 'Da scegliere al login (Audit)',
@@ -514,20 +561,17 @@ window.eseguiRegistrazione = function () {
             });
         })
         .then(() => {
-            return firebase.auth().signOut();
-        })
-        .then(() => {
             const templateParamsReg = {
                 to_name: `${nome} (${window.sceltaReg.ruolo.toUpperCase()} - ${window.sceltaReg.sede || window.sceltaReg.paese.toUpperCase()})`,
-                to_email: email,
-                user_email: email,
+                to_email: emailPulita,
+                user_email: emailPulita,
                 data_registrazione: new Date().toLocaleString('it-IT')
             };
             emailjs.send(EMAILJS_SERVICE, "template_ux6ifw8", templateParamsReg)
                 .then(() => console.log("Notifica di registrazione inviata!"))
                 .catch((err) => console.error("Errore invio notifica:", err));
 
-            alert("Account creato con successo! Sei in attesa di verifica codice OTP.");
+            alert("Account creato con successo! Inserisci il codice OTP appena ti viene inviato via email.");
 
             const schermataLogin = document.getElementById('schermata-login');
             if (schermataLogin) schermataLogin.style.display = 'flex';
@@ -536,7 +580,11 @@ window.eseguiRegistrazione = function () {
             document.getElementById('box-login').style.display = 'none';
             document.getElementById('box-otp').style.display = 'block';
 
-            window.tempEmailUtente = email.toLowerCase();
+            // Precompila già email e password nel box-login in caso di errore OTP
+            const emailLogin = document.getElementById('email-login');
+            const passLogin = document.getElementById('password-login');
+            if (emailLogin) emailLogin.value = emailPulita;
+            if (passLogin) passLogin.value = password;
 
             nomeInput.value = '';
             emailInput.value = '';
@@ -551,8 +599,10 @@ window.eseguiRegistrazione = function () {
 window.eseguiLogin = function () {
     const emailInput = document.getElementById('email-login');
     const passwordInput = document.getElementById('password-login');
+    const otpLoginInput = document.getElementById('otp-login');
     const email = emailInput.value.trim();
     const password = passwordInput.value;
+    const codiceOtpLogin = otpLoginInput ? otpLoginInput.value.trim() : "";
     const erroreElement = document.getElementById('errore-login');
 
     if (erroreElement) erroreElement.style.display = 'none';
@@ -565,6 +615,7 @@ window.eseguiLogin = function () {
 
             // 1. ACCESSO AMMINISTRATORE (Vede sempre tutto)
             if (emailPulita === ADMIN_EMAIL.trim().toLowerCase()) {
+                localStorage.removeItem('pending_otp_email');
                 window.applicaPermessiInterfaccia(emailPulita, 'admin', 'MILANO CENTRO', 'it');
                 document.getElementById('schermata-login').style.display = 'none';
                 alert("Benvenuto Amministratore!");
@@ -576,22 +627,66 @@ window.eseguiLogin = function () {
             const emailKey = emailPulita.replace(/\./g, '_');
             firebase.database().ref('utenti/' + emailKey).once('value').then((snapshot) => {
                 const userData = snapshot.val();
+
+                // Se l'utente è ancora in stato 'pending' (deve verificare l'OTP)
                 if (!userData || userData.stato === 'pending') {
-                    alert("Account in attesa di verifica. Inserisci il codice OTP ricevuto via email.");
-                    document.getElementById('box-login').style.display = 'none';
-                    document.getElementById('box-otp').style.display = 'block';
                     window.tempEmailUtente = emailPulita;
-                } else if (userData.stato === 'attivo') {
+                    localStorage.setItem('pending_otp_email', emailPulita);
+                    window.mostraCampoOtpLogin();
+
+                    // Se non ha ancora scritto il codice nel campo OTP del login, glielo chiediamo
+                    if (!codiceOtpLogin) {
+                        if (erroreElement) {
+                            erroreElement.style.color = "#856404";
+                            erroreElement.innerText = "Account in attesa di attivazione: inserisci il Codice OTP nel riquadro giallo qui sopra e clicca su Accedi.";
+                            erroreElement.style.display = 'block';
+                        } else {
+                            alert("Inserisci il codice OTP ricevuto via email nel campo dedicato e clicca su Accedi.");
+                        }
+                        return;
+                    }
+
+                    // Se ha scritto il codice OTP nella pagina di login, lo verifichiamo subito!
+                    if (userData && userData.otp && String(userData.otp).trim() === codiceOtpLogin) {
+                        firebase.database().ref('utenti/' + emailKey).update({ stato: 'attivo', otp: null }).then(() => {
+                            localStorage.removeItem('pending_otp_email');
+                            if (otpLoginInput) otpLoginInput.value = '';
+                            document.getElementById('blocco-otp-login').style.display = 'none';
+
+                            alert("✅ Codice verificato e accesso eseguito con successo!");
+                            const ruolo = userData.ruolo || (emailPulita === 'gdesogus@easybox.it' ? 'audit' : 'operation');
+                            window.applicaPermessiInterfaccia(emailPulita, ruolo, userData.sede, userData.paese);
+                            window.registraSessioneUtente(emailPulita);
+
+                            if (ruolo === 'audit' || emailPulita === 'gdesogus@easybox.it') {
+                                document.getElementById('box-login').style.display = 'none';
+                                document.getElementById('box-scelta-audit').style.display = 'block';
+                            } else {
+                                document.getElementById('schermata-login').style.display = 'none';
+                            }
+                        });
+                    } else {
+                        if (otpLoginInput) otpLoginInput.value = '';
+                        if (erroreElement) {
+                            erroreElement.style.color = "red";
+                            erroreElement.innerText = "❌ Codice OTP errato. Controlla il codice ricevuto via email e riprova.";
+                            erroreElement.style.display = 'block';
+                        } else {
+                            alert("Codice OTP errato. Riprova.");
+                        }
+                    }
+                }
+                // Se l'utente è già 'attivo'
+                else if (userData.stato === 'attivo') {
+                    localStorage.removeItem('pending_otp_email');
                     const ruolo = userData.ruolo || (emailPulita === 'gdesogus@easybox.it' ? 'audit' : 'operation');
                     window.applicaPermessiInterfaccia(emailPulita, ruolo, userData.sede, userData.paese);
                     window.registraSessioneUtente(user.email);
 
                     if (ruolo === 'audit' || emailPulita === 'gdesogus@easybox.it') {
-                        // L'account Audit sceglie Stato e Sede ad ogni accesso
                         document.getElementById('box-login').style.display = 'none';
                         document.getElementById('box-scelta-audit').style.display = 'block';
                     } else {
-                        // L'account Operation entra direttamente nella sua sede
                         document.getElementById('schermata-login').style.display = 'none';
                         alert("Accesso eseguito con successo!");
                     }
@@ -600,38 +695,66 @@ window.eseguiLogin = function () {
         })
         .catch((error) => {
             if (erroreElement) {
-                erroreElement.innerText = "Accesso negato. Controlla le credenziali.";
+                erroreElement.style.color = "red";
+                erroreElement.innerText = "Accesso negato. Controlla email e password.";
                 erroreElement.style.display = 'block';
             } else { alert("Errore di accesso: " + error.message); }
         });
 };
 
 window.verificaOTP = function () {
-    const codiceInserito = document.getElementById('input-otp').value.trim();
+    const inputOtpEl = document.getElementById('input-otp');
+    const codiceInserito = inputOtpEl ? inputOtpEl.value.trim() : "";
     if (!codiceInserito) { alert("Inserisci il codice OTP!"); return; }
 
-    const email = window.tempEmailUtente;
-    if (!email) { alert("Sessione non valida. Riscrivi email e password."); location.reload(); return; }
+    const currentUser = firebase.auth().currentUser;
+    const email = window.tempEmailUtente || localStorage.getItem('pending_otp_email') || (currentUser ? currentUser.email.toLowerCase() : null);
+
+    if (!email) {
+        alert("Inserisci email, password e il codice OTP nella pagina di Login.");
+        window.tornaAlLoginConOTP();
+        return;
+    }
 
     const emailKey = email.toLowerCase().replace(/\./g, '_');
     firebase.database().ref('utenti/' + emailKey).once('value').then((snapshot) => {
         const userData = snapshot.val();
-        if (userData && userData.otp === codiceInserito) {
+        if (userData && userData.otp && String(userData.otp).trim() === codiceInserito) {
             firebase.database().ref('utenti/' + emailKey).update({ stato: 'attivo', otp: null }).then(() => {
-                alert("Codice verificato con successo!");
+                localStorage.removeItem('pending_otp_email');
+                if (inputOtpEl) inputOtpEl.value = '';
                 document.getElementById('box-otp').style.display = 'none';
-                
-                const ruolo = userData.ruolo || (email === 'gdesogus@easybox.it' ? 'audit' : 'operation');
-                window.applicaPermessiInterfaccia(email, ruolo, userData.sede, userData.paese);
-                window.registraSessioneUtente(email);
 
-                if (ruolo === 'audit' || email === 'gdesogus@easybox.it') {
-                    document.getElementById('box-scelta-audit').style.display = 'block';
+                // Se l'utente è già autenticato in Firebase, entra subito
+                if (firebase.auth().currentUser && firebase.auth().currentUser.email.toLowerCase() === email.toLowerCase()) {
+                    alert("✅ Codice verificato con successo! Accesso effettuato.");
+                    const ruolo = userData.ruolo || (email === 'gdesogus@easybox.it' ? 'audit' : 'operation');
+                    window.applicaPermessiInterfaccia(email, ruolo, userData.sede, userData.paese);
+                    window.registraSessioneUtente(email);
+
+                    if (ruolo === 'audit' || email === 'gdesogus@easybox.it') {
+                        document.getElementById('box-scelta-audit').style.display = 'block';
+                    } else {
+                        document.getElementById('schermata-login').style.display = 'none';
+                    }
                 } else {
-                    document.getElementById('schermata-login').style.display = 'none';
+                    alert("✅ Codice verificato! Ora clicca su Accedi per entrare.");
+                    document.getElementById('blocco-otp-login').style.display = 'none';
+                    document.getElementById('box-login').style.display = 'block';
                 }
             });
-        } else { alert("Codice OTP errato. Riprova."); }
+        } else {
+            // Se sbaglia il codice OTP, lo riporta alla pagina di accesso con il campo OTP già aperto!
+            alert("❌ Codice OTP errato! Riprova dalla pagina di accesso inserendo Email, Password e il Codice OTP ricevuto.");
+            if (inputOtpEl) inputOtpEl.value = '';
+            window.tornaAlLoginConOTP();
+            const erroreElement = document.getElementById('errore-login');
+            if (erroreElement) {
+                erroreElement.style.color = "red";
+                erroreElement.innerText = "❌ Codice OTP errato. Inserisci Email, Password e il Codice OTP corretto qui sopra.";
+                erroreElement.style.display = 'block';
+            }
+        }
     });
 };
 

@@ -105,13 +105,26 @@ funzionamento di questo software sono di proprietà esclusiva di
                     style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px;">
                 <input type="password" id="password-login" placeholder="Password"
                     style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px;">
+                
+                <!-- Campo OTP integrato nella pagina di Login (visibile se l'account è da attivare o dopo errore codice) -->
+                <div id="blocco-otp-login" style="display: none; background: #fff3cd; border: 1px solid #ffc107; padding: 12px; border-radius: 6px; margin-bottom: 15px;">
+                    <label style="display: block; font-size: 12px; font-weight: bold; color: #856404; margin-bottom: 6px;">🔑 INSERISCI IL CODICE OTP RICEVUTO VIA EMAIL:</label>
+                    <input type="text" id="otp-login" placeholder="Codice OTP (6 cifre)"
+                        style="width: 100%; padding: 10px; border: 2px solid #007bff; border-radius: 4px; font-size: 16px; text-align: center; letter-spacing: 5px; box-sizing: border-box;">
+                </div>
+
                 <div style="display: flex; gap: 10px; margin-bottom: 10px;">
                     <button id="btn-login-accedi" onclick="eseguiLogin()" class="btn-azione"
                         style="flex: 1; background: #28a745; font-weight: bold;">Accedi</button>
                     <button id="btn-login-registrati" onclick="mostraRegistrazione()" class="btn-azione"
                         style="flex: 1; background: #17a2b8; font-weight: bold;">Registrati</button>
                 </div>
-                <p id="errore-login" style="color: red; font-size: 13px; display: none; margin-top: 15px;">Credenziali errate. Riprova.</p>
+
+                <p style="font-size: 12px; margin-top: 10px; margin-bottom: 0;">
+                    <a href="#" onclick="mostraCampoOtpLogin(); return false;" style="color: #6f42c1; font-weight: bold; text-decoration: underline;">🔑 Hai ricevuto un codice OTP? Clicca qui per inserirlo</a>
+                </p>
+
+                <p id="errore-login" style="color: red; font-size: 13px; display: none; margin-top: 15px; font-weight: bold;">Credenziali errate. Riprova.</p>
             </div>
 
             <!-- Box Registrazione -->
@@ -198,7 +211,7 @@ funzionamento di questo software sono di proprietà esclusiva di
                     style="display: none; width: 100%; background: #6f42c1; font-weight: bold;">Entra nella Sede</button>
             </div>
 
-            <!-- Box OTP -->
+            <!-- Box OTP (Subito dopo la registrazione) -->
             <div id="box-otp" style="display: none;">
                 <h3 id="lbl-otp-titolo" style="color: #007bff; margin-top: 0; font-size: 20px;">Verifica Identità</h3>
                 <p id="lbl-otp-desc" style="font-size: 14px; color: #666; margin-bottom: 20px;">Inserisci il codice ricevuto per email.</p>
@@ -206,6 +219,9 @@ funzionamento di questo software sono di proprietà esclusiva di
                     style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px; text-align: center; letter-spacing: 5px; box-sizing: border-box;">
                 <button id="btn-verifica-otp" onclick="verificaOTP()" class="btn-azione"
                     style="width: 100%; font-weight: bold; margin-bottom: 15px;">Verifica Codice</button>
+                <p style="font-size: 13px; margin: 0;">
+                    <a href="#" onclick="tornaAlLoginConOTP(); return false;" style="color: #007bff; font-weight: bold;">Torna al Login con Codice OTP</a>
+                </p>
             </div>
 
         </div>
@@ -2557,9 +2573,7 @@ funzionamento di questo software sono di proprietà esclusiva di
     <!-- COLLEGAMENTO AL FILE JAVASCRIPT ESTERNO    -->
     <!-- ========================================== -->
     <script type="module" src="script.js"></script>
-
- <script>
-
+    
        <!-- ========================================== -->
     <!-- REGISTRAZIONE SERVICE WORKER (PWA OFFLINE) -->
     <!-- ========================================== -->
