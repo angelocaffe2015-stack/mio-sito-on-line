@@ -2504,16 +2504,17 @@ funzionamento di questo software sono di proprietà esclusiva di
     <!-- ========================================== -->
     <script type="module" src="script.js"></script>
 
-    <!-- ========================================== -->
-    <!-- REGISTRAZIONE SERVICE WORKER (PWA OFFLINE) -->
-    <!-- ========================================== -->
-    <script>
+ <script>
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(() => console.log('✅ Service Worker attivo: App pronta per uso Offline'))
-                    .catch(err => console.error('Errore registrazione Service Worker:', err));
+            navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                for (let registration of registrations) {
+                    registration.unregister();
+                }
             });
+            caches.keys().then(function(names) {
+                for (let name of names) caches.delete(name);
+            });
+            console.log('🧹 Vecchia cache offline eliminata!');
         }
     </script>
 

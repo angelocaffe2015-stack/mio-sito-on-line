@@ -1,4 +1,4 @@
-const CACHE_NAME = 'easybox-micentro-pwa-v1';
+const CACHE_NAME = 'easybox-micentro-pwa-v3';
 
 const ASSETS_TO_CACHE = [
   './',
