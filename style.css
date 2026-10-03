@@ -388,3 +388,53 @@ body {
     .btn-azione, #box-importa, #box-esporta, #box-debitori, button { display: none !important; }
     .container-mappa.attiva-stampa { display: block !important; page-break-after: always; width: 100%; }
 }
+
+/* --- 9. BOTTONI SCELTA PAESE, RUOLO E SEDE --- */
+.btn-scelta-opzione {
+    background-color: #f8f9fa;
+    color: #333;
+    border: 2px solid #ced4da;
+    padding: 10px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 13px;
+    transition: all 0.2s ease;
+}
+
+.btn-scelta-opzione:hover {
+    border-color: #007bff;
+    background-color: #e9ecef;
+}
+
+.btn-scelta-opzione.attivo {
+    background-color: #007bff;
+    color: white;
+    border-color: #0056b3;
+    box-shadow: 0 2px 6px rgba(0, 123, 255, 0.4);
+}
+
+.btn-sede-item {
+    background-color: #ffffff;
+    color: #001f3f;
+    border: 1px solid #007bff;
+    padding: 7px 10px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+    transition: 0.2s;
+    flex: 1 1 calc(50% - 8px);
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.btn-sede-item:hover {
+    background-color: #e0f0ff;
+}
+
+.btn-sede-item.attivo {
+    background-color: #28a745;
+    color: white;
+    border-color: #1e7e34;
+}

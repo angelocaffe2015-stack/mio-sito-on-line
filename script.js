@@ -53,6 +53,345 @@ let unsubscribeSession = null;
 enableIndexedDbPersistence(db).catch((err) => {
     console.warn("Persistenza offline:", err.code);
 });
+// ==========================================
+// 0. DIZIONARIO LINGUE E ELENCO SEDI PER PAESE
+// ==========================================
+const SEDI_PER_PAESE = {
+    it: [
+        "Milano Centro", "Milano Est", "Milano Certosa", "Milano Ovest",
+        "Roma Tiburtina", "Roma Aurelia",
+        "Torino Nord", "Torino Sud",
+        "Genova", "Firenze", "Padova"
+    ],
+    fr: ["Parigi"],
+    es: ["Barcellona", "Madrid"],
+    pt: ["Lisbona", "Porto"]
+};
+
+const TRADUZIONI = {
+    it: {
+        loginTitolo: "Login",
+        loginDesc: "Inserisci le credenziali per accedere al gestionale.",
+        accedi: "Accedi",
+        registrati: "Registrati",
+        regTitolo: "Crea un account",
+        sceltaPaese: "1. Seleziona Paese:",
+        sceltaRuolo: "2. Seleziona Profilo:",
+        sceltaSede: "3. Seleziona Sede:",
+        cercaSede: "🔎 Cerca sede...",
+        nomePh: "Nome Completo",
+        passPh: "Password",
+        privacy1: "Ho letto e accetto l'",
+        privacyLink: "Informativa sulla Privacy",
+        confermaReg: "Conferma Registrazione",
+        tornaLogin: "Torna al Login",
+        auditTitolo: "Accesso Audit",
+        auditDesc: "Seleziona lo Stato e la Sede da ispezionare:",
+        auditPaese: "1. Stato di riferimento:",
+        auditSede: "2. Sede di riferimento:",
+        entraAudit: "Entra nella Sede",
+        otpTitolo: "Verifica Identità",
+        otpDesc: "Inserisci il codice ricevuto per email.",
+        verificaOtp: "Verifica Codice",
+        titoloApp: "GESTIONE BOX",
+        esci: "🚪 Esci",
+        importaDati: "📥 IMPORTA DATI",
+        esportaDati: "📤 ESPORTA DATI",
+        gestioneDebitori: "🚨 GESTIONE DEBITORI",
+        caricaMoveout: "📦 Carica File MOVE OUT",
+        selezionaPiano: "Seleziona l'Area / Piano:",
+        chiudiMappa: "✖ Chiudi Mappa",
+        trovaBox: "Trova Box",
+        cercaBtn: "Cerca"
+    },
+    fr: {
+        loginTitolo: "Connexion",
+        loginDesc: "Entrez vos identifiants pour accéder au système.",
+        accedi: "Se connecter",
+        registrati: "S'inscrire",
+        regTitolo: "Créer un compte",
+        sceltaPaese: "1. Sélectionnez le Pays :",
+        sceltaRuolo: "2. Sélectionnez le Profil :",
+        sceltaSede: "3. Sélectionnez le Centre :",
+        cercaSede: "🔎 Rechercher un centre...",
+        nomePh: "Nom Complet",
+        passPh: "Mot de passe",
+        privacy1: "J'ai lu et j'accepte la ",
+        privacyLink: "Politique de Confidentialité",
+        confermaReg: "Confirmer l'inscription",
+        tornaLogin: "Retour à la Connexion",
+        auditTitolo: "Accès Audit",
+        auditDesc: "Sélectionnez le Pays et le Centre à inspecter :",
+        auditPaese: "1. Pays de référence :",
+        auditSede: "2. Centre de référence :",
+        entraAudit: "Entrer dans le Centre",
+        otpTitolo: "Vérification d'Identité",
+        otpDesc: "Entrez le code reçu par e-mail.",
+        verificaOtp: "Vérifier le Code",
+        titoloApp: "GESTION DES BOX",
+        esci: "🚪 Déconnexion",
+        importaDati: "📥 IMPORTER DONNÉES",
+        esportaDati: "📤 EXPORTER DONNÉES",
+        gestioneDebitori: "🚨 GESTION DÉBITEURS",
+        caricaMoveout: "📦 Charger Fichier MOVE OUT",
+        selezionaPiano: "Sélectionnez la Zone / Étage :",
+        chiudiMappa: "✖ Fermer le Plan",
+        trovaBox: "Trouver Box",
+        cercaBtn: "Chercher"
+    },
+    es: {
+        loginTitolo: "Iniciar Sesión",
+        loginDesc: "Introduce tus credenciales para acceder al sistema.",
+        accedi: "Entrar",
+        registrati: "Registrarse",
+        regTitolo: "Crear una cuenta",
+        sceltaPaese: "1. Selecciona el País:",
+        sceltaRuolo: "2. Selecciona el Perfil:",
+        sceltaSede: "3. Selecciona el Centro:",
+        cercaSede: "🔎 Buscar centro...",
+        nomePh: "Nombre Completo",
+        passPh: "Contraseña",
+        privacy1: "He leído y acepto la ",
+        privacyLink: "Política de Privacidad",
+        confermaReg: "Confirmar Registro",
+        tornaLogin: "Volver al Login",
+        auditTitolo: "Acceso Auditoría",
+        auditDesc: "Selecciona el País y el Centro a inspeccionar:",
+        auditPaese: "1. País de referencia:",
+        auditSede: "2. Centro de referencia:",
+        entraAudit: "Entrar al Centro",
+        otpTitolo: "Verificación de Identidad",
+        otpDesc: "Introduce el código recibido por email.",
+        verificaOtp: "Verificar Código",
+        titoloApp: "GESTIÓN DE TRASTEROS",
+        esci: "🚪 Salir",
+        importaDati: "📥 IMPORTAR DATOS",
+        esportaDati: "📤 EXPORTAR DATOS",
+        gestioneDebitori: "🚨 GESTIÓN DEUDORES",
+        caricaMoveout: "📦 Cargar Archivo MOVE OUT",
+        selezionaPiano: "Selecciona el Área / Planta:",
+        chiudiMappa: "✖ Cerrar Mapa",
+        trovaBox: "Buscar Box",
+        cercaBtn: "Buscar"
+    },
+    pt: {
+        loginTitolo: "Iniciar Sessão",
+        loginDesc: "Insira as suas credenciais para aceder ao sistema.",
+        accedi: "Entrar",
+        registrati: "Registar",
+        regTitolo: "Criar uma conta",
+        sceltaPaese: "1. Selecione o País:",
+        sceltaRuolo: "2. Selecione o Perfil:",
+        sceltaSede: "3. Selecione a Unidade:",
+        cercaSede: "🔎 Pesquisar unidade...",
+        nomePh: "Nome Completo",
+        passPh: "Palavra-passe",
+        privacy1: "Li e aceito a ",
+        privacyLink: "Política de Privacidade",
+        confermaReg: "Confirmar Registo",
+        tornaLogin: "Voltar ao Login",
+        auditTitolo: "Acesso Auditoria",
+        auditDesc: "Selecione o País e a Unidade a inspecionar:",
+        auditPaese: "1. País de referência:",
+        auditSede: "2. Unidade de referência:",
+        entraAudit: "Entrar na Unidade",
+        otpTitolo: "Verificação de Identidade",
+        otpDesc: "Insira o código recebido por e-mail.",
+        verificaOtp: "Verificar Código",
+        titoloApp: "GESTÃO DE BOXES",
+        esci: "🚪 Sair",
+        importaDati: "📥 IMPORTAR DADOS",
+        esportaDati: "📤 EXPORTAR DADOS",
+        gestioneDebitori: "🚨 GESTÃO DEVEDORES",
+        caricaMoveout: "📦 Carregar Ficheiro MOVE OUT",
+        selezionaPiano: "Selecione a Área / Piso:",
+        chiudiMappa: "✖ Fechar Mapa",
+        trovaBox: "Encontrar Box",
+        cercaBtn: "Procurar"
+    }
+};
+
+window.sceltaReg = { paese: null, ruolo: null, sede: null };
+window.sceltaAuditLogin = { paese: null, sede: null };
+window.ruoloUtenteAttuale = "operation";
+
+window.applicaLingua = function (codiceLingua) {
+    const t = TRADUZIONI[codiceLingua] || TRADUZIONI.it;
+    localStorage.setItem('lingua_gestionale', codiceLingua);
+
+    const setTxt = (id, testo) => { const el = document.getElementById(id); if (el) el.textContent = testo; };
+    const setPh = (id, testo) => { const el = document.getElementById(id); if (el) el.placeholder = testo; };
+
+    setTxt('lbl-login-titolo', t.loginTitolo);
+    setTxt('lbl-login-desc', t.loginDesc);
+    setTxt('btn-login-accedi', t.accedi);
+    setTxt('btn-login-registrati', t.registrati);
+    setTxt('lbl-reg-titolo', t.regTitolo);
+    setTxt('lbl-scelta-paese', t.sceltaPaese);
+    setTxt('lbl-scelta-ruolo', t.sceltaRuolo);
+    setTxt('lbl-scelta-sede', t.sceltaSede);
+    setPh('filtro-sede-reg', t.cercaSede);
+    setPh('nome-registrazione', t.nomePh);
+    setPh('password-registrazione', t.passPh);
+    setPh('password-login', t.passPh);
+    setTxt('lbl-privacy-1', t.privacy1);
+    setTxt('lbl-privacy-link', t.privacyLink);
+    setTxt('btn-conferma-reg', t.confermaReg);
+    setTxt('lbl-torna-login', t.tornaLogin);
+    setTxt('lbl-audit-login-titolo', t.auditTitolo);
+    setTxt('lbl-audit-login-desc', t.auditDesc);
+    setTxt('lbl-audit-paese', t.auditPaese);
+    setTxt('lbl-audit-sede', t.auditSede);
+    setPh('filtro-sede-audit', t.cercaSede);
+    setTxt('btn-entra-audit', t.entraAudit);
+    setTxt('lbl-otp-titolo', t.otpTitolo);
+    setTxt('lbl-otp-desc', t.otpDesc);
+    setTxt('btn-verifica-otp', t.verificaOtp);
+    setTxt('lbl-titolo-app', t.titoloApp);
+
+    const btnImporta = document.querySelector('button[onclick="toggleBoxImporta()"]');
+    if (btnImporta) btnImporta.textContent = t.importaDati;
+    const btnEsporta = document.querySelector('button[onclick="toggleBoxEsporta()"]');
+    if (btnEsporta) btnEsporta.textContent = t.esportaDati;
+    const btnDeb = document.getElementById('btn-gestione-debitori');
+    if (btnDeb && !btnDeb.classList.contains('allarme-moveout')) btnDeb.textContent = t.gestioneDebitori;
+    const btnMov = document.getElementById('btn-moveout');
+    if (btnMov && !btnMov.classList.contains('allarme-moveout')) btnMov.textContent = t.caricaMoveout;
+    const btnEsci = document.querySelector('button[onclick="eseguiLogout()"]');
+    if (btnEsci) btnEsci.textContent = t.esci;
+};
+
+window.selezionaPaeseReg = function (paese, btnEl) {
+    window.sceltaReg.paese = paese;
+    window.sceltaReg.sede = null;
+    window.applicaLingua(paese);
+
+    btnEl.parentElement.querySelectorAll('.btn-scelta-opzione').forEach(b => b.classList.remove('attivo'));
+    btnEl.classList.add('attivo');
+
+    document.getElementById('step-ruolo-reg').style.display = 'block';
+    if (window.sceltaReg.ruolo === 'operation') {
+        window.popolaBottoniSede('reg', paese);
+        document.getElementById('step-sede-reg').style.display = 'block';
+        document.getElementById('step-campi-reg').style.display = 'none';
+    }
+};
+
+window.selezionaRuoloReg = function (ruolo, btnEl) {
+    window.sceltaReg.ruolo = ruolo;
+    window.sceltaReg.sede = null;
+
+    btnEl.parentElement.querySelectorAll('.btn-scelta-opzione').forEach(b => b.classList.remove('attivo'));
+    btnEl.classList.add('attivo');
+
+    if (ruolo === 'audit') {
+        // Se sceglie Audit, non serve scegliere la sede in registrazione
+        document.getElementById('step-sede-reg').style.display = 'none';
+        document.getElementById('step-campi-reg').style.display = 'block';
+    } else {
+        // Se sceglie Operation, deve scegliere la sede
+        window.popolaBottoniSede('reg', window.sceltaReg.paese);
+        document.getElementById('step-sede-reg').style.display = 'block';
+        document.getElementById('step-campi-reg').style.display = 'none';
+    }
+};
+
+window.popolaBottoniSede = function (contesto, paese) {
+    const contenitore = document.getElementById(contesto === 'reg' ? 'lista-bottoni-sede-reg' : 'lista-bottoni-sede-audit');
+    if (!contenitore) return;
+    contenitore.innerHTML = '';
+
+    const sedi = SEDI_PER_PAESE[paese] || [];
+    sedi.forEach(sede => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'btn-sede-item';
+        btn.textContent = sede;
+        btn.onclick = () => {
+            contenitore.querySelectorAll('.btn-sede-item').forEach(b => b.classList.remove('attivo'));
+            btn.classList.add('attivo');
+            if (contesto === 'reg') {
+                window.sceltaReg.sede = sede;
+                document.getElementById('step-campi-reg').style.display = 'block';
+            } else {
+                window.sceltaAuditLogin.sede = sede;
+                document.getElementById('btn-entra-audit').style.display = 'block';
+            }
+        };
+        contenitore.appendChild(btn);
+    });
+};
+
+window.filtraSedi = function (contesto) {
+    const inputId = contesto === 'reg' ? 'filtro-sede-reg' : 'filtro-sede-audit';
+    const listaId = contesto === 'reg' ? 'lista-bottoni-sede-reg' : 'lista-bottoni-sede-audit';
+    const testo = document.getElementById(inputId)?.value.toLowerCase().trim() || '';
+
+    document.querySelectorAll(`#${listaId} .btn-sede-item`).forEach(btn => {
+        btn.style.display = btn.textContent.toLowerCase().includes(testo) ? 'inline-block' : 'none';
+    });
+};
+
+window.selezionaPaeseAuditLogin = function (paese, btnEl) {
+    window.sceltaAuditLogin.paese = paese;
+    window.sceltaAuditLogin.sede = null;
+    window.applicaLingua(paese);
+
+    btnEl.parentElement.querySelectorAll('.btn-scelta-opzione').forEach(b => b.classList.remove('attivo'));
+    btnEl.classList.add('attivo');
+
+    window.popolaBottoniSede('audit', paese);
+    document.getElementById('step-sede-audit').style.display = 'block';
+    document.getElementById('btn-entra-audit').style.display = 'none';
+};
+
+window.confermaIngressoAudit = function () {
+    if (!window.sceltaAuditLogin.paese || !window.sceltaAuditLogin.sede) {
+        alert("Seleziona lo Stato e la Sede di riferimento!");
+        return;
+    }
+    sessionStorage.setItem('audit_sede_scelta', window.sceltaAuditLogin.sede);
+    sessionStorage.setItem('audit_paese_scelto', window.sceltaAuditLogin.paese);
+
+    const titoloSede = document.getElementById('titolo-sede-attiva');
+    if (titoloSede) titoloSede.textContent = `- ${window.sceltaAuditLogin.sede.toUpperCase()} -`;
+
+    document.getElementById('schermata-login').style.display = 'none';
+};
+
+window.applicaPermessiInterfaccia = function (emailUser, ruoloDb, sedeDb, paeseDb) {
+    const isAdmin = (emailUser === ADMIN_EMAIL.trim().toLowerCase());
+    const isAudit = (!isAdmin && (ruoloDb === 'audit' || emailUser === 'gdesogus@easybox.it'));
+
+    window.ruoloUtenteAttuale = isAdmin ? 'admin' : (isAudit ? 'audit' : 'operation');
+
+    if (paeseDb) window.applicaLingua(paeseDb);
+    if (sedeDb) {
+        const titoloSede = document.getElementById('titolo-sede-attiva');
+        if (titoloSede) titoloSede.textContent = `- ${sedeDb.toUpperCase()} -`;
+    }
+
+    const btnDebitori = document.getElementById('btn-gestione-debitori');
+    const boxDebitori = document.getElementById('box-debitori');
+    const btnTodo = document.getElementById('btn-todo');
+    const containerTodo = document.getElementById('container-todo');
+
+    if (isAudit) {
+        // Visualizzazione ridotta per Audit (come gdesogus@easybox.it)
+        if (btnDebitori) btnDebitori.style.display = 'none';
+        if (boxDebitori) boxDebitori.style.display = 'none';
+        if (btnTodo) btnTodo.style.display = 'none';
+        if (containerTodo) containerTodo.style.display = 'none';
+    } else {
+        // Visualizzazione completa per Operation e Admin
+        if (btnDebitori) btnDebitori.style.display = 'inline-block';
+        if (btnTodo) btnTodo.style.display = 'inline-block';
+    }
+
+    if (isAdmin && typeof window.sbloccaInterfacciaAdmin === "function") {
+        window.sbloccaInterfacciaAdmin();
+    }
+};
 
 // ==========================================
 // 1. ASCOLTO FIRESTORE (Mappa e Stanze)
@@ -61,30 +400,23 @@ onAuthStateChanged(auth, (user) => {
     if (user) {
         const emailUser = user.email ? user.email.trim().toLowerCase() : "";
 
-        // ========================================================
-        // 🛑 BLOCCO VISIBILITÀ "GESTIONE DEBITORI"
-        // ========================================================
-        const utentiSenzaDebitori = [
-            "gdesogus@easybox.it",
-            // "altro.utente@easybox.it",
-        ];
-
-        const btnDebitori = document.getElementById('btn-gestione-debitori');
-        if (btnDebitori) {
-            if (utentiSenzaDebitori.includes(emailUser)) {
-                btnDebitori.style.display = 'none';
-            } else {
-                btnDebitori.style.display = 'inline-block';
-            }
-        }
-
-        // A. SE È L'AMMINISTRATORE: Bypassa totalmente il controllo sessione
+        // A. SE È L'AMMINISTRATORE: Bypassa il controllo sessione e mostra tutto
         if (emailUser === ADMIN_EMAIL.trim().toLowerCase()) {
+            window.applicaPermessiInterfaccia(emailUser, 'admin', 'MILANO CENTRO', 'it');
             document.getElementById('schermata-login').style.display = 'none';
-            if (typeof window.sbloccaInterfacciaAdmin === "function") window.sbloccaInterfacciaAdmin();
         }
-        // B. SE È UN UTENTE NORMALE: Attiva il controllo multi-dispositivo
+        // B. SE È UN UTENTE NORMALE (Operation o Audit): Legge profilo e permessi
         else {
+            const emailKey = emailUser.replace(/\./g, '_');
+            firebase.database().ref('utenti/' + emailKey).once('value').then((snapshot) => {
+                const userData = snapshot.val() || {};
+                const ruolo = userData.ruolo || (emailUser === 'gdesogus@easybox.it' ? 'audit' : 'operation');
+                const sede = sessionStorage.getItem('audit_sede_scelta') || userData.sede || 'MILANO CENTRO';
+                const paese = sessionStorage.getItem('audit_paese_scelto') || userData.paese || 'it';
+
+                window.applicaPermessiInterfaccia(emailUser, ruolo, sede, paese);
+            });
+
             const userRef = doc(db, "utenti", user.uid);
             unsubscribeSession = onSnapshot(userRef, (docSnap) => {
                 if (docSnap.exists()) {
@@ -121,7 +453,6 @@ onAuthStateChanged(auth, (user) => {
                     window.gestisciSimboloPulizia(stanzaElement, data.daPulire === true);
                 }
 
-                // GESTIONE LUCCHETTO LONG TERM
                 const numStanzaPuro = idStanza.replace('stanza-centro-', '');
                 if (typeof window.gestisciLucchetto === "function") {
                     window.gestisciLucchetto(numStanzaPuro, (data.stato === "debitore" && data.isLongTerm === true));
@@ -129,7 +460,8 @@ onAuthStateChanged(auth, (user) => {
             });
         });
     } else {
-        const schermataLogin = document.getElementById('schermata-login'); if (schermataLogin) schermataLogin.style.display = 'flex';
+        const schermataLogin = document.getElementById('schermata-login');
+        if (schermataLogin) schermataLogin.style.display = 'flex';
         if (unsubscribeSession) unsubscribeSession();
     }
 });
@@ -146,6 +478,16 @@ window.eseguiRegistrazione = function () {
     const email = emailInput.value.trim();
     const password = passwordInput.value;
 
+    if (!window.sceltaReg.paese || !window.sceltaReg.ruolo) {
+        alert("Seleziona prima il Paese e il Profilo (Audit o Operation)!");
+        return;
+    }
+
+    if (window.sceltaReg.ruolo === 'operation' && !window.sceltaReg.sede) {
+        alert("Seleziona la tua Sede di riferimento!");
+        return;
+    }
+
     if (!nome || !email || !password) {
         alert("Compila tutti i campi!");
         return;
@@ -157,24 +499,26 @@ window.eseguiRegistrazione = function () {
     }
 
     firebase.auth().createUserWithEmailAndPassword(email, password)
-        .then((userCredential) => {
+        .then(() => {
             const emailKey = email.toLowerCase().replace(/\./g, '_');
 
             return firebase.database().ref('utenti/' + emailKey).set({
                 nome: nome,
                 email: email.toLowerCase(),
+                paese: window.sceltaReg.paese,
+                ruolo: window.sceltaReg.ruolo,
+                sede: window.sceltaReg.ruolo === 'operation' ? window.sceltaReg.sede : 'Da scegliere al login (Audit)',
                 stato: 'pending',
                 otp: null,
-                dataRegistrazione: new Date().toLocaleString()
+                dataRegistrazione: new Date().toLocaleString('it-IT')
             });
         })
         .then(() => {
             return firebase.auth().signOut();
         })
         .then(() => {
-            // === INVIO MAIL DI AVVISO REGISTRAZIONE ALL'ADMIN ===
             const templateParamsReg = {
-                to_name: nome,
+                to_name: `${nome} (${window.sceltaReg.ruolo.toUpperCase()} - ${window.sceltaReg.sede || window.sceltaReg.paese.toUpperCase()})`,
                 to_email: email,
                 user_email: email,
                 data_registrazione: new Date().toLocaleString('it-IT')
@@ -183,17 +527,14 @@ window.eseguiRegistrazione = function () {
                 .then(() => console.log("Notifica di registrazione inviata!"))
                 .catch((err) => console.error("Errore invio notifica:", err));
 
-            alert("Account creato con successo! Sei in attesa di verifica.");
+            alert("Account creato con successo! Sei in attesa di verifica codice OTP.");
 
             const schermataLogin = document.getElementById('schermata-login');
             if (schermataLogin) schermataLogin.style.display = 'flex';
 
             document.getElementById('box-registrazione').style.display = 'none';
-            const boxLogin = document.getElementById('box-login');
-            if (boxLogin) boxLogin.style.display = 'none';
-
-            const boxOtp = document.getElementById('box-otp');
-            if (boxOtp) boxOtp.style.display = 'block';
+            document.getElementById('box-login').style.display = 'none';
+            document.getElementById('box-otp').style.display = 'block';
 
             window.tempEmailUtente = email.toLowerCase();
 
@@ -220,26 +561,40 @@ window.eseguiLogin = function () {
     firebase.auth().signInWithEmailAndPassword(email, password)
         .then((userCredential) => {
             const user = userCredential.user;
-            if (user.email.trim().toLowerCase() === ADMIN_EMAIL.trim().toLowerCase()) {
+            const emailPulita = user.email.trim().toLowerCase();
+
+            // 1. ACCESSO AMMINISTRATORE (Vede sempre tutto)
+            if (emailPulita === ADMIN_EMAIL.trim().toLowerCase()) {
+                window.applicaPermessiInterfaccia(emailPulita, 'admin', 'MILANO CENTRO', 'it');
                 document.getElementById('schermata-login').style.display = 'none';
                 alert("Benvenuto Amministratore!");
-                if (typeof window.sbloccaInterfacciaAdmin === "function") window.sbloccaInterfacciaAdmin();
                 window.registraSessioneUtente(user.email);
                 return;
             }
 
-            const emailKey = user.email.toLowerCase().replace(/\./g, '_');
+            // 2. ACCESSO UTENTI (Audit e Operation)
+            const emailKey = emailPulita.replace(/\./g, '_');
             firebase.database().ref('utenti/' + emailKey).once('value').then((snapshot) => {
                 const userData = snapshot.val();
                 if (!userData || userData.stato === 'pending') {
                     alert("Account in attesa di verifica. Inserisci il codice OTP ricevuto via email.");
                     document.getElementById('box-login').style.display = 'none';
                     document.getElementById('box-otp').style.display = 'block';
-                    window.tempEmailUtente = user.email.toLowerCase();
+                    window.tempEmailUtente = emailPulita;
                 } else if (userData.stato === 'attivo') {
-                    document.getElementById('schermata-login').style.display = 'none';
-                    alert("Accesso eseguito con successo!");
+                    const ruolo = userData.ruolo || (emailPulita === 'gdesogus@easybox.it' ? 'audit' : 'operation');
+                    window.applicaPermessiInterfaccia(emailPulita, ruolo, userData.sede, userData.paese);
                     window.registraSessioneUtente(user.email);
+
+                    if (ruolo === 'audit' || emailPulita === 'gdesogus@easybox.it') {
+                        // L'account Audit sceglie Stato e Sede ad ogni accesso
+                        document.getElementById('box-login').style.display = 'none';
+                        document.getElementById('box-scelta-audit').style.display = 'block';
+                    } else {
+                        // L'account Operation entra direttamente nella sua sede
+                        document.getElementById('schermata-login').style.display = 'none';
+                        alert("Accesso eseguito con successo!");
+                    }
                 }
             });
         })
@@ -263,15 +618,26 @@ window.verificaOTP = function () {
         const userData = snapshot.val();
         if (userData && userData.otp === codiceInserito) {
             firebase.database().ref('utenti/' + emailKey).update({ stato: 'attivo', otp: null }).then(() => {
-                alert("Codice verificato con successo! Accesso consentito.");
+                alert("Codice verificato con successo!");
                 document.getElementById('box-otp').style.display = 'none';
+                
+                const ruolo = userData.ruolo || (email === 'gdesogus@easybox.it' ? 'audit' : 'operation');
+                window.applicaPermessiInterfaccia(email, ruolo, userData.sede, userData.paese);
                 window.registraSessioneUtente(email);
+
+                if (ruolo === 'audit' || email === 'gdesogus@easybox.it') {
+                    document.getElementById('box-scelta-audit').style.display = 'block';
+                } else {
+                    document.getElementById('schermata-login').style.display = 'none';
+                }
             });
         } else { alert("Codice OTP errato. Riprova."); }
     });
 };
 
 window.eseguiLogout = function () {
+    sessionStorage.removeItem('audit_sede_scelta');
+    sessionStorage.removeItem('audit_paese_scelto');
     const user = firebase.auth().currentUser;
     if (user) {
         const emailKey = user.email.trim().toLowerCase().replace(/\./g, '_');
@@ -309,7 +675,6 @@ window.registraSessioneUtente = function (email) {
 // ==========================================
 // 3. PANNELLO AMMINISTRATORE E RESET
 // ==========================================
-
 window.sbloccaInterfacciaAdmin = function () {
     document.getElementById('schermata-login').style.display = 'none';
     const btnAdmin = document.getElementById('btn-admin');
@@ -402,11 +767,15 @@ window.caricaRichiesteOTP = function () {
 
         snapshot.forEach((childSnapshot) => {
             const utente = childSnapshot.val();
+            const infoExtra = `${(utente.paese || 'IT').toUpperCase()} | ${(utente.ruolo || 'operation').toUpperCase()} | ${utente.sede || '-'}`;
             const div = document.createElement('div');
             div.style.padding = '15px'; div.style.border = '1px solid #ddd'; div.style.marginBottom = '10px'; div.style.background = '#f8f9fa';
             div.innerHTML = `
                 <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <div><strong>${utente.nome}</strong><br><span style="color: #007bff;">${utente.email}</span></div>
+                    <div style="text-align: left;">
+                        <strong>${utente.nome}</strong> <span style="font-size: 11px; background: #007bff; color: white; padding: 2px 6px; border-radius: 4px; margin-left: 5px;">${infoExtra}</span><br>
+                        <span style="color: #007bff;">${utente.email}</span>
+                    </div>
                     <button onclick="window.inviaOTPaUtente('${utente.email}', '${utente.nome.replace(/'/g, "\\'")}')" class="btn-azione">📧 Invia OTP</button>
                 </div>`;
             listaOTP.appendChild(div);
@@ -2893,8 +3262,8 @@ window.apriMenuAudit = function () {
     const currentUser = firebase.auth().currentUser;
     const email = currentUser ? currentUser.email.toLowerCase().trim() : '';
 
-    if (email !== 'spinelli291082@gmail.com' && email !== 'gdesogus@easybox.it') {
-        alert("Accesso negato. Solo l'amministratore o l'account autorizzato possono avviare l'Audit.");
+    if (email !== 'spinelli291082@gmail.com' && email !== 'gdesogus@easybox.it' && window.ruoloUtenteAttuale !== 'audit') {
+        alert("Accesso negato. Solo l'amministratore o gli account Audit possono avviare l'Audit.");
         return;
     }
     document.getElementById('modal-audit-main').style.display = 'flex';
