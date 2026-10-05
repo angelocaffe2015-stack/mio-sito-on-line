@@ -3090,22 +3090,68 @@ window.gestisciSimboloPulizia = function (stanza, daPulire) {
     }
 };
 
+window.modalitaVistaMappa = 'mq'; // Default: mostra i mq
+
+window.cambiaVistaTestoMappa = function(modalita) {
+    window.modalitaVistaMappa = modalita;
+    disegnaMetrature();
+};
+
 function disegnaMetrature() {
+    // 1. Rimuove tutte le etichette precedenti per evitare sovrapposizioni
+    document.querySelectorAll('.testo-mq, .testo-numero-stanza').forEach(el => el.remove());
+
+    const modalita = window.modalitaVistaMappa || 'mq';
+
     document.querySelectorAll('.stanza').forEach(stanza => {
         const mq = stanza.getAttribute('data-mq');
-        if (mq && mq !== "" && mq !== "1" && mq !== "2" && mq !== "0.5" && mq !== "1.5") {
-            const svg = stanza.closest('svg');
-            const x = parseFloat(stanza.getAttribute('x'));
-            const y = parseFloat(stanza.getAttribute('y'));
-            const width = parseFloat(stanza.getAttribute('width'));
-            const height = parseFloat(stanza.getAttribute('height'));
+        const nomeStanza = stanza.getAttribute('data-nome') || stanza.id.replace('stanza-centro-', '');
+        const svg = stanza.closest('svg');
+        if (!svg) return;
 
-            if (!isNaN(x) && !isNaN(y) && !isNaN(width) && !isNaN(height)) {
+        const x = parseFloat(stanza.getAttribute('x'));
+        const y = parseFloat(stanza.getAttribute('y'));
+        const width = parseFloat(stanza.getAttribute('width'));
+        const height = parseFloat(stanza.getAttribute('height'));
+
+        // Ignora i punti tecnici invisibili (es. width=1, height=1 o data-mq="0")
+        if (isNaN(x) || isNaN(y) || isNaN(width) || isNaN(height) || width <= 3 || height <= 3 || mq === "0") {
+            return;
+        }
+
+        if (modalita === 'mq') {
+            // Comportamento classico: mostra i Mq solo sui box grandi
+            if (mq && mq !== "" && mq !== "1" && mq !== "2" && mq !== "0.5" && mq !== "1.5") {
                 const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
                 text.setAttribute("x", x + (width / 2));
                 text.setAttribute("y", y + (height / 6));
                 text.setAttribute("class", "testo-mq");
                 text.textContent = mq + " mq";
+                svg.appendChild(text);
+            }
+        } else if (modalita === 'numero') {
+            // Mostra il numero della stanza centrato su TUTTI i box (adattando il font allo spazio)
+            if (nomeStanza) {
+                const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                text.setAttribute("x", x + (width / 2));
+                text.setAttribute("y", y + (height / 2));
+                text.setAttribute("class", "testo-numero-stanza");
+
+                // Calcolo intelligente della grandezza del testo in base a larghezza/altezza del box
+                const minDim = Math.min(width, height);
+                let fontSize = 11;
+                if (minDim <= 14 || width < 22) {
+                    fontSize = 7;
+                } else if (minDim <= 22 || width < 32) {
+                    fontSize = 8.5;
+                } else if (minDim <= 35) {
+                    fontSize = 10;
+                } else {
+                    fontSize = 12;
+                }
+
+                text.setAttribute("font-size", fontSize + "px");
+                text.textContent = nomeStanza;
                 svg.appendChild(text);
             }
         }
@@ -3476,6 +3522,48 @@ window.impostaNuovoStatoAudit = function (nuovoStato, btnElement) {
     btnElement.style.opacity = "1";
 };
 
+window.impostaPuliziaAudit = function (daPulire) {
+    if (!window.stanzaAuditCorrente) return;
+    const stanza = window.stanzaAuditCorrente;
+    const docRef = doc(db, "stanze", stanza.id);
+
+    // 1. Salva subito su Firebase lo stato "daPulire" e mostra/nasconde la scopa sulla mappa
+    setDoc(docRef, { daPulire: daPulire }, { merge: true })
+        .catch(error => console.error("Errore imposta pulizia in Audit:", error));
+
+    stanza.setAttribute('data-dapulire', daPulire ? 'true' : 'false');
+    if (typeof window.gestisciSimboloPulizia === "function") {
+        window.gestisciSimboloPulizia(stanza, daPulire);
+    }
+
+    // 2. Se è richiesta la pulizia, apre la mail precompilata e aggiunge la nota nel report Audit
+    if (daPulire) {
+        const numStanza = stanza.getAttribute('data-nome') || stanza.id.replace('stanza-centro-', '');
+        const contenitorePiano = stanza.closest('.container-mappa');
+        const mappaPiani = {
+            'map-centro-pt': 'Piano Terra', 'map-centro-p-1': 'Piano -1',
+            'map-centro-p1': 'Piano 1', 'map-centro-p-2': 'Piano -2',
+            'map-centro-p-3': 'Piano -3', 'map-centro-p-4': 'Piano -4'
+        };
+        const nomePiano = contenitorePiano ? (mappaPiani[contenitorePiano.id] || contenitorePiano.id) : "Piano Sconosciuto";
+
+        // Aggiunge in automatico la dicitura nelle note dell'Audit per il report Excel finale
+        const campoNotaAudit = document.getElementById('nota-audit');
+        if (campoNotaAudit && !campoNotaAudit.value.includes('Richiesta Pulizia')) {
+            campoNotaAudit.value = campoNotaAudit.value.trim()
+                ? `${campoNotaAudit.value.trim()} | Richiesta Pulizia`
+                : `Richiesta Pulizia`;
+        }
+
+        const email = "milanocentro@easybox.it";
+        const subject = encodeURIComponent("BOX DA PULIRE");
+        const body = encodeURIComponent(`Si richiede la pulizia per la stanza n° ${numStanza}\nPosizione: ${nomePiano}`);
+        window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+    } else {
+        alert("✅ Stato 'Da Pulire' rimosso per questo box.");
+    }
+};
+
 window.salvaAuditStanza = async function () {
     if (!window.stanzaAuditCorrente) return;
     const numStanza = window.stanzaAuditCorrente.getAttribute('data-nome');
@@ -3841,3 +3929,76 @@ window.calcolaClassificaMq = function () {
 };
 
 window.calcolaTassoOccupazione();
+// ========================================================
+// ⌨️ COMANDI RAPIDI DA TASTIERA (TASTO INVIO & ESC)
+// ========================================================
+function attivaComandiTastiera() {
+    const mappaInputAzioni = {
+        'input-stanza': () => window.cercaETracciaStanza(),
+        'input-ricerca-mq': () => window.cercaStanzeLibere(),
+        'input-filtro-mq': () => window.calcolaOccupazionePerMq(),
+        'email-login': () => window.eseguiLogin(),
+        'password-login': () => window.eseguiLogin(),
+        'otp-login': () => window.eseguiLogin(),
+        'nome-registrazione': () => window.eseguiRegistrazione(),
+        'email-registrazione': () => window.eseguiRegistrazione(),
+        'password-registrazione': () => window.eseguiRegistrazione(),
+        'input-otp': () => window.verificaOTP()
+    };
+
+    // 1. Associa il tasto INVIO (Enter) a tutti i campi di input
+    Object.keys(mappaInputAzioni).forEach(idInput => {
+        const el = document.getElementById(idInput);
+        if (el) {
+            el.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    mappaInputAzioni[idInput]();
+                    this.blur(); // Chiude eventuale tastiera virtuale su mobile
+                }
+            });
+        }
+    });
+
+    // 2. Nei campi Note Stanza: INVIO salva la nota, SHIFT + INVIO va a capo
+    ['note-fisse', 'note-cliente'].forEach(idNota => {
+        const el = document.getElementById(idNota);
+        if (el) {
+            el.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    window.salvaNotaFirebase();
+                }
+            });
+        }
+    });
+
+    // 3. Nel campo Nota Audit: INVIO salva l'audit, SHIFT + INVIO va a capo
+    const notaAuditEl = document.getElementById('nota-audit');
+    if (notaAuditEl) {
+        notaAuditEl.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                window.salvaAuditStanza();
+            }
+        });
+    }
+
+    // 4. Tasto ESC per chiudere rapidamente finestre modali o pannelli aperti
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            if (typeof window.chiudiModalNota === 'function') window.chiudiModalNota();
+            if (typeof window.chiudiPannelloControllo === 'function') window.chiudiPannelloControllo();
+            if (typeof window.chiudiModaleAuditStanza === 'function') window.chiudiModaleAuditStanza();
+            if (typeof window.chiudiModalPrivacy === 'function') window.chiudiModalPrivacy();
+
+            const modalAdmin = document.getElementById('modal-admin');
+            if (modalAdmin && modalAdmin.style.display === 'flex') window.toggleAdminPanel();
+
+            const modalAuditMain = document.getElementById('modal-audit-main');
+            if (modalAuditMain) modalAuditMain.style.display = 'none';
+        }
+    });
+}
+
+attivaComandiTastiera();

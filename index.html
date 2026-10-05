@@ -24,7 +24,7 @@ funzionamento di questo software sono di proprietà esclusiva di
     <!-- ========================================== -->
     <!-- COLLEGAMENTO AL FILE CSS ESTERNO           -->
     <!-- ========================================== -->
-    <link rel="stylesheet" href="style.css">
+   <link rel="stylesheet" href="style.css?v=3">
 
     <!-- ========================================== -->
     <!-- LIBRERIE ESTERNE                           -->
@@ -406,6 +406,16 @@ funzionamento di questo software sono di proprietà esclusiva di
                         onclick="mostraCambioStatoAudit()">🔄 Cambia Stato</button>
                 </div>
 
+                <!-- NUOVI BOTTONI PULIZIA (Disponibili per tutte le scelte Audit) -->
+                <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                    <button type="button" class="btn-stato"
+                        style="background-color: #e83e8c; font-weight: bold; flex: 1; margin: 0; padding: 10px 5px; font-size: 13px;"
+                        onclick="impostaPuliziaAudit(true)">🧹 Richiedi Pulizia (Mail)</button>
+                    <button type="button" class="btn-stato"
+                        style="background-color: #6c757d; flex: 1; margin: 0; padding: 10px 5px; font-size: 13px;"
+                        onclick="impostaPuliziaAudit(false)">✅ Togli "Da Pulire"</button>
+                </div>
+
                 <!-- CAMPO NOTA NASCOSTO -->
                 <div id="audit-campo-nota" style="display: none; margin-bottom: 15px;">
                     <textarea id="nota-audit" placeholder="Scrivi qui la nota dell'audit..."
@@ -743,6 +753,20 @@ funzionamento di questo software sono di proprietà esclusiva di
             <button onclick="chiudiMappe()" class="btn-chiudi-generico" title="Chiudi mappa attiva">✖ Chiudi
                 Mappa</button>
         </div>
+
+        <!-- NUOVO FLAG DI SCELTA: MQ O NUMERO STANZA -->
+        <div class="box-flag-visualizzazione">
+            <span class="label-flag-vista">👁️ Mostra sui box:</span>
+            <label class="opzione-flag">
+                <input type="radio" name="flag-vista-mappa" value="mq" checked onchange="cambiaVistaTestoMappa(this.value)">
+                <span>📐 Metratura (Mq)</span>
+            </label>
+            <label class="opzione-flag">
+                <input type="radio" name="flag-vista-mappa" value="numero" onchange="cambiaVistaTestoMappa(this.value)">
+                <span>🔢 N° Stanza</span>
+            </label>
+        </div>
+
         <div class="legenda-stati">
             <div class="item-legenda"><span class="pallino libero"></span> Libero</div>
             <div class="item-legenda"><span class="pallino occupato"></span> Occupato</div>
@@ -1237,7 +1261,7 @@ funzionamento di questo software sono di proprietà esclusiva di
             <img src="centro_pt.jpg?v=2" alt="Centro Piano Terra">
             <svg class="mappa-interattiva" viewBox="0 0 955 785" preserveAspectRatio="xMidYMid meet">
                 <!-- INSERISCI QUI TUTTI I TUOI <rect> DEL PIANO TERRA -->
- <<rect id="stanza-centro-1" class="stanza" x="746" y="292" width="20" height="10" data-nome="1" data-mq="1"
+ <rect id="stanza-centro-1" class="stanza" x="746" y="292" width="20" height="10" data-nome="1" data-mq="1"
                 data-nodo-x="761" data-nodo-y="270">
                 </rect>
                 <rect id="stanza-centro-2" class="stanza" x="744" y="278" width="23" height="11" data-nome="2"
@@ -2425,7 +2449,7 @@ funzionamento di questo software sono di proprietà esclusiva di
             <img src="centro_p-4.jpg?v=2" alt="Centro Piano -4">
             <svg class="mappa-interattiva" viewBox="0 0 734 500" preserveAspectRatio="xMidYMid meet">
                 <!-- INSERISCI QUI TUTTI I TUOI <rect> DEL PIANO -4 -->
-<<rect id="stanza-centro-4014" class="stanza" x="5" y="9" width="28" height="24" data-nome="4014"
+<rect id="stanza-centro-4014" class="stanza" x="5" y="9" width="28" height="24" data-nome="4014"
                 data-mq="2" data-nodo-x="13" data-nodo-y="85">
                 </rect>
                 <rect id="stanza-centro-4013" class="stanza" x="36" y="10" width="39" height="63" data-nome="4013"
@@ -2630,7 +2654,7 @@ funzionamento di questo software sono di proprietà esclusiva di
     <!-- ========================================== -->
     <!-- COLLEGAMENTO AL FILE JAVASCRIPT ESTERNO    -->
     <!-- ========================================== -->
-    <script type="module" src="script.js"></script>
+    <script type="module" src="script.js?v=3"></script>
 
        <!-- ========================================== -->
     <!-- REGISTRAZIONE SERVICE WORKER (PWA OFFLINE) -->

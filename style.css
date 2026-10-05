@@ -525,4 +525,61 @@ body {
 
 @media print {
     #sezione-occupancy-wrapper { display: none !important; }
+}/* --- SELETTORE VISTA MQ / NUMERO STANZA --- */
+.box-flag-visualizzazione {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 15px;
+    padding: 8px 18px;
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    border-radius: 30px;
+}
+
+.label-flag-vista {
+    font-size: 13px;
+    font-weight: bold;
+    color: #001f3f;
+}
+
+.opzione-flag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+    padding: 4px 10px;
+    border-radius: 20px;
+    transition: background-color 0.2s;
+}
+
+.opzione-flag:hover {
+    background-color: #e2e6ea;
+}
+
+.opzione-flag input[type="radio"] {
+    accent-color: #007bff;
+    cursor: pointer;
+    width: 15px;
+    height: 15px;
+    margin: 0;
+}
+
+/* Stile per il numero della stanza in sovraimpressione */
+.testo-numero-stanza {
+    fill: #000;
+    font-weight: 800;
+    text-anchor: middle;
+    dominant-baseline: central;
+    pointer-events: none;
+    text-shadow: 
+        -1px -1px 0 rgba(255, 255, 255, 0.9),
+         1px -1px 0 rgba(255, 255, 255, 0.9),
+        -1px  1px 0 rgba(255, 255, 255, 0.9),
+         1px  1px 0 rgba(255, 255, 255, 0.9);
 }
